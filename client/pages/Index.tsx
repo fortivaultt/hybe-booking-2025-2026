@@ -522,25 +522,25 @@ export default function Index() {
                     <h4 className="font-semibold text-yellow-800">Premium Tier</h4>
                   </div>
                   <p className="text-sm text-yellow-700">$750,000 - $1,000,000+</p>
-                  <p className="text-xs text-yellow-600 mt-1">BTS, BLACKPINK, SEVENTEEN</p>
+                  <p className="text-xs text-yellow-600 mt-1">BLACKPINK, SEVENTEEN</p>
                 </div>
-                
+
                 <div className="p-4 rounded-lg bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200">
                   <div className="flex items-center gap-2 mb-2">
                     <Star className="h-5 w-5 text-purple-600" />
                     <h4 className="font-semibold text-purple-800">Elite Tier</h4>
                   </div>
                   <p className="text-sm text-purple-700">$500,000 - $750,000</p>
-                  <p className="text-xs text-purple-600 mt-1">NewJeans, LE SSERAFIM, TWICE</p>
+                  <p className="text-xs text-purple-600 mt-1">NewJeans, LE SSERAFIM, TWICE, Stray Kids</p>
                 </div>
-                
+
                 <div className="p-4 rounded-lg bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200">
                   <div className="flex items-center gap-2 mb-2">
                     <Users className="h-5 w-5 text-blue-600" />
                     <h4 className="font-semibold text-blue-800">Standard Tier</h4>
                   </div>
-                  <p className="text-sm text-blue-700">$200,000 - $500,000</p>
-                  <p className="text-xs text-blue-600 mt-1">IVE, Stray Kids, Rising Artists</p>
+                  <p className="text-sm text-blue-700">$22,500 - $500,000</p>
+                  <p className="text-xs text-blue-600 mt-1">BTS, IVE, Rising Artists</p>
                 </div>
               </CardContent>
             </Card>
