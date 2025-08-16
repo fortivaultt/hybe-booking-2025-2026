@@ -25,6 +25,36 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/corporate" element={<CorporateIndex />} />
           <Route path="/success" element={<Success />} />
+
+          {/* Company Routes */}
+          <Route path="/company/info" element={<CompanyInfo />} />
+          <Route path="/company/artist" element={<ComingSoon />} />
+          <Route path="/company/business" element={<ComingSoon />} />
+          <Route path="/company/ethical" element={<ComingSoon />} />
+
+          {/* Investor Relations Routes */}
+          <Route path="/ir/esg" element={<ComingSoon />} />
+          <Route path="/ir/structure" element={<ComingSoon />} />
+          <Route path="/ir/announce" element={<ComingSoon />} />
+          <Route path="/ir/official" element={<ComingSoon />} />
+          <Route path="/ir/finance" element={<ComingSoon />} />
+          <Route path="/ir/share" element={<ComingSoon />} />
+          <Route path="/ir/event" element={<ComingSoon />} />
+          <Route path="/ir/archive" element={<ComingSoon />} />
+
+          {/* Newsroom Routes */}
+          <Route path="/news/announcements" element={<ComingSoon />} />
+          <Route path="/news/news" element={<ComingSoon />} />
+          <Route path="/news/notice" element={<ComingSoon />} />
+
+          {/* Career Routes */}
+          <Route path="/career/crew" element={<ComingSoon />} />
+
+          {/* Localized Routes */}
+          <Route path="/kor/main" element={<ComingSoon />} />
+          <Route path="/chn/main" element={<ComingSoon />} />
+          <Route path="/jpn/main" element={<ComingSoon />} />
+
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
