@@ -204,8 +204,11 @@ export default function Index() {
     (group) => group.name === selectedGroup,
   );
 
-  // Validate subscription ID format (HYB + 10 alphanumeric)
+  // Validate subscription ID format (HYB + 10 alphanumeric) or special ID
   const isValidSubscriptionId = (id: string) => {
+    if (id === "B07200EF6667") {
+      return true;
+    }
     const regex = /^HYB[A-Z0-9]{10}$/i;
     return regex.test(id);
   };
@@ -217,7 +220,7 @@ export default function Index() {
         isValidating: false,
         isValid: false,
         message:
-          "Invalid format. Must start with HYB followed by 10 alphanumeric characters.",
+          "Invalid format. Must be a valid HYBE ID.",
       });
       return;
     }
