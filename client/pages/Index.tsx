@@ -350,22 +350,51 @@ export default function Index() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-hybe-purple via-purple-600 to-hybe-pink">
+    <div className="min-h-screen bg-gradient-to-br from-hybe-purple via-purple-600 to-hybe-pink relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-white/5 rounded-full blur-3xl hybe-floating"></div>
+        <div
+          className="absolute top-3/4 right-1/4 w-96 h-96 bg-hybe-pink/10 rounded-full blur-3xl hybe-floating"
+          style={{ animationDelay: "2s" }}
+        ></div>
+        <div
+          className="absolute top-1/2 left-1/2 w-80 h-80 bg-hybe-blue/10 rounded-full blur-3xl hybe-floating"
+          style={{ animationDelay: "4s" }}
+        ></div>
+      </div>
       {/* Header */}
-      <header className="relative">
+      <header className="relative z-10">
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="relative z-10 container mx-auto px-4 sm:px-6 py-8 sm:py-12 text-center text-white">
-          <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4 sm:mb-6">
-            <Sparkles className="h-6 w-6 sm:h-8 sm:w-8" />
-            <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
-              HYBE CELEBRITY BOOKING
-            </h1>
-            <Sparkles className="h-6 w-6 sm:h-8 sm:w-8" />
+          <div className="flex flex-col items-center justify-center mb-4 sm:mb-6">
+            {/* HYBE Logo */}
+            <div className="mb-4">
+              <img
+                src="/images/common/logo-b.svg"
+                alt="HYBE"
+                className="h-16 sm:h-20 lg:h-24 w-auto mx-auto filter drop-shadow-2xl hybe-pulse-glow"
+              />
+            </div>
+            <div className="flex items-center justify-center gap-2 sm:gap-3">
+              <Sparkles className="h-6 w-6 sm:h-8 sm:w-8" />
+              <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold hybe-text-shimmer">
+                CELEBRITY BOOKING
+              </h1>
+              <Sparkles className="h-6 w-6 sm:h-8 sm:w-8" />
+            </div>
           </div>
           <p className="text-base sm:text-xl text-purple-100 max-w-2xl mx-auto">
-            Book exclusive experiences with the world's biggest K-pop stars.
-            From intimate meet & greets to luxury vacation packages.
+            Official HYBE celebrity booking platform. Book exclusive experiences
+            with the world's biggest K-pop stars. From intimate meet & greets to
+            luxury vacation packages.
           </p>
+          <div className="mt-4 px-4 py-2 bg-white/10 rounded-lg backdrop-blur-sm inline-block">
+            <p className="text-sm text-purple-100">
+              🎯 Powered by <strong>HYBE Corporation</strong> - Home to BTS,
+              BLACKPINK, NewJeans & More
+            </p>
+          </div>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 mt-6 sm:mt-8 text-sm text-purple-200">
             <div className="flex items-center gap-2">
               <Star className="h-4 w-4" />
@@ -395,530 +424,541 @@ export default function Index() {
           <SocialMediaFeeds />
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-6 lg:gap-12">
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-12 relative z-10">
           {/* Booking Form */}
-          <Card className="bg-white/95 backdrop-blur-sm shadow-2xl">
-            <CardHeader className="text-center">
-              <CardTitle className="text-3xl font-bold text-gray-900">
-                Book Your Experience
-              </CardTitle>
-              <CardDescription className="text-lg">
-                Fill out the form below to request a custom booking with your
-                chosen artist
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Fan to Artist Preference */}
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="fanPreference"
-                    className="text-base font-semibold"
-                  >
-                    Select Fan to Artist Preference
-                  </Label>
-                  <Select
-                    value={fanPreference}
-                    onValueChange={setFanPreference}
-                  >
-                    <SelectTrigger className="h-12">
-                      <SelectValue placeholder="How would you describe your K-pop fandom?" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {fanPreferences.map((preference) => (
-                        <SelectItem key={preference} value={preference}>
-                          {preference}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Group Selection */}
-                <div className="space-y-2">
-                  <Label htmlFor="group" className="text-base font-semibold">
-                    Select Your Favorite Group
-                  </Label>
-                  <Select
-                    value={selectedGroup}
-                    onValueChange={(value) => {
-                      setSelectedGroup(value);
-                      setSelectedArtist(""); // Reset artist selection when group changes
-                    }}
-                  >
-                    <SelectTrigger className="h-12">
-                      <SelectValue placeholder="Choose your favorite K-pop group" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {kpopGroups.map((group) => (
-                        <SelectItem key={group.name} value={group.name}>
-                          <div className="flex items-center justify-between w-full">
-                            <span className="font-medium">{group.name}</span>
-                            <div className="flex items-center gap-2 ml-4">
-                              <Badge
-                                variant={
-                                  group.tier === "Premium"
-                                    ? "default"
-                                    : group.tier === "Elite"
-                                      ? "secondary"
-                                      : "outline"
-                                }
-                                className="text-xs"
-                              >
-                                {group.tier}
-                              </Badge>
-                              <span className="text-xs text-muted-foreground">
-                                from ${group.basePrice}
-                              </span>
-                            </div>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Artist Selection */}
-                <div className="space-y-2">
-                  <Label htmlFor="artist" className="text-base font-semibold">
-                    Select Favorite Artist
-                  </Label>
-                  <Select
-                    value={selectedArtist}
-                    onValueChange={setSelectedArtist}
-                    disabled={!selectedGroup}
-                  >
-                    <SelectTrigger className="h-12">
-                      <SelectValue
-                        placeholder={
-                          selectedGroup
-                            ? "Choose your favorite member"
-                            : "Select a group first"
-                        }
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {selectedGroupData?.members.map((member) => (
-                        <SelectItem key={member} value={member}>
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium">{member}</span>
-                            <span className="text-xs text-muted-foreground">
-                              ({selectedGroup})
-                            </span>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Event Type */}
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="eventType"
-                    className="text-base font-semibold"
-                  >
-                    Event Type
-                  </Label>
-                  <Select
-                    value={selectedEventType}
-                    onValueChange={setSelectedEventType}
-                  >
-                    <SelectTrigger className="h-12">
-                      <SelectValue placeholder="Select event type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {eventTypes.map((event) => (
-                        <SelectItem key={event.name} value={event.name}>
-                          <div className="flex items-center gap-3">
-                            <event.icon className="h-4 w-4" />
-                            <div>
-                              <div className="font-medium">{event.name}</div>
-                              <div className="text-xs text-muted-foreground">
-                                {event.duration}
-                              </div>
-                            </div>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Budget Range */}
-                <div className="space-y-2">
-                  <Label htmlFor="budget" className="text-base font-semibold">
-                    Total Budget (USD)
-                    <span className="block text-xs font-normal text-muted-foreground mt-1">
-                      Covers accommodation, HYBE fees, artist fees, travel, and
-                      all associated costs
-                    </span>
-                  </Label>
-                  <Select
-                    value={budget}
-                    onValueChange={(value) => {
-                      setBudget(value);
-                      if (value !== "custom") {
-                        setCustomAmount("");
-                      }
-                    }}
-                  >
-                    <SelectTrigger className="h-12">
-                      <SelectValue placeholder="Select your complete budget range" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="22500-50000">
-                        $22,500 - $50,000
-                      </SelectItem>
-                      <SelectItem value="50000-100000">
-                        $50,000 - $100,000
-                      </SelectItem>
-                      <SelectItem value="100000-250000">
-                        $100,000 - $250,000
-                      </SelectItem>
-                      <SelectItem value="250000-500000">
-                        $250,000 - $500,000
-                      </SelectItem>
-                      <SelectItem value="500000-750000">
-                        $500,000 - $750,000
-                      </SelectItem>
-                      <SelectItem value="750000-1000000">
-                        $750,000 - $1,000,000
-                      </SelectItem>
-                      <SelectItem value="1000000+">$1,000,000+</SelectItem>
-                      <SelectItem value="custom">Custom Amount</SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  {/* Custom Amount Input */}
-                  {budget === "custom" && (
-                    <div className="mt-3">
-                      <Label
-                        htmlFor="customAmount"
-                        className="text-sm font-medium"
-                      >
-                        Enter Your Custom Amount (USD) *
-                      </Label>
-                      <Input
-                        id="customAmount"
-                        type="number"
-                        placeholder="e.g., 750000"
-                        value={customAmount}
-                        onChange={(e) => setCustomAmount(e.target.value)}
-                        className="h-12 mt-1"
-                        min="22500"
-                        required
-                      />
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Minimum amount: $22,500
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                {/* Additional Details */}
-                <div className="grid md:grid-cols-2 gap-4">
+          <div className="hybe-gradient-border hybe-card-hover">
+            <Card className="hybe-gradient-border-content shadow-2xl">
+              <CardHeader className="text-center">
+                <CardTitle className="text-3xl font-bold text-gray-900">
+                  Book Your Experience
+                </CardTitle>
+                <CardDescription className="text-lg">
+                  Fill out the form below to request a custom booking with your
+                  chosen artist
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Fan to Artist Preference */}
                   <div className="space-y-2">
                     <Label
-                      htmlFor="attendees"
+                      htmlFor="fanPreference"
                       className="text-base font-semibold"
                     >
-                      Number of Attendees
+                      Select Fan to Artist Preference
                     </Label>
-                    <Input
-                      id="attendees"
-                      type="number"
-                      placeholder="e.g., 50"
-                      value={attendees}
-                      onChange={(e) => setAttendees(e.target.value)}
-                      className="h-12"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="date" className="text-base font-semibold">
-                      Preferred Date
-                    </Label>
-                    <Input
-                      id="date"
-                      type="date"
-                      value={preferredDate}
-                      onChange={(e) => setPreferredDate(e.target.value)}
-                      className="h-12"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="location" className="text-base font-semibold">
-                    Location/Venue
-                  </Label>
-                  <Input
-                    id="location"
-                    placeholder="City, Country or specific venue"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    className="h-12"
-                  />
-                </div>
-
-                {/* Subscription ID */}
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="subscriptionId"
-                    className="text-base font-semibold"
-                  >
-                    HYBE Subscription ID (Recommended)
-                    <span className="block text-xs font-normal text-muted-foreground mt-1">
-                      Valid subscription provides priority booking and discounts
-                    </span>
-                  </Label>
-                  <div className="relative">
-                    <Input
-                      id="subscriptionId"
-                      placeholder="HYBABC1234567"
-                      value={subscriptionId}
-                      onChange={(e) =>
-                        setSubscriptionId(e.target.value.toUpperCase())
-                      }
-                      className={`h-12 pr-10 ${
-                        subscriptionValidation.isValid === false
-                          ? "border-red-300 focus:border-red-500"
-                          : subscriptionValidation.isValid === true
-                            ? "border-green-300 focus:border-green-500"
-                            : ""
-                      }`}
-                      maxLength={13}
-                    />
-                    {subscriptionValidation.isValidating && (
-                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                        <div className="animate-spin h-4 w-4 border-2 border-gray-300 border-t-blue-600 rounded-full"></div>
-                      </div>
-                    )}
-                    {subscriptionValidation.isValid === true && (
-                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                        <div className="h-4 w-4 text-green-600">✓</div>
-                      </div>
-                    )}
-                    {subscriptionValidation.isValid === false && (
-                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                        <div className="h-4 w-4 text-red-600">✗</div>
-                      </div>
-                    )}
-                  </div>
-
-                  {subscriptionValidation.message && (
-                    <div
-                      className={`text-xs ${
-                        subscriptionValidation.isValid === true
-                          ? "text-green-600"
-                          : subscriptionValidation.isValid === false
-                            ? "text-red-600"
-                            : "text-gray-600"
-                      }`}
+                    <Select
+                      value={fanPreference}
+                      onValueChange={setFanPreference}
                     >
-                      {subscriptionValidation.message}
-                    </div>
-                  )}
+                      <SelectTrigger className="h-12">
+                        <SelectValue placeholder="How would you describe your K-pop fandom?" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {fanPreferences.map((preference) => (
+                          <SelectItem key={preference} value={preference}>
+                            {preference}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-                  {subscriptionValidation.isValid === true &&
-                    subscriptionValidation.userName && (
-                      <div className="p-3 bg-green-50 border border-green-200 rounded-lg mt-3">
-                        <div className="flex items-center gap-2 mb-2">
-                          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                          <span className="text-sm font-medium text-green-800">
-                            Verified Member
-                          </span>
-                        </div>
-                        <p className="text-sm text-green-700">
-                          <strong>
-                            Welcome, {subscriptionValidation.userName}!
-                          </strong>
-                        </p>
-                        <p className="text-xs text-green-600 mt-1">
-                          Your subscription benefits will be automatically
-                          applied to your booking.
-                        </p>
-                      </div>
-                    )}
+                  {/* Group Selection */}
+                  <div className="space-y-2">
+                    <Label htmlFor="group" className="text-base font-semibold">
+                      Select Your Favorite Group
+                    </Label>
+                    <Select
+                      value={selectedGroup}
+                      onValueChange={(value) => {
+                        setSelectedGroup(value);
+                        setSelectedArtist(""); // Reset artist selection when group changes
+                      }}
+                    >
+                      <SelectTrigger className="h-12">
+                        <SelectValue placeholder="Choose your favorite K-pop group" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {kpopGroups.map((group) => (
+                          <SelectItem key={group.name} value={group.name}>
+                            <div className="flex items-center justify-between w-full">
+                              <span className="font-medium">{group.name}</span>
+                              <div className="flex items-center gap-2 ml-4">
+                                <Badge
+                                  variant={
+                                    group.tier === "Premium"
+                                      ? "default"
+                                      : group.tier === "Elite"
+                                        ? "secondary"
+                                        : "outline"
+                                  }
+                                  className="text-xs"
+                                >
+                                  {group.tier}
+                                </Badge>
+                                <span className="text-xs text-muted-foreground">
+                                  from ${group.basePrice}
+                                </span>
+                              </div>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-                  {subscriptionValidation.isValid === true &&
-                    subscriptionValidation.subscriptionType && (
-                      <div className="flex items-center gap-2 mt-2">
-                        <Badge
-                          variant={
-                            subscriptionValidation.subscriptionType ===
-                            "premium"
-                              ? "default"
-                              : subscriptionValidation.subscriptionType ===
-                                  "elite"
-                                ? "secondary"
-                                : "outline"
+                  {/* Artist Selection */}
+                  <div className="space-y-2">
+                    <Label htmlFor="artist" className="text-base font-semibold">
+                      Select Favorite Artist
+                    </Label>
+                    <Select
+                      value={selectedArtist}
+                      onValueChange={setSelectedArtist}
+                      disabled={!selectedGroup}
+                    >
+                      <SelectTrigger className="h-12">
+                        <SelectValue
+                          placeholder={
+                            selectedGroup
+                              ? "Choose your favorite member"
+                              : "Select a group first"
                           }
-                          className="text-xs"
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {selectedGroupData?.members.map((member) => (
+                          <SelectItem key={member} value={member}>
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium">{member}</span>
+                              <span className="text-xs text-muted-foreground">
+                                ({selectedGroup})
+                              </span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Event Type */}
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="eventType"
+                      className="text-base font-semibold"
+                    >
+                      Event Type
+                    </Label>
+                    <Select
+                      value={selectedEventType}
+                      onValueChange={setSelectedEventType}
+                    >
+                      <SelectTrigger className="h-12">
+                        <SelectValue placeholder="Select event type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {eventTypes.map((event) => (
+                          <SelectItem key={event.name} value={event.name}>
+                            <div className="flex items-center gap-3">
+                              <event.icon className="h-4 w-4" />
+                              <div>
+                                <div className="font-medium">{event.name}</div>
+                                <div className="text-xs text-muted-foreground">
+                                  {event.duration}
+                                </div>
+                              </div>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Budget Range */}
+                  <div className="space-y-2">
+                    <Label htmlFor="budget" className="text-base font-semibold">
+                      Total Budget (USD)
+                      <span className="block text-xs font-normal text-muted-foreground mt-1">
+                        Covers accommodation, HYBE fees, artist fees, travel,
+                        and all associated costs
+                      </span>
+                    </Label>
+                    <Select
+                      value={budget}
+                      onValueChange={(value) => {
+                        setBudget(value);
+                        if (value !== "custom") {
+                          setCustomAmount("");
+                        }
+                      }}
+                    >
+                      <SelectTrigger className="h-12">
+                        <SelectValue placeholder="Select your complete budget range" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="22500-50000">
+                          $22,500 - $50,000
+                        </SelectItem>
+                        <SelectItem value="50000-100000">
+                          $50,000 - $100,000
+                        </SelectItem>
+                        <SelectItem value="100000-250000">
+                          $100,000 - $250,000
+                        </SelectItem>
+                        <SelectItem value="250000-500000">
+                          $250,000 - $500,000
+                        </SelectItem>
+                        <SelectItem value="500000-750000">
+                          $500,000 - $750,000
+                        </SelectItem>
+                        <SelectItem value="750000-1000000">
+                          $750,000 - $1,000,000
+                        </SelectItem>
+                        <SelectItem value="1000000+">$1,000,000+</SelectItem>
+                        <SelectItem value="custom">Custom Amount</SelectItem>
+                      </SelectContent>
+                    </Select>
+
+                    {/* Custom Amount Input */}
+                    {budget === "custom" && (
+                      <div className="mt-3">
+                        <Label
+                          htmlFor="customAmount"
+                          className="text-sm font-medium"
                         >
-                          {subscriptionValidation.subscriptionType.toUpperCase()}{" "}
-                          MEMBER
-                        </Badge>
-                        {subscriptionValidation.subscriptionType ===
-                          "premium" && (
-                          <span className="text-xs text-yellow-600">
-                            🎯 Priority booking & 15% discount
-                          </span>
-                        )}
-                        {subscriptionValidation.subscriptionType ===
-                          "elite" && (
-                          <span className="text-xs text-purple-600">
-                            ⭐ Fast-track booking & 10% discount
-                          </span>
-                        )}
-                        {subscriptionValidation.subscriptionType ===
-                          "standard" && (
-                          <span className="text-xs text-blue-600">
-                            ✨ Standard member benefits
-                          </span>
-                        )}
+                          Enter Your Custom Amount (USD) *
+                        </Label>
+                        <Input
+                          id="customAmount"
+                          type="number"
+                          placeholder="e.g., 750000"
+                          value={customAmount}
+                          onChange={(e) => setCustomAmount(e.target.value)}
+                          className="h-12 mt-1"
+                          min="22500"
+                          required
+                        />
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Minimum amount: $22,500
+                        </p>
                       </div>
                     )}
-                </div>
+                  </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="requests" className="text-base font-semibold">
-                    Special Requests
-                  </Label>
-                  <Textarea
-                    id="requests"
-                    placeholder="Any specific requirements or special requests for your event..."
-                    value={specialRequests}
-                    onChange={(e) => setSpecialRequests(e.target.value)}
-                    className="min-h-[100px]"
-                  />
-                </div>
-
-                <Separator />
-
-                {/* Contact Information */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold">Contact Information</h3>
+                  {/* Additional Details */}
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="name">Full Name *</Label>
-                      <Input
-                        id="name"
-                        required
-                        value={contactInfo.name}
-                        onChange={(e) =>
-                          setContactInfo({
-                            ...contactInfo,
-                            name: e.target.value,
-                          })
-                        }
-                        className="h-12"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email Address *</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        required
-                        value={contactInfo.email}
-                        onChange={(e) =>
-                          setContactInfo({
-                            ...contactInfo,
-                            email: e.target.value,
-                          })
-                        }
-                        className="h-12"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="phone">Phone Number *</Label>
-                      <Input
-                        id="phone"
-                        required
-                        value={contactInfo.phone}
-                        onChange={(e) =>
-                          setContactInfo({
-                            ...contactInfo,
-                            phone: e.target.value,
-                          })
-                        }
-                        className="h-12"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="organization">
-                        Organization (Optional)
+                      <Label
+                        htmlFor="attendees"
+                        className="text-base font-semibold"
+                      >
+                        Number of Attendees
                       </Label>
                       <Input
-                        id="organization"
-                        value={contactInfo.organization}
-                        onChange={(e) =>
-                          setContactInfo({
-                            ...contactInfo,
-                            organization: e.target.value,
-                          })
-                        }
+                        id="attendees"
+                        type="number"
+                        placeholder="e.g., 50"
+                        value={attendees}
+                        onChange={(e) => setAttendees(e.target.value)}
+                        className="h-12"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="date" className="text-base font-semibold">
+                        Preferred Date
+                      </Label>
+                      <Input
+                        id="date"
+                        type="date"
+                        value={preferredDate}
+                        onChange={(e) => setPreferredDate(e.target.value)}
                         className="h-12"
                       />
                     </div>
                   </div>
-                </div>
 
-                {/* Privacy Consent */}
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="privacy"
-                    checked={privacyConsent}
-                    onCheckedChange={(checked) =>
-                      setPrivacyConsent(checked as boolean)
-                    }
-                  />
-                  <Label htmlFor="privacy" className="text-sm">
-                    I agree to HYBE's privacy policy and terms of service *
-                  </Label>
-                </div>
-
-                {/* Success/Error Message */}
-                {submitMessage && (
-                  <div
-                    className={`p-4 rounded-lg border ${
-                      submitSuccess
-                        ? "bg-green-50 border-green-200 text-green-800"
-                        : "bg-red-50 border-red-200 text-red-800"
-                    }`}
-                  >
-                    <p className="text-sm font-medium">{submitMessage}</p>
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="location"
+                      className="text-base font-semibold"
+                    >
+                      Location/Venue
+                    </Label>
+                    <Input
+                      id="location"
+                      placeholder="City, Country or specific venue"
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
+                      className="h-12"
+                    />
                   </div>
-                )}
 
-                {/* Submit Button */}
-                <Button
-                  type="submit"
-                  className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-hybe-purple to-hybe-pink hover:from-purple-700 hover:to-pink-600 transition-all duration-300 disabled:opacity-50"
-                  disabled={
-                    !privacyConsent ||
-                    isSubmitting ||
-                    (budget === "custom" && !customAmount)
-                  }
-                >
-                  {isSubmitting ? (
-                    <div className="flex items-center gap-2">
-                      <Loader2 className="h-5 w-5 animate-spin" />
-                      {loadingStep}
+                  {/* Subscription ID */}
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="subscriptionId"
+                      className="text-base font-semibold"
+                    >
+                      HYBE Subscription ID (Recommended)
+                      <span className="block text-xs font-normal text-muted-foreground mt-1">
+                        Valid subscription provides priority booking and
+                        discounts
+                      </span>
+                    </Label>
+                    <div className="relative">
+                      <Input
+                        id="subscriptionId"
+                        placeholder="HYBABC1234567"
+                        value={subscriptionId}
+                        onChange={(e) =>
+                          setSubscriptionId(e.target.value.toUpperCase())
+                        }
+                        className={`h-12 pr-10 ${
+                          subscriptionValidation.isValid === false
+                            ? "border-red-300 focus:border-red-500"
+                            : subscriptionValidation.isValid === true
+                              ? "border-green-300 focus:border-green-500"
+                              : ""
+                        }`}
+                        maxLength={13}
+                      />
+                      {subscriptionValidation.isValidating && (
+                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                          <div className="animate-spin h-4 w-4 border-2 border-gray-300 border-t-blue-600 rounded-full"></div>
+                        </div>
+                      )}
+                      {subscriptionValidation.isValid === true && (
+                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                          <div className="h-4 w-4 text-green-600">✓</div>
+                        </div>
+                      )}
+                      {subscriptionValidation.isValid === false && (
+                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                          <div className="h-4 w-4 text-red-600">✗</div>
+                        </div>
+                      )}
                     </div>
-                  ) : (
-                    "Submit Booking Request"
+
+                    {subscriptionValidation.message && (
+                      <div
+                        className={`text-xs ${
+                          subscriptionValidation.isValid === true
+                            ? "text-green-600"
+                            : subscriptionValidation.isValid === false
+                              ? "text-red-600"
+                              : "text-gray-600"
+                        }`}
+                      >
+                        {subscriptionValidation.message}
+                      </div>
+                    )}
+
+                    {subscriptionValidation.isValid === true &&
+                      subscriptionValidation.userName && (
+                        <div className="p-3 bg-green-50 border border-green-200 rounded-lg mt-3">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                            <span className="text-sm font-medium text-green-800">
+                              Verified Member
+                            </span>
+                          </div>
+                          <p className="text-sm text-green-700">
+                            <strong>
+                              Welcome, {subscriptionValidation.userName}!
+                            </strong>
+                          </p>
+                          <p className="text-xs text-green-600 mt-1">
+                            Your subscription benefits will be automatically
+                            applied to your booking.
+                          </p>
+                        </div>
+                      )}
+
+                    {subscriptionValidation.isValid === true &&
+                      subscriptionValidation.subscriptionType && (
+                        <div className="flex items-center gap-2 mt-2">
+                          <Badge
+                            variant={
+                              subscriptionValidation.subscriptionType ===
+                              "premium"
+                                ? "default"
+                                : subscriptionValidation.subscriptionType ===
+                                    "elite"
+                                  ? "secondary"
+                                  : "outline"
+                            }
+                            className="text-xs"
+                          >
+                            {subscriptionValidation.subscriptionType.toUpperCase()}{" "}
+                            MEMBER
+                          </Badge>
+                          {subscriptionValidation.subscriptionType ===
+                            "premium" && (
+                            <span className="text-xs text-yellow-600">
+                              🎯 Priority booking & 15% discount
+                            </span>
+                          )}
+                          {subscriptionValidation.subscriptionType ===
+                            "elite" && (
+                            <span className="text-xs text-purple-600">
+                              ⭐ Fast-track booking & 10% discount
+                            </span>
+                          )}
+                          {subscriptionValidation.subscriptionType ===
+                            "standard" && (
+                            <span className="text-xs text-blue-600">
+                              ✨ Standard member benefits
+                            </span>
+                          )}
+                        </div>
+                      )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="requests"
+                      className="text-base font-semibold"
+                    >
+                      Special Requests
+                    </Label>
+                    <Textarea
+                      id="requests"
+                      placeholder="Any specific requirements or special requests for your event..."
+                      value={specialRequests}
+                      onChange={(e) => setSpecialRequests(e.target.value)}
+                      className="min-h-[100px]"
+                    />
+                  </div>
+
+                  <Separator />
+
+                  {/* Contact Information */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold">
+                      Contact Information
+                    </h3>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="name">Full Name *</Label>
+                        <Input
+                          id="name"
+                          required
+                          value={contactInfo.name}
+                          onChange={(e) =>
+                            setContactInfo({
+                              ...contactInfo,
+                              name: e.target.value,
+                            })
+                          }
+                          className="h-12"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="email">Email Address *</Label>
+                        <Input
+                          id="email"
+                          type="email"
+                          required
+                          value={contactInfo.email}
+                          onChange={(e) =>
+                            setContactInfo({
+                              ...contactInfo,
+                              email: e.target.value,
+                            })
+                          }
+                          className="h-12"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="phone">Phone Number *</Label>
+                        <Input
+                          id="phone"
+                          required
+                          value={contactInfo.phone}
+                          onChange={(e) =>
+                            setContactInfo({
+                              ...contactInfo,
+                              phone: e.target.value,
+                            })
+                          }
+                          className="h-12"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="organization">
+                          Organization (Optional)
+                        </Label>
+                        <Input
+                          id="organization"
+                          value={contactInfo.organization}
+                          onChange={(e) =>
+                            setContactInfo({
+                              ...contactInfo,
+                              organization: e.target.value,
+                            })
+                          }
+                          className="h-12"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Privacy Consent */}
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="privacy"
+                      checked={privacyConsent}
+                      onCheckedChange={(checked) =>
+                        setPrivacyConsent(checked as boolean)
+                      }
+                    />
+                    <Label htmlFor="privacy" className="text-sm">
+                      I agree to HYBE's privacy policy and terms of service *
+                    </Label>
+                  </div>
+
+                  {/* Success/Error Message */}
+                  {submitMessage && (
+                    <div
+                      className={`p-4 rounded-lg border ${
+                        submitSuccess
+                          ? "bg-green-50 border-green-200 text-green-800"
+                          : "bg-red-50 border-red-200 text-red-800"
+                      }`}
+                    >
+                      <p className="text-sm font-medium">{submitMessage}</p>
+                    </div>
                   )}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
+
+                  {/* Submit Button */}
+                  <Button
+                    type="submit"
+                    className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-hybe-purple to-hybe-pink hover:from-purple-700 hover:to-pink-600 transition-all duration-300 disabled:opacity-50"
+                    disabled={
+                      !privacyConsent ||
+                      isSubmitting ||
+                      (budget === "custom" && !customAmount)
+                    }
+                  >
+                    {isSubmitting ? (
+                      <div className="flex items-center gap-2">
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                        {loadingStep}
+                      </div>
+                    ) : (
+                      "Submit Booking Request"
+                    )}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
 
           {/* Information Panel */}
           <div className="space-y-8">
             {/* Event Types */}
-            <Card className="bg-white/95 backdrop-blur-sm shadow-xl">
+            <Card className="bg-white/95 backdrop-blur-sm shadow-xl hybe-card-hover">
               <CardHeader>
                 <CardTitle className="text-2xl font-bold text-center">
                   Experience Types
@@ -950,7 +990,7 @@ export default function Index() {
             </Card>
 
             {/* Pricing Info */}
-            <Card className="bg-white/95 backdrop-blur-sm shadow-xl">
+            <Card className="bg-white/95 backdrop-blur-sm shadow-xl hybe-card-hover">
               <CardHeader>
                 <CardTitle className="text-2xl font-bold text-center">
                   Artist Tiers
@@ -1001,7 +1041,7 @@ export default function Index() {
             </Card>
 
             {/* Subscription Benefits */}
-            <Card className="bg-white/95 backdrop-blur-sm shadow-xl">
+            <Card className="bg-white/95 backdrop-blur-sm shadow-xl hybe-card-hover">
               <CardHeader>
                 <CardTitle className="text-xl font-bold text-center">
                   Subscription Benefits
@@ -1056,7 +1096,7 @@ export default function Index() {
             </Card>
 
             {/* Contact Info */}
-            <Card className="bg-white/95 backdrop-blur-sm shadow-xl">
+            <Card className="bg-white/95 backdrop-blur-sm shadow-xl hybe-card-hover">
               <CardHeader>
                 <CardTitle className="text-xl font-bold text-center">
                   Need Help?
@@ -1085,18 +1125,48 @@ export default function Index() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-black/80 text-white py-6 sm:py-8 mt-8 sm:mt-16">
-        <div className="container mx-auto px-4 sm:px-6 text-center">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Music className="h-5 w-5 sm:h-6 sm:w-6" />
-            <span className="text-lg sm:text-xl font-bold">
+      <footer className="bg-black/90 text-white py-8 sm:py-12 mt-8 sm:mt-16 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-hybe-purple/20 to-hybe-pink/20"></div>
+        <div className="container mx-auto px-4 sm:px-6 text-center relative z-10">
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <img
+              src="/images/common/logo-b.svg"
+              alt="HYBE"
+              className="h-8 w-auto sm:h-10 filter drop-shadow-lg"
+            />
+            <span className="text-xl sm:text-2xl font-bold">
               HYBE CORPORATION
             </span>
           </div>
-          <p className="text-gray-300 text-xs sm:text-sm max-w-lg mx-auto">
-            © 2024 HYBE Corporation. All rights reserved. Connecting fans with
-            their idols through unforgettable experiences.
-          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8 text-sm">
+            <div>
+              <h4 className="font-semibold mb-2 text-hybe-pink">Artists</h4>
+              <p className="text-gray-300">BTS • BLACKPINK • NewJeans</p>
+              <p className="text-gray-300">LE SSERAFIM • SEVENTEEN • TWICE</p>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-2 text-hybe-pink">Services</h4>
+              <p className="text-gray-300">Celebrity Booking • Meet & Greets</p>
+              <p className="text-gray-300">Private Events • Studio Sessions</p>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-2 text-hybe-pink">Contact</h4>
+              <p className="text-gray-300">bookings@hybe.com</p>
+              <p className="text-gray-300">+1 (555) 123-HYBE</p>
+            </div>
+          </div>
+
+          <div className="border-t border-white/20 pt-6">
+            <p className="text-gray-300 text-xs sm:text-sm max-w-lg mx-auto mb-2">
+              © 2024 HYBE Corporation. All rights reserved. Connecting fans
+              with their idols through unforgettable experiences.
+            </p>
+            <p className="text-gray-400 text-xs">
+              Official website for HYBE celebrity booking services • Seoul,
+              South Korea
+            </p>
+          </div>
         </div>
       </footer>
     </div>

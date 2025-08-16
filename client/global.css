@@ -127,10 +127,16 @@
   }
 
   .glass-effect {
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(20px);
     background: rgba(255, 255, 255, 0.95);
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
     border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  .hybe-glass {
+    backdrop-filter: blur(15px);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
   }
 
   .hover-lift {
@@ -140,6 +146,50 @@
   .hover-lift:hover {
     transform: translateY(-2px);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  .hybe-card-hover {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hybe-card-hover:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(124, 58, 237, 0.2);
+  }
+
+  .hybe-gradient-border {
+    background: linear-gradient(45deg, hsl(260 85% 55%), hsl(315 85% 65%));
+    padding: 1px;
+    border-radius: 0.75rem;
+  }
+
+  .hybe-gradient-border-content {
+    background: white;
+    border-radius: calc(0.75rem - 1px);
+  }
+
+  .hybe-text-shimmer {
+    background: linear-gradient(
+      90deg,
+      hsl(260 85% 55%) 0%,
+      hsl(315 85% 65%) 25%,
+      hsl(220 85% 60%) 50%,
+      hsl(315 85% 65%) 75%,
+      hsl(260 85% 55%) 100%
+    );
+    background-size: 200% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 3s ease-in-out infinite;
+  }
+
+  .hybe-floating {
+    animation: floating 6s ease-in-out infinite;
+  }
+
+  .hybe-pulse-glow {
+    animation: pulseGlow 2s ease-in-out infinite;
   }
 }
 
@@ -172,6 +222,35 @@
   }
   50% {
     transform: translateY(0px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes floating {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulseGlow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(236, 72, 153, 0.6);
   }
 }
 
