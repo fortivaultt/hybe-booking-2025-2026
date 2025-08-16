@@ -175,7 +175,7 @@ const CookieConsent = () => {
                     </div>
                     <div className="cookie-check-text text-sm text-gray-600">
                       These cookies allow us to understand how you access the site and your browsing habits (e.g. pages viewed, time spent on a page, content clicked). They allow us to analyze the performance and design of our site and to detect possible errors. Owing to these performance indicators, we are constantly improving our site and our products, content and offers.
-                      <a href="/cookie" className="link text-purple-600 hover:text-purple-800 underline ml-2">
+                      <a href="/eng/cookie" className="link text-purple-600 hover:text-purple-800 underline ml-2">
                         VIEW COOKIES
                       </a>
                     </div>
@@ -193,7 +193,7 @@ const CookieConsent = () => {
                     </div>
                     <div className="cookie-check-text text-sm text-gray-600">
                       These cookies allow us to offer you customized content according to your profile, your interests and your usage. For example, AB test cookies allow us to test different versions of a page/service in order to statistically identify visitor preferences. By accepting these cookies, you help us to improve the layout and features of our site.
-                      <a href="/cookie" className="link text-purple-600 hover:text-purple-800 underline ml-2">
+                      <a href="/eng/cookie" className="link text-purple-600 hover:text-purple-800 underline ml-2">
                         VIEW COOKIES
                       </a>
                     </div>
@@ -211,7 +211,7 @@ const CookieConsent = () => {
                     </div>
                     <div className="cookie-check-text text-sm text-gray-600">
                       These cookies collect information about your browsing habits. They remember that you have visited our site and share this information with partners, such as advertisers, for the purpose of targeted advertising. The use of these cookies include displaying advertisements, impression capping, fraud prevention, billing, and measurement.
-                      <a href="/cookie" className="link text-purple-600 hover:text-purple-800 underline ml-2">
+                      <a href="/eng/cookie" className="link text-purple-600 hover:text-purple-800 underline ml-2">
                         VIEW COOKIES
                       </a>
                     </div>
