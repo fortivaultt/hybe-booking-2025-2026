@@ -8,6 +8,7 @@ export interface BookingRequest {
   preferredDate: string;
   location: string;
   specialRequests: string;
+  subscriptionId?: string;
   contactInfo: {
     name: string;
     email: string;
