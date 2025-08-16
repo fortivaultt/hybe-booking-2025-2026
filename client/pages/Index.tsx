@@ -661,6 +661,53 @@ export default function Index() {
               </CardContent>
             </Card>
 
+            {/* Subscription Benefits */}
+            <Card className="bg-white/95 backdrop-blur-sm shadow-xl">
+              <CardHeader>
+                <CardTitle className="text-xl font-bold text-center">Subscription Benefits</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="p-3 rounded-lg bg-gradient-to-r from-yellow-50 to-yellow-100 border border-yellow-200">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Crown className="h-4 w-4 text-yellow-600" />
+                    <h4 className="font-semibold text-yellow-800 text-sm">Premium Members</h4>
+                  </div>
+                  <ul className="text-xs text-yellow-700 space-y-1">
+                    <li>• Priority booking queue</li>
+                    <li>• 15% discount on all bookings</li>
+                    <li>• Exclusive artist meet opportunities</li>
+                    <li>• VIP customer support</li>
+                  </ul>
+                </div>
+
+                <div className="p-3 rounded-lg bg-gradient-to-r from-purple-50 to-purple-100 border border-purple-200">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Star className="h-4 w-4 text-purple-600" />
+                    <h4 className="font-semibold text-purple-800 text-sm">Elite Members</h4>
+                  </div>
+                  <ul className="text-xs text-purple-700 space-y-1">
+                    <li>• Fast-track booking process</li>
+                    <li>• 10% discount on bookings</li>
+                    <li>• Early access to new artists</li>
+                    <li>• Priority customer support</li>
+                  </ul>
+                </div>
+
+                <div className="p-3 rounded-lg bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Users className="h-4 w-4 text-blue-600" />
+                    <h4 className="font-semibold text-blue-800 text-sm">Standard Members</h4>
+                  </div>
+                  <ul className="text-xs text-blue-700 space-y-1">
+                    <li>• Member-only event notifications</li>
+                    <li>• Access to exclusive content</li>
+                    <li>• Standard booking process</li>
+                    <li>• Community forum access</li>
+                  </ul>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Contact Info */}
             <Card className="bg-white/95 backdrop-blur-sm shadow-xl">
               <CardHeader>
