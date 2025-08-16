@@ -350,62 +350,49 @@ export default function Index() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-hybe-purple via-purple-600 to-hybe-pink relative overflow-hidden">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-white/5 rounded-full blur-3xl hybe-floating"></div>
-        <div
-          className="absolute top-3/4 right-1/4 w-96 h-96 bg-hybe-pink/10 rounded-full blur-3xl hybe-floating"
-          style={{ animationDelay: "2s" }}
-        ></div>
-        <div
-          className="absolute top-1/2 left-1/2 w-80 h-80 bg-hybe-blue/10 rounded-full blur-3xl hybe-floating"
-          style={{ animationDelay: "4s" }}
-        ></div>
-      </div>
-      {/* Header */}
-      <header className="relative z-10">
-        <div className="absolute inset-0 bg-black/20"></div>
-        <div className="relative z-10 container mx-auto px-4 sm:px-6 py-8 sm:py-12 text-center text-white">
+    <div className="min-h-screen bg-white">
+      {/* Corporate Header */}
+      <header className="corporate-header border-b border-gray-200 bg-white">
+        <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 text-center">
           <div className="flex flex-col items-center justify-center mb-4 sm:mb-6">
             {/* HYBE Logo */}
             <div className="mb-4">
               <img
                 src="/images/common/logo-b.svg"
                 alt="HYBE"
-                className="h-16 sm:h-20 lg:h-24 w-auto mx-auto filter drop-shadow-2xl hybe-pulse-glow"
+                className="h-12 sm:h-16 lg:h-20 w-auto mx-auto"
               />
             </div>
             <div className="flex items-center justify-center gap-2 sm:gap-3">
-              <Sparkles className="h-6 w-6 sm:h-8 sm:w-8" />
-              <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold hybe-text-shimmer">
-                CELEBRITY BOOKING
+              <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600" />
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">
+                CELEBRITY BOOKING PLATFORM
               </h1>
-              <Sparkles className="h-6 w-6 sm:h-8 sm:w-8" />
+              <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600" />
             </div>
           </div>
-          <p className="text-base sm:text-xl text-purple-100 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto mb-4">
             Official HYBE celebrity booking platform. Book exclusive experiences
             with the world's biggest K-pop stars. From intimate meet & greets to
             luxury vacation packages.
           </p>
-          <div className="mt-4 px-4 py-2 bg-white/10 rounded-lg backdrop-blur-sm inline-block">
-            <p className="text-sm text-purple-100">
-              🎯 Powered by <strong>HYBE Corporation</strong> - Home to BTS,
+          <div className="inline-flex items-center px-4 py-2 bg-gray-100 rounded-lg">
+            <p className="text-sm text-gray-700">
+              🎯 Powered by <strong className="text-purple-600">HYBE Corporation</strong> - Home to BTS,
               BLACKPINK, NewJeans & More
             </p>
           </div>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 mt-6 sm:mt-8 text-sm text-purple-200">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 mt-6 text-sm text-gray-600">
             <div className="flex items-center gap-2">
-              <Star className="h-4 w-4" />
+              <Star className="h-4 w-4 text-purple-600" />
               <span>Premium Artists</span>
             </div>
             <div className="flex items-center gap-2">
-              <Users className="h-4 w-4" />
+              <Users className="h-4 w-4 text-purple-600" />
               <span>Exclusive Access</span>
             </div>
             <div className="flex items-center gap-2">
-              <Crown className="h-4 w-4" />
+              <Crown className="h-4 w-4 text-purple-600" />
               <span>VIP Treatment</span>
             </div>
           </div>
