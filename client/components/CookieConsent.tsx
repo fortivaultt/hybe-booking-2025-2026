@@ -157,7 +157,7 @@ const CookieConsent = () => {
                     </div>
                     <div className="cookie-check-text text-sm text-gray-600">
                       These cookies are strictly necessary for the provision of the service that you have expressly requested or have the sole purpose of enabling or facilitating communication by electronic means. For example, they allow us to remember the items you have placed in your shopping basket. These cookies are automatically activated and cannot be deactivated because they are essential to enable you to browse our site.
-                      <a href="/cookie" className="link text-purple-600 hover:text-purple-800 underline ml-2">
+                      <a href="/eng/cookie" className="link text-purple-600 hover:text-purple-800 underline ml-2">
                         VIEW COOKIES
                       </a>
                     </div>
