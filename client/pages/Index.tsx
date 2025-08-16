@@ -121,6 +121,7 @@ export default function Index() {
       preferredDate,
       location,
       specialRequests,
+      subscriptionId: subscriptionId || undefined,
       contactInfo,
       privacyConsent
     };
