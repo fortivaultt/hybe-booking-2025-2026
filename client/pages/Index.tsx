@@ -135,8 +135,8 @@ export default function Index() {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-6 py-12">
-        <div className="grid lg:grid-cols-2 gap-12">
+      <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12">
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-12">
           {/* Booking Form */}
           <Card className="bg-white/95 backdrop-blur-sm shadow-2xl">
             <CardHeader className="text-center">
