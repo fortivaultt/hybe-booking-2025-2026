@@ -304,10 +304,15 @@ export default function Index() {
 
                 {/* Budget Range */}
                 <div className="space-y-2">
-                  <Label htmlFor="budget" className="text-base font-semibold">Budget Range (USD)</Label>
+                  <Label htmlFor="budget" className="text-base font-semibold">
+                    Total Budget (USD)
+                    <span className="block text-xs font-normal text-muted-foreground mt-1">
+                      Covers accommodation, HYBE fees, artist fees, travel, and all associated costs
+                    </span>
+                  </Label>
                   <Select value={budget} onValueChange={setBudget}>
                     <SelectTrigger className="h-12">
-                      <SelectValue placeholder="Select your budget range" />
+                      <SelectValue placeholder="Select your complete budget range" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="22500-50000">$22,500 - $50,000</SelectItem>
