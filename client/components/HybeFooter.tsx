@@ -94,20 +94,28 @@ const HybeFooter = () => {
             <h4 className="text-center text-sm font-medium text-gray-700 mb-4">
               HYBE Family Companies
             </h4>
-            <ul className="site_list grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
+            <ul className="site_list grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3 text-center">
               {subsidiaryCompanies.map((company) => (
                 <li key={company.name}>
-                  {company.href ? (
+                  {company.href && company.external ? (
                     <a
                       href={company.href}
                       target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-gray-600 hover:text-gray-900 transition-colors duration-150"
+                      rel="nosublink noopener noreferrer"
+                      className="text-sm text-gray-600 hover:text-gray-900 transition-colors duration-150 block py-1"
+                    >
+                      {company.name}
+                    </a>
+                  ) : company.href ? (
+                    <a
+                      href={company.href}
+                      rel="nosublink"
+                      className="text-sm text-gray-600 hover:text-gray-900 transition-colors duration-150 block py-1"
                     >
                       {company.name}
                     </a>
                   ) : (
-                    <span className="text-sm text-gray-600">
+                    <span className="text-sm text-gray-600 block py-1">
                       {company.name}
                     </span>
                   )}
