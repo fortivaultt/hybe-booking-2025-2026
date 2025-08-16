@@ -64,6 +64,7 @@ export const handleBookingSubmission: RequestHandler = (req, res) => {
       celebrity: bookingData.selectedCelebrity,
       eventType: bookingData.selectedEventType,
       budget: bookingData.budget,
+      subscriptionId: bookingData.subscriptionId || "None",
       contact: bookingData.contactInfo.email
     });
 
