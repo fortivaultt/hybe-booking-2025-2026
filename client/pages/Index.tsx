@@ -44,11 +44,16 @@ export default function Index() {
     organization: ""
   });
   const [privacyConsent, setPrivacyConsent] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState("");
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log("Booking submitted:", {
+    setIsSubmitting(true);
+    setSubmitMessage("");
+
+    const bookingData: BookingRequest = {
       selectedCelebrity,
       selectedEventType,
       budget,
@@ -58,7 +63,42 @@ export default function Index() {
       specialRequests,
       contactInfo,
       privacyConsent
-    });
+    };
+
+    try {
+      const response = await fetch("/api/booking", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bookingData),
+      });
+
+      const result: BookingResponse = await response.json();
+
+      if (result.success) {
+        setSubmitSuccess(true);
+        setSubmitMessage(`${result.message} Booking ID: ${result.bookingId}`);
+        // Reset form
+        setSelectedCelebrity("");
+        setSelectedEventType("");
+        setBudget("");
+        setAttendees("");
+        setPreferredDate("");
+        setLocation("");
+        setSpecialRequests("");
+        setContactInfo({ name: "", email: "", phone: "", organization: "" });
+        setPrivacyConsent(false);
+      } else {
+        setSubmitSuccess(false);
+        setSubmitMessage(result.message);
+      }
+    } catch (error) {
+      setSubmitSuccess(false);
+      setSubmitMessage("Network error. Please check your connection and try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
