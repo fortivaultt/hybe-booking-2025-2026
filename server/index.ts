@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
 import { handleBookingSubmission } from "./routes/booking";
+import { validateSubscriptionId, listSubscriptionTypes } from "./routes/subscription";
 
 export function createServer() {
   const app = express();
