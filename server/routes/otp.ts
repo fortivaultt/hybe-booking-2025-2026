@@ -1,5 +1,7 @@
 import { RequestHandler } from "express";
 import { z } from "zod";
+import fs from "fs";
+import path from "path";
 
 // In-memory store for OTPs
 // In a production environment, you would use a more persistent store like Redis or a database table.
@@ -19,8 +21,23 @@ export const handleSendOtp: RequestHandler = (req, res) => {
     otpStore[email] = { otp, expiresAt };
 
     // In a real application, you would send the OTP via email here.
-    // For this example, we'll just log it to the console.
-    console.log(`OTP for ${email}: ${otp}`);
+    // For this example, we'll read an HTML template, inject the OTP, and log it.
+    try {
+      const templatePath = path.join(__dirname, '../email-templates/otp-template.html');
+      const template = fs.readFileSync(templatePath, 'utf-8');
+      const emailHtml = template.replace('{{OTP}}', otp);
+
+      console.log('--- SIMULATED OTP EMAIL ---');
+      console.log(`To: ${email}`);
+      console.log(`Subject: Your HYBE Booking OTP`);
+      console.log(emailHtml);
+      console.log('--- END SIMULATED OTP EMAIL ---');
+
+    } catch (templateError) {
+      console.error("Failed to read or process email template:", templateError);
+      // Fallback to simple console log if template fails
+      console.log(`OTP for ${email}: ${otp}`);
+    }
 
     res.status(200).json({ success: true, message: "OTP sent successfully." });
   } catch (error) {
