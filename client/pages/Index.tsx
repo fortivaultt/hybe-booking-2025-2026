@@ -1112,44 +1112,43 @@ export default function Index() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-black/90 text-white py-8 sm:py-12 mt-8 sm:mt-16 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-hybe-purple/20 to-hybe-pink/20"></div>
-        <div className="container mx-auto px-4 sm:px-6 text-center relative z-10">
+      <footer className="corporate-footer bg-white border-t border-gray-200 py-8 sm:py-12 mt-8 sm:mt-16">
+        <div className="container mx-auto px-4 sm:px-6 text-center">
           <div className="flex items-center justify-center gap-3 mb-6">
             <img
               src="/images/common/logo-b.svg"
               alt="HYBE"
-              className="h-8 w-auto sm:h-10 filter drop-shadow-lg"
+              className="h-8 w-auto sm:h-10"
             />
-            <span className="text-xl sm:text-2xl font-bold">
+            <span className="text-xl sm:text-2xl font-bold text-gray-900">
               HYBE CORPORATION
             </span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8 text-sm">
             <div>
-              <h4 className="font-semibold mb-2 text-hybe-pink">Artists</h4>
-              <p className="text-gray-300">BTS • BLACKPINK • NewJeans</p>
-              <p className="text-gray-300">LE SSERAFIM • SEVENTEEN • TWICE</p>
+              <h4 className="font-semibold mb-2 text-purple-600">Artists</h4>
+              <p className="text-gray-600">BTS • BLACKPINK • NewJeans</p>
+              <p className="text-gray-600">LE SSERAFIM • SEVENTEEN • TWICE</p>
             </div>
             <div>
-              <h4 className="font-semibold mb-2 text-hybe-pink">Services</h4>
-              <p className="text-gray-300">Celebrity Booking • Meet & Greets</p>
-              <p className="text-gray-300">Private Events • Studio Sessions</p>
+              <h4 className="font-semibold mb-2 text-purple-600">Services</h4>
+              <p className="text-gray-600">Celebrity Booking • Meet & Greets</p>
+              <p className="text-gray-600">Private Events • Studio Sessions</p>
             </div>
             <div>
-              <h4 className="font-semibold mb-2 text-hybe-pink">Contact</h4>
-              <p className="text-gray-300">bookings@hybe.com</p>
-              <p className="text-gray-300">+1 (555) 123-HYBE</p>
+              <h4 className="font-semibold mb-2 text-purple-600">Contact</h4>
+              <p className="text-gray-600">bookings@hybe.com</p>
+              <p className="text-gray-600">+1 (555) 123-HYBE</p>
             </div>
           </div>
 
-          <div className="border-t border-white/20 pt-6">
-            <p className="text-gray-300 text-xs sm:text-sm max-w-lg mx-auto mb-2">
+          <div className="border-t border-gray-200 pt-6">
+            <p className="text-gray-600 text-xs sm:text-sm max-w-lg mx-auto mb-2">
               © 2024 HYBE Corporation. All rights reserved. Connecting fans
               with their idols through unforgettable experiences.
             </p>
-            <p className="text-gray-400 text-xs">
+            <p className="text-gray-500 text-xs">
               Official website for HYBE celebrity booking services • Seoul,
               South Korea
             </p>
