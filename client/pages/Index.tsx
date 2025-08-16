@@ -1109,50 +1109,11 @@ export default function Index() {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="corporate-footer bg-white border-t border-gray-200 py-8 sm:py-12 mt-8 sm:mt-16">
-        <div className="container mx-auto px-4 sm:px-6 text-center">
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <img
-              src="/images/common/logo-b.svg"
-              alt="HYBE"
-              className="h-8 w-auto sm:h-10"
-            />
-            <span className="text-xl sm:text-2xl font-bold text-gray-900">
-              HYBE CORPORATION
-            </span>
-          </div>
+      {/* HYBE Corporate Footer */}
+      <HybeFooter />
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8 text-sm">
-            <div>
-              <h4 className="font-semibold mb-2 text-purple-600">Artists</h4>
-              <p className="text-gray-600">BTS • BLACKPINK • NewJeans</p>
-              <p className="text-gray-600">LE SSERAFIM • SEVENTEEN • TWICE</p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-2 text-purple-600">Services</h4>
-              <p className="text-gray-600">Celebrity Booking • Meet & Greets</p>
-              <p className="text-gray-600">Private Events • Studio Sessions</p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-2 text-purple-600">Contact</h4>
-              <p className="text-gray-600">bookings@hybe.com</p>
-              <p className="text-gray-600">+1 (555) 123-HYBE</p>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-200 pt-6">
-            <p className="text-gray-600 text-xs sm:text-sm max-w-lg mx-auto mb-2">
-              © 2024 HYBE Corporation. All rights reserved. Connecting fans
-              with their idols through unforgettable experiences.
-            </p>
-            <p className="text-gray-500 text-xs">
-              Official website for HYBE celebrity booking services • Seoul,
-              South Korea
-            </p>
-          </div>
-        </div>
-      </footer>
+      {/* Cookie Consent */}
+      <CookieConsent />
     </div>
   );
 }
