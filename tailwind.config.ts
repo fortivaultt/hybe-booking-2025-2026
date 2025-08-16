@@ -47,6 +47,15 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        hybe: {
+          purple: "hsl(260 85% 55%)",
+          pink: "hsl(315 85% 65%)",
+          blue: "hsl(220 85% 60%)",
+          gradient: {
+            from: "hsl(260 85% 55%)",
+            to: "hsl(315 85% 65%)",
+          },
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
