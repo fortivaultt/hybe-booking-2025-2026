@@ -9,14 +9,14 @@ const HybeFooter = () => {
   ];
 
   const subsidiaryCompanies = [
-    { name: "Big Hit Music", href: "" },
-    { name: "SOURCE MUSIC", href: "https://www.sourcemusic.com" },
-    { name: "PLEDIS ENTERTAINMENT", href: "http://www.pledis.co.kr" },
-    { name: "WEVERSE COMPANY", href: "https://benx.co" },
-    { name: "HYBE 360", href: "" },
-    { name: "HYBE EDU", href: "" },
-    { name: "HYBE IPX", href: "" },
-    { name: "SUPERB", href: "https://www.superbcorp.com" },
+    { name: "Big Hit Music", href: "https://ibighit.com", external: true },
+    { name: "SOURCE MUSIC", href: "https://www.sourcemusic.com", external: true },
+    { name: "PLEDIS ENTERTAINMENT", href: "http://www.pledis.co.kr", external: true },
+    { name: "WEVERSE COMPANY", href: "https://benx.co", external: true },
+    { name: "HYBE 360", href: "", external: false },
+    { name: "HYBE EDU", href: "", external: false },
+    { name: "HYBE IPX", href: "", external: false },
+    { name: "SUPERB", href: "https://www.superbcorp.com", external: true },
   ];
 
   const handlePrivacyPolicyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
