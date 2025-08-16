@@ -10,34 +10,34 @@
   */
   :root {
     --background: 0 0% 100%;
-    --foreground: 235 15% 15%;
+    --foreground: 0 0% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 235 15% 15%;
+    --card-foreground: 0 0% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 235 15% 15%;
+    --popover-foreground: 0 0% 15%;
 
-    --primary: 260 85% 55%;
+    --primary: 0 0% 15%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 260 15% 95%;
-    --secondary-foreground: 260 85% 25%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 15%;
 
-    --muted: 260 10% 96%;
-    --muted-foreground: 260 5% 45%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 315 85% 65%;
+    --accent: 260 85% 55%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 260 15% 90%;
-    --input: 260 15% 94%;
+    --border: 0 0% 90%;
+    --input: 0 0% 94%;
     --ring: 260 85% 55%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -57,32 +57,32 @@
   }
 
   .dark {
-    --background: 260 25% 8%;
-    --foreground: 260 5% 95%;
+    --background: 0 0% 8%;
+    --foreground: 0 0% 95%;
 
-    --card: 260 20% 10%;
-    --card-foreground: 260 5% 95%;
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 260 20% 10%;
-    --popover-foreground: 260 5% 95%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 260 85% 65%;
-    --primary-foreground: 260 25% 8%;
+    --primary: 0 0% 95%;
+    --primary-foreground: 0 0% 8%;
 
-    --secondary: 260 20% 15%;
-    --secondary-foreground: 260 5% 95%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 95%;
 
-    --muted: 260 15% 15%;
-    --muted-foreground: 260 5% 65%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
 
-    --accent: 315 85% 70%;
-    --accent-foreground: 260 25% 8%;
+    --accent: 260 85% 65%;
+    --accent-foreground: 0 0% 8%;
 
     --destructive: 0 62.8% 50%;
-    --destructive-foreground: 260 5% 95%;
+    --destructive-foreground: 0 0% 95%;
 
-    --border: 260 15% 20%;
-    --input: 260 15% 15%;
+    --border: 0 0% 20%;
+    --input: 0 0% 15%;
     --ring: 260 85% 65%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
@@ -190,6 +190,32 @@
 
   .hybe-pulse-glow {
     animation: pulseGlow 2s ease-in-out infinite;
+  }
+
+  .corporate-header {
+    background: white;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .corporate-footer {
+    background: white;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .corporate-text {
+    color: #333333;
+  }
+
+  .corporate-text-muted {
+    color: #666666;
+  }
+
+  .corporate-bg {
+    background: #ffffff;
+  }
+
+  .corporate-border {
+    border-color: rgba(0, 0, 0, 0.1);
   }
 }
 
