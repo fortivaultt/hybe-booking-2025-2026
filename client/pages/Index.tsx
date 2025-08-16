@@ -6,6 +6,9 @@ import {
   SubscriptionValidationResponse,
 } from "@shared/subscription";
 import { Button } from "@/components/ui/button";
+import HybeHeader from "@/components/HybeHeader";
+import HybeFooter from "@/components/HybeFooter";
+import CookieConsent from "@/components/CookieConsent";
 import {
   Card,
   CardContent,
