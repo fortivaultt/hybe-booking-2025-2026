@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { BookingRequest, BookingResponse } from "@shared/booking";
 import { SubscriptionValidationRequest, SubscriptionValidationResponse } from "@shared/subscription";
 import { Button } from "@/components/ui/button";
@@ -10,7 +11,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Calendar, CalendarDays, Star, Users, MapPin, Heart, Crown, Sparkles, Music } from "lucide-react";
+import { Calendar, CalendarDays, Star, Users, MapPin, Heart, Crown, Sparkles, Music, Loader2 } from "lucide-react";
+import HybeVideoSlider from "@/components/HybeVideoSlider";
+import SocialMediaFeeds from "@/components/SocialMediaFeeds";
 
 const fanPreferences = [
   "New to K-pop",
@@ -79,11 +82,13 @@ const eventTypes = [
 ];
 
 export default function Index() {
+  const navigate = useNavigate();
   const [fanPreference, setFanPreference] = useState("");
   const [selectedGroup, setSelectedGroup] = useState("");
   const [selectedArtist, setSelectedArtist] = useState("");
   const [selectedEventType, setSelectedEventType] = useState("");
   const [budget, setBudget] = useState("");
+  const [customAmount, setCustomAmount] = useState("");
   const [attendees, setAttendees] = useState("");
   const [preferredDate, setPreferredDate] = useState("");
   const [location, setLocation] = useState("");
@@ -110,6 +115,7 @@ export default function Index() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [loadingStep, setLoadingStep] = useState("");
 
   // Get selected group data
   const selectedGroupData = kpopGroups.find(group => group.name === selectedGroup);
@@ -160,6 +166,13 @@ export default function Index() {
     }
   };
 
+  // Auto-populate contact name when subscription is validated
+  useEffect(() => {
+    if (subscriptionValidation.isValid && subscriptionValidation.userName && !contactInfo.name) {
+      setContactInfo(prev => ({ ...prev, name: subscriptionValidation.userName || "" }));
+    }
+  }, [subscriptionValidation.userName, subscriptionValidation.isValid, contactInfo.name]);
+
   // Debounced validation effect
   useEffect(() => {
     if (!subscriptionId) {
@@ -183,10 +196,25 @@ export default function Index() {
     setIsSubmitting(true);
     setSubmitMessage("");
 
+    // Loading simulation with steps
+    const loadingSteps = [
+      "Verifying subscription ID...",
+      "Checking form fields...",
+      "Submitting form...",
+      "Form submitted successfully!"
+    ];
+
+    for (let i = 0; i < loadingSteps.length; i++) {
+      setLoadingStep(loadingSteps[i]);
+      await new Promise(resolve => setTimeout(resolve, 1000)); // 1 second delay per step
+    }
+
+    const finalBudget = budget === "custom" ? customAmount : budget;
+
     const bookingData: BookingRequest = {
       selectedCelebrity: `${selectedGroup} - ${selectedArtist}`,
       selectedEventType,
-      budget,
+      budget: finalBudget,
       attendees,
       preferredDate,
       location,
@@ -208,35 +236,19 @@ export default function Index() {
       const result: BookingResponse = await response.json();
 
       if (result.success) {
-        setSubmitSuccess(true);
-        setSubmitMessage(`${result.message} Booking ID: ${result.bookingId}`);
-        // Reset form
-        setFanPreference("");
-        setSelectedGroup("");
-        setSelectedArtist("");
-        setSelectedEventType("");
-        setBudget("");
-        setAttendees("");
-        setPreferredDate("");
-        setLocation("");
-        setSpecialRequests("");
-        setSubscriptionId("");
-        setSubscriptionValidation({
-          isValidating: false,
-          isValid: null,
-          message: ""
-        });
-        setContactInfo({ name: "", email: "", phone: "", organization: "" });
-        setPrivacyConsent(false);
+        // Redirect to success page
+        navigate("/success");
       } else {
         setSubmitSuccess(false);
         setSubmitMessage(result.message);
+        setIsSubmitting(false);
+        setLoadingStep("");
       }
     } catch (error) {
       setSubmitSuccess(false);
       setSubmitMessage("Network error. Please check your connection and try again.");
-    } finally {
       setIsSubmitting(false);
+      setLoadingStep("");
     }
   };
 
@@ -275,6 +287,16 @@ export default function Index() {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12">
+        {/* HYBE Video Slider */}
+        <div className="mb-8">
+          <HybeVideoSlider />
+        </div>
+
+        {/* Social Media Feeds */}
+        <div className="mb-8">
+          <SocialMediaFeeds />
+        </div>
+
         <div className="grid lg:grid-cols-2 gap-6 lg:gap-12">
           {/* Booking Form */}
           <Card className="bg-white/95 backdrop-blur-sm shadow-2xl">
@@ -386,7 +408,12 @@ export default function Index() {
                       Covers accommodation, HYBE fees, artist fees, travel, and all associated costs
                     </span>
                   </Label>
-                  <Select value={budget} onValueChange={setBudget}>
+                  <Select value={budget} onValueChange={(value) => {
+                    setBudget(value);
+                    if (value !== "custom") {
+                      setCustomAmount("");
+                    }
+                  }}>
                     <SelectTrigger className="h-12">
                       <SelectValue placeholder="Select your complete budget range" />
                     </SelectTrigger>
@@ -398,8 +425,31 @@ export default function Index() {
                       <SelectItem value="500000-750000">$500,000 - $750,000</SelectItem>
                       <SelectItem value="750000-1000000">$750,000 - $1,000,000</SelectItem>
                       <SelectItem value="1000000+">$1,000,000+</SelectItem>
+                      <SelectItem value="custom">Custom Amount</SelectItem>
                     </SelectContent>
                   </Select>
+
+                  {/* Custom Amount Input */}
+                  {budget === "custom" && (
+                    <div className="mt-3">
+                      <Label htmlFor="customAmount" className="text-sm font-medium">
+                        Enter Your Custom Amount (USD) *
+                      </Label>
+                      <Input
+                        id="customAmount"
+                        type="number"
+                        placeholder="e.g., 750000"
+                        value={customAmount}
+                        onChange={(e) => setCustomAmount(e.target.value)}
+                        className="h-12 mt-1"
+                        min="22500"
+                        required
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Minimum amount: $22,500
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Additional Details */}
@@ -482,6 +532,21 @@ export default function Index() {
                       'text-gray-600'
                     }`}>
                       {subscriptionValidation.message}
+                    </div>
+                  )}
+
+                  {subscriptionValidation.isValid === true && subscriptionValidation.userName && (
+                    <div className="p-3 bg-green-50 border border-green-200 rounded-lg mt-3">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                        <span className="text-sm font-medium text-green-800">Verified Member</span>
+                      </div>
+                      <p className="text-sm text-green-700">
+                        <strong>Welcome, {subscriptionValidation.userName}!</strong>
+                      </p>
+                      <p className="text-xs text-green-600 mt-1">
+                        Your subscription benefits will be automatically applied to your booking.
+                      </p>
                     </div>
                   )}
 
@@ -593,9 +658,16 @@ export default function Index() {
                 <Button
                   type="submit"
                   className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-hybe-purple to-hybe-pink hover:from-purple-700 hover:to-pink-600 transition-all duration-300 disabled:opacity-50"
-                  disabled={!privacyConsent || isSubmitting}
+                  disabled={!privacyConsent || isSubmitting || (budget === "custom" && !customAmount)}
                 >
-                  {isSubmitting ? "Submitting..." : "Submit Booking Request"}
+                  {isSubmitting ? (
+                    <div className="flex items-center gap-2">
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                      {loadingStep}
+                    </div>
+                  ) : (
+                    "Submit Booking Request"
+                  )}
                 </Button>
               </form>
             </CardContent>
