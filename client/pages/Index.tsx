@@ -322,13 +322,23 @@ export default function Index() {
                   </Label>
                 </div>
 
+                {/* Success/Error Message */}
+                {submitMessage && (
+                  <div className={`p-4 rounded-lg border ${submitSuccess
+                    ? 'bg-green-50 border-green-200 text-green-800'
+                    : 'bg-red-50 border-red-200 text-red-800'
+                  }`}>
+                    <p className="text-sm font-medium">{submitMessage}</p>
+                  </div>
+                )}
+
                 {/* Submit Button */}
                 <Button
                   type="submit"
-                  className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-hybe-purple to-hybe-pink hover:from-purple-700 hover:to-pink-600 transition-all duration-300"
-                  disabled={!privacyConsent}
+                  className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-hybe-purple to-hybe-pink hover:from-purple-700 hover:to-pink-600 transition-all duration-300 disabled:opacity-50"
+                  disabled={!privacyConsent || isSubmitting}
                 >
-                  Submit Booking Request
+                  {isSubmitting ? "Submitting..." : "Submit Booking Request"}
                 </Button>
               </form>
             </CardContent>
