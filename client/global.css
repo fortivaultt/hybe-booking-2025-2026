@@ -191,6 +191,32 @@
   .hybe-pulse-glow {
     animation: pulseGlow 2s ease-in-out infinite;
   }
+
+  .corporate-header {
+    background: white;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .corporate-footer {
+    background: white;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .corporate-text {
+    color: #333333;
+  }
+
+  .corporate-text-muted {
+    color: #666666;
+  }
+
+  .corporate-bg {
+    background: #ffffff;
+  }
+
+  .corporate-border {
+    border-color: rgba(0, 0, 0, 0.1);
+  }
 }
 
 @keyframes fadeIn {
