@@ -140,13 +140,16 @@ export default function Index() {
         setSubmitSuccess(true);
         setSubmitMessage(`${result.message} Booking ID: ${result.bookingId}`);
         // Reset form
-        setSelectedCelebrity("");
+        setFanPreference("");
+        setSelectedGroup("");
+        setSelectedArtist("");
         setSelectedEventType("");
         setBudget("");
         setAttendees("");
         setPreferredDate("");
         setLocation("");
         setSpecialRequests("");
+        setSubscriptionId("");
         setContactInfo({ name: "", email: "", phone: "", organization: "" });
         setPrivacyConsent(false);
       } else {
