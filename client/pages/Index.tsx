@@ -413,7 +413,8 @@ export default function Index() {
 
         <div className="grid lg:grid-cols-2 gap-6 lg:gap-12 relative z-10">
           {/* Booking Form */}
-          <Card className="bg-white/95 backdrop-blur-sm shadow-2xl">
+          <div className="hybe-gradient-border hybe-card-hover">
+            <Card className="hybe-gradient-border-content shadow-2xl">
             <CardHeader className="text-center">
               <CardTitle className="text-3xl font-bold text-gray-900">
                 Book Your Experience
@@ -929,7 +930,8 @@ export default function Index() {
                 </Button>
               </form>
             </CardContent>
-          </Card>
+            </Card>
+          </div>
 
           {/* Information Panel */}
           <div className="space-y-8">
