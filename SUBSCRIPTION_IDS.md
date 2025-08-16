@@ -21,9 +21,9 @@ For testing purposes, here are valid subscription IDs that can be used:
 
 ## Standard Members
 
-- `HYBMNO3333333` - Min Yoongi
-- `HYBBBB9999999` - Kim Jisoo
-- `HYBEEE5678765` - Danielle Marsh
+- `B07200EF6667` - Radhika Verma
+- `HYB10250GB0680` - Elisabete Magalhaes
+- `HYB59371A4C9F2` - MEGHANA VAISHNAVI
 
 ## How to Test
 
