@@ -210,24 +210,68 @@ export default function Index() {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Celebrity Selection */}
+                {/* Fan to Artist Preference */}
                 <div className="space-y-2">
-                  <Label htmlFor="celebrity" className="text-base font-semibold">Select Artist</Label>
-                  <Select value={selectedCelebrity} onValueChange={setSelectedCelebrity}>
+                  <Label htmlFor="fanPreference" className="text-base font-semibold">Select Fan to Artist Preference</Label>
+                  <Select value={fanPreference} onValueChange={setFanPreference}>
                     <SelectTrigger className="h-12">
-                      <SelectValue placeholder="Choose your preferred artist" />
+                      <SelectValue placeholder="How would you describe your K-pop fandom?" />
                     </SelectTrigger>
                     <SelectContent>
-                      {celebrities.map((celebrity) => (
-                        <SelectItem key={celebrity.name} value={celebrity.name}>
+                      {fanPreferences.map((preference) => (
+                        <SelectItem key={preference} value={preference}>
+                          {preference}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Group Selection */}
+                <div className="space-y-2">
+                  <Label htmlFor="group" className="text-base font-semibold">Select Your Favorite Group</Label>
+                  <Select value={selectedGroup} onValueChange={(value) => {
+                    setSelectedGroup(value);
+                    setSelectedArtist(""); // Reset artist selection when group changes
+                  }}>
+                    <SelectTrigger className="h-12">
+                      <SelectValue placeholder="Choose your favorite K-pop group" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {kpopGroups.map((group) => (
+                        <SelectItem key={group.name} value={group.name}>
                           <div className="flex items-center justify-between w-full">
-                            <span className="font-medium">{celebrity.name}</span>
+                            <span className="font-medium">{group.name}</span>
                             <div className="flex items-center gap-2 ml-4">
-                              <Badge variant={celebrity.tier === "Premium" ? "default" : celebrity.tier === "Elite" ? "secondary" : "outline"} className="text-xs">
-                                {celebrity.tier}
+                              <Badge variant={group.tier === "Premium" ? "default" : group.tier === "Elite" ? "secondary" : "outline"} className="text-xs">
+                                {group.tier}
                               </Badge>
-                              <span className="text-xs text-muted-foreground">from ${celebrity.price}</span>
+                              <span className="text-xs text-muted-foreground">from ${group.basePrice}</span>
                             </div>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Artist Selection */}
+                <div className="space-y-2">
+                  <Label htmlFor="artist" className="text-base font-semibold">Select Favorite Artist</Label>
+                  <Select
+                    value={selectedArtist}
+                    onValueChange={setSelectedArtist}
+                    disabled={!selectedGroup}
+                  >
+                    <SelectTrigger className="h-12">
+                      <SelectValue placeholder={selectedGroup ? "Choose your favorite member" : "Select a group first"} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {selectedGroupData?.members.map((member) => (
+                        <SelectItem key={member} value={member}>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">{member}</span>
+                            <span className="text-xs text-muted-foreground">({selectedGroup})</span>
                           </div>
                         </SelectItem>
                       ))}
