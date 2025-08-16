@@ -4,14 +4,28 @@ const HybeFooter = () => {
   const [selectedPrivacyPolicy, setSelectedPrivacyPolicy] = useState("");
 
   const privacyPolicyOptions = [
-    { value: "https://hybeinsight.com/policy/privacy?locale=en", label: "HYBE INSIGHT" },
-    { value: "https://hybe.career.greetinghr.com/privacypolicy", label: "HYBE CAREERS" },
+    {
+      value: "https://hybeinsight.com/policy/privacy?locale=en",
+      label: "HYBE INSIGHT",
+    },
+    {
+      value: "https://hybe.career.greetinghr.com/privacypolicy",
+      label: "HYBE CAREERS",
+    },
   ];
 
   const subsidiaryCompanies = [
     { name: "Big Hit Music", href: "https://ibighit.com", external: true },
-    { name: "SOURCE MUSIC", href: "https://www.sourcemusic.com", external: true },
-    { name: "PLEDIS ENTERTAINMENT", href: "http://www.pledis.co.kr", external: true },
+    {
+      name: "SOURCE MUSIC",
+      href: "https://www.sourcemusic.com",
+      external: true,
+    },
+    {
+      name: "PLEDIS ENTERTAINMENT",
+      href: "http://www.pledis.co.kr",
+      external: true,
+    },
     { name: "WEVERSE COMPANY", href: "https://benx.co", external: true },
     { name: "HYBE 360", href: "", external: false },
     { name: "HYBE EDU", href: "", external: false },
@@ -19,7 +33,9 @@ const HybeFooter = () => {
     { name: "SUPERB", href: "https://www.superbcorp.com", external: true },
   ];
 
-  const handlePrivacyPolicyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handlePrivacyPolicyChange = (
+    e: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
     const value = e.target.value;
     setSelectedPrivacyPolicy(value);
     if (value) {
@@ -134,7 +150,8 @@ const HybeFooter = () => {
               <span>Leading Global Entertainment Company</span>
             </div>
             <div className="text-xs text-gray-400">
-              Home to BTS, BLACKPINK, NewJeans, LE SSERAFIM, SEVENTEEN, TWICE, Stray Kids, and more
+              Home to BTS, BLACKPINK, NewJeans, LE SSERAFIM, SEVENTEEN, TWICE,
+              Stray Kids, and more
             </div>
           </div>
         </div>

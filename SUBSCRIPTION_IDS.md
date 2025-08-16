@@ -3,13 +3,15 @@
 For testing purposes, here are valid subscription IDs that can be used:
 
 ## Premium Members (15% discount)
+
 - `HYBABC1234567` - Kim Taehyung
-- `HYBGHI5555555` - Jeon Jungkook  
+- `HYBGHI5555555` - Jeon Jungkook
 - `HYBPQR8888888` - Jung Hoseok
 - `HYBAAA6666666` - Park Chaeyoung
 - `HYBDDD1234321` - Hanni Pham
 
 ## Elite Members (10% discount)
+
 - `HYBDEF9876543` - Park Jimin
 - `HYBJKL7777777` - Kim Namjoon
 - `HYBSTU1111111` - Kim Seokjin
@@ -18,6 +20,7 @@ For testing purposes, here are valid subscription IDs that can be used:
 - `HYBFFF9012345` - Haerin Kang
 
 ## Standard Members
+
 - `HYBMNO3333333` - Min Yoongi
 - `HYBBBB9999999` - Kim Jisoo
 - `HYBEEE5678765` - Danielle Marsh

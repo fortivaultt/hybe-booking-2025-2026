@@ -40,7 +40,11 @@ const HybeHeader = () => {
     {
       title: "CAREERS",
       items: [
-        { label: "Apply", href: "https://careers.hybecorp.com/?locale=en_US", external: true },
+        {
+          label: "Apply",
+          href: "https://careers.hybecorp.com/?locale=en_US",
+          external: true,
+        },
         { label: "HYBE DNA", href: "/career/crew" },
       ],
     },
@@ -59,7 +63,10 @@ const HybeHeader = () => {
       <div className="container mx-auto px-4 flex items-center justify-between h-16">
         {/* Logo */}
         <h1 className="logo">
-          <a href="/" className="flex items-center text-black text-xl font-bold">
+          <a
+            href="/"
+            className="flex items-center text-black text-xl font-bold"
+          >
             <img
               src="/images/common/logo-b.svg"
               alt="HYBE"
@@ -85,7 +92,7 @@ const HybeHeader = () => {
                 >
                   {item.title}
                 </a>
-                
+
                 {/* Dropdown Menu */}
                 <ul
                   className={`menu absolute top-full left-0 mt-2 w-64 bg-white shadow-lg border border-gray-200 rounded-lg py-2 transform transition-all duration-200 ${
@@ -99,7 +106,9 @@ const HybeHeader = () => {
                       <a
                         href={subItem.href}
                         target={subItem.external ? "_blank" : undefined}
-                        rel={subItem.external ? "noopener noreferrer" : undefined}
+                        rel={
+                          subItem.external ? "noopener noreferrer" : undefined
+                        }
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-150"
                       >
                         {subItem.label}
@@ -142,7 +151,11 @@ const HybeHeader = () => {
           className="lg:hidden"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
-          {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          {isMobileMenuOpen ? (
+            <X className="h-5 w-5" />
+          ) : (
+            <Menu className="h-5 w-5" />
+          )}
         </Button>
       </div>
 
@@ -165,7 +178,9 @@ const HybeHeader = () => {
                         <a
                           href={subItem.href}
                           target={subItem.external ? "_blank" : undefined}
-                          rel={subItem.external ? "noopener noreferrer" : undefined}
+                          rel={
+                            subItem.external ? "noopener noreferrer" : undefined
+                          }
                           className="block text-gray-600 hover:text-gray-900 py-1 transition-colors duration-150"
                         >
                           {subItem.label}
@@ -175,7 +190,7 @@ const HybeHeader = () => {
                   </ul>
                 </div>
               ))}
-              
+
               {/* Mobile Language Selector */}
               <div className="border-t border-gray-200 pt-4">
                 <div className="lang grid grid-cols-4 gap-2">

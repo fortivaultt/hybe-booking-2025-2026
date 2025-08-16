@@ -70,9 +70,9 @@ const CookieConsent = () => {
   };
 
   const handleCookieToggle = (type: keyof CookieSettings, value: boolean) => {
-    setCookieSettings(prev => ({
+    setCookieSettings((prev) => ({
       ...prev,
-      [type]: value
+      [type]: value,
     }));
   };
 
@@ -84,9 +84,13 @@ const CookieConsent = () => {
       <div className="floating-cookie fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:max-w-md z-50 bg-white border border-gray-200 rounded-lg shadow-lg">
         <div className="floating-cookie-wrap p-4">
           <div className="floating-cookie-text text-sm text-gray-700 mb-4">
-            Please allow service to collect cookies for a smooth experience with auto login.{" "}
+            Please allow service to collect cookies for a smooth experience with
+            auto login.{" "}
             <strong>
-              <a href="/eng/cookie" className="text-purple-600 hover:text-purple-800 underline">
+              <a
+                href="/eng/cookie"
+                className="text-purple-600 hover:text-purple-800 underline"
+              >
                 More
               </a>
             </strong>
@@ -140,9 +144,17 @@ const CookieConsent = () => {
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
-                
+
                 <p className="text-sm text-gray-600 mb-6">
-                  Cookies are small text files placed on your device which we use to improve your experience on our website and to show you relevant advertising. Our partners and the cookies placed on your device are detailed below. You are also able to manage which cookies are set on your device below. You can change your preferences at any time by clicking on the "Cookie Preferences" icon at the bottom of our website. Your choice will be retained for 12 months. For more information, refer to our Cookie Policy.
+                  Cookies are small text files placed on your device which we
+                  use to improve your experience on our website and to show you
+                  relevant advertising. Our partners and the cookies placed on
+                  your device are detailed below. You are also able to manage
+                  which cookies are set on your device below. You can change
+                  your preferences at any time by clicking on the "Cookie
+                  Preferences" icon at the bottom of our website. Your choice
+                  will be retained for 12 months. For more information, refer to
+                  our Cookie Policy.
                 </p>
 
                 <ul className="cookie-check-list space-y-4">
@@ -156,8 +168,18 @@ const CookieConsent = () => {
                       </label>
                     </div>
                     <div className="cookie-check-text text-sm text-gray-600">
-                      These cookies are strictly necessary for the provision of the service that you have expressly requested or have the sole purpose of enabling or facilitating communication by electronic means. For example, they allow us to remember the items you have placed in your shopping basket. These cookies are automatically activated and cannot be deactivated because they are essential to enable you to browse our site.
-                      <a href="/eng/cookie" className="link text-purple-600 hover:text-purple-800 underline ml-2">
+                      These cookies are strictly necessary for the provision of
+                      the service that you have expressly requested or have the
+                      sole purpose of enabling or facilitating communication by
+                      electronic means. For example, they allow us to remember
+                      the items you have placed in your shopping basket. These
+                      cookies are automatically activated and cannot be
+                      deactivated because they are essential to enable you to
+                      browse our site.
+                      <a
+                        href="/eng/cookie"
+                        className="link text-purple-600 hover:text-purple-800 underline ml-2"
+                      >
                         VIEW COOKIES
                       </a>
                     </div>
@@ -170,12 +192,23 @@ const CookieConsent = () => {
                       </div>
                       <Checkbox
                         checked={cookieSettings.analytics}
-                        onCheckedChange={(checked) => handleCookieToggle('analytics', checked as boolean)}
+                        onCheckedChange={(checked) =>
+                          handleCookieToggle("analytics", checked as boolean)
+                        }
                       />
                     </div>
                     <div className="cookie-check-text text-sm text-gray-600">
-                      These cookies allow us to understand how you access the site and your browsing habits (e.g. pages viewed, time spent on a page, content clicked). They allow us to analyze the performance and design of our site and to detect possible errors. Owing to these performance indicators, we are constantly improving our site and our products, content and offers.
-                      <a href="/eng/cookie" className="link text-purple-600 hover:text-purple-800 underline ml-2">
+                      These cookies allow us to understand how you access the
+                      site and your browsing habits (e.g. pages viewed, time
+                      spent on a page, content clicked). They allow us to
+                      analyze the performance and design of our site and to
+                      detect possible errors. Owing to these performance
+                      indicators, we are constantly improving our site and our
+                      products, content and offers.
+                      <a
+                        href="/eng/cookie"
+                        className="link text-purple-600 hover:text-purple-800 underline ml-2"
+                      >
                         VIEW COOKIES
                       </a>
                     </div>
@@ -188,12 +221,26 @@ const CookieConsent = () => {
                       </div>
                       <Checkbox
                         checked={cookieSettings.functionality}
-                        onCheckedChange={(checked) => handleCookieToggle('functionality', checked as boolean)}
+                        onCheckedChange={(checked) =>
+                          handleCookieToggle(
+                            "functionality",
+                            checked as boolean,
+                          )
+                        }
                       />
                     </div>
                     <div className="cookie-check-text text-sm text-gray-600">
-                      These cookies allow us to offer you customized content according to your profile, your interests and your usage. For example, AB test cookies allow us to test different versions of a page/service in order to statistically identify visitor preferences. By accepting these cookies, you help us to improve the layout and features of our site.
-                      <a href="/eng/cookie" className="link text-purple-600 hover:text-purple-800 underline ml-2">
+                      These cookies allow us to offer you customized content
+                      according to your profile, your interests and your usage.
+                      For example, AB test cookies allow us to test different
+                      versions of a page/service in order to statistically
+                      identify visitor preferences. By accepting these cookies,
+                      you help us to improve the layout and features of our
+                      site.
+                      <a
+                        href="/eng/cookie"
+                        className="link text-purple-600 hover:text-purple-800 underline ml-2"
+                      >
                         VIEW COOKIES
                       </a>
                     </div>
@@ -206,12 +253,22 @@ const CookieConsent = () => {
                       </div>
                       <Checkbox
                         checked={cookieSettings.advertising}
-                        onCheckedChange={(checked) => handleCookieToggle('advertising', checked as boolean)}
+                        onCheckedChange={(checked) =>
+                          handleCookieToggle("advertising", checked as boolean)
+                        }
                       />
                     </div>
                     <div className="cookie-check-text text-sm text-gray-600">
-                      These cookies collect information about your browsing habits. They remember that you have visited our site and share this information with partners, such as advertisers, for the purpose of targeted advertising. The use of these cookies include displaying advertisements, impression capping, fraud prevention, billing, and measurement.
-                      <a href="/eng/cookie" className="link text-purple-600 hover:text-purple-800 underline ml-2">
+                      These cookies collect information about your browsing
+                      habits. They remember that you have visited our site and
+                      share this information with partners, such as advertisers,
+                      for the purpose of targeted advertising. The use of these
+                      cookies include displaying advertisements, impression
+                      capping, fraud prevention, billing, and measurement.
+                      <a
+                        href="/eng/cookie"
+                        className="link text-purple-600 hover:text-purple-800 underline ml-2"
+                      >
                         VIEW COOKIES
                       </a>
                     </div>
@@ -219,7 +276,7 @@ const CookieConsent = () => {
                 </ul>
               </div>
             </div>
-            
+
             <div className="pop-footer flex gap-3 p-4 border-t border-gray-200">
               <Button
                 type="button"
