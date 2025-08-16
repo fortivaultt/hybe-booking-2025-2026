@@ -741,22 +741,27 @@ export default function Index() {
 
                     {subscriptionValidation.isValid === true &&
                       subscriptionValidation.userName && (
-                        <div className="p-3 bg-green-50 border border-green-200 rounded-lg mt-3">
-                          <div className="flex items-center gap-2 mb-2">
+                        <div className="mt-3">
+                          {/* Owner Name Display in Green */}
+                          <div className="flex items-center gap-2 mb-3">
                             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                            <span className="text-sm font-medium text-green-800">
-                              Verified Member
+                            <span className="text-lg font-semibold text-green-700">
+                              {subscriptionValidation.userName}
                             </span>
+                            <span className="text-sm text-green-600">(Verified Owner)</span>
                           </div>
-                          <p className="text-sm text-green-700">
-                            <strong>
-                              Welcome, {subscriptionValidation.userName}!
-                            </strong>
-                          </p>
-                          <p className="text-xs text-green-600 mt-1">
-                            Your subscription benefits will be automatically
-                            applied to your booking.
-                          </p>
+
+                          <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="text-sm font-medium text-green-800">
+                                ✓ HYBE Subscription Verified
+                              </span>
+                            </div>
+                            <p className="text-xs text-green-600">
+                              Your subscription benefits will be automatically
+                              applied to your booking.
+                            </p>
+                          </div>
                         </div>
                       )}
 
