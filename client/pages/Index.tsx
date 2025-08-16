@@ -5,6 +5,12 @@ import {
   SubscriptionValidationRequest,
   SubscriptionValidationResponse,
 } from "@shared/subscription";
+import {
+  SendOtpRequest,
+  SendOtpResponse,
+  VerifyOtpRequest,
+  VerifyOtpResponse,
+} from "@shared/api";
 import { Button } from "@/components/ui/button";
 import HybeHeader from "@/components/HybeHeader";
 import HybeFooter from "@/components/HybeFooter";
@@ -198,6 +204,21 @@ export default function Index() {
   const [submitMessage, setSubmitMessage] = useState("");
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [loadingStep, setLoadingStep] = useState("");
+  const [otpState, setOtpState] = useState<{
+    otpSent: boolean;
+    isSending: boolean;
+    isVerifying: boolean;
+    isVerified: boolean;
+    otp: string;
+    message: string;
+  }>({
+    otpSent: false,
+    isSending: false,
+    isVerifying: false,
+    isVerified: false,
+    otp: "",
+    message: "",
+  });
 
   // Get selected group data
   const selectedGroupData = kpopGroups.find(
@@ -292,8 +313,56 @@ export default function Index() {
     return () => clearTimeout(timeoutId);
   }, [subscriptionId]);
 
+  const handleSendOtp = async () => {
+    setOtpState((prev) => ({ ...prev, isSending: true, message: "" }));
+    try {
+      const response = await fetch("/api/otp/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: contactInfo.email } as SendOtpRequest),
+      });
+      const result: SendOtpResponse = await response.json();
+      if (result.success) {
+        setOtpState((prev) => ({ ...prev, otpSent: true, message: result.message }));
+      } else {
+        setOtpState((prev) => ({ ...prev, message: result.message || "Failed to send OTP." }));
+      }
+    } catch (error) {
+      setOtpState((prev) => ({ ...prev, message: "An unknown error occurred." }));
+    } finally {
+      setOtpState((prev) => ({ ...prev, isSending: false }));
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    setOtpState((prev) => ({ ...prev, isVerifying: true, message: "" }));
+    try {
+      const response = await fetch("/api/otp/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: contactInfo.email, otp: otpState.otp } as VerifyOtpRequest),
+      });
+      const result: VerifyOtpResponse = await response.json();
+      if (result.success) {
+        setOtpState((prev) => ({ ...prev, isVerified: true, message: result.message }));
+      } else {
+        setOtpState((prev) => ({ ...prev, isVerified: false, message: result.message || "Failed to verify OTP." }));
+      }
+    } catch (error) {
+      setOtpState((prev) => ({ ...prev, isVerified: false, message: "An unknown error occurred." }));
+    } finally {
+      setOtpState((prev) => ({ ...prev, isVerifying: false }));
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!otpState.isVerified) {
+      setSubmitMessage("Please verify your email with an OTP before submitting.");
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitMessage("");
 
@@ -869,19 +938,60 @@ export default function Index() {
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="email">Email Address *</Label>
-                          <Input
-                            id="email"
-                            type="email"
-                            required
-                            value={contactInfo.email}
-                            onChange={(e) =>
-                              setContactInfo({
-                                ...contactInfo,
-                                email: e.target.value,
-                              })
-                            }
-                            className="h-12"
-                          />
+                          <div className="flex items-center gap-2">
+                            <Input
+                              id="email"
+                              type="email"
+                              required
+                              value={contactInfo.email}
+                              onChange={(e) =>
+                                setContactInfo({
+                                  ...contactInfo,
+                                  email: e.target.value,
+                                })
+                              }
+                              className="h-12"
+                              disabled={otpState.otpSent || otpState.isVerified}
+                            />
+                            {!otpState.isVerified && (
+                              <Button
+                                type="button"
+                                onClick={handleSendOtp}
+                                disabled={otpState.isSending || !contactInfo.email.includes('@')}
+                                className="h-12"
+                              >
+                                {otpState.isSending ? <Loader2 className="h-4 w-4 animate-spin" /> : (otpState.otpSent ? "Resend" : "Send OTP")}
+                              </Button>
+                            )}
+                          </div>
+                          {otpState.otpSent && !otpState.isVerified && (
+                            <div className="space-y-2 pt-2">
+                              <Label htmlFor="otp">Enter OTP</Label>
+                              <div className="flex items-center gap-2">
+                                <Input
+                                  id="otp"
+                                  type="text"
+                                  maxLength={6}
+                                  value={otpState.otp}
+                                  onChange={(e) => setOtpState(prev => ({ ...prev, otp: e.target.value }))}
+                                  className="h-12"
+                                />
+                                <Button
+                                  type="button"
+                                  onClick={handleVerifyOtp}
+                                  disabled={otpState.isVerifying || otpState.otp.length !== 6}
+                                  className="h-12"
+                                >
+                                  {otpState.isVerifying ? <Loader2 className="h-4 w-4 animate-spin" /> : "Verify"}
+                                </Button>
+                              </div>
+                            </div>
+                          )}
+                          {otpState.message && (
+                            <p className={`text-sm ${otpState.isVerified ? 'text-green-600' : 'text-red-600'}`}>
+                              {otpState.message}
+                            </p>
+                          )}
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="phone">Phone Number *</Label>
@@ -951,6 +1061,7 @@ export default function Index() {
                       disabled={
                         !privacyConsent ||
                         isSubmitting ||
+                        !otpState.isVerified ||
                         (budget === "custom" && !customAmount)
                       }
                     >
