@@ -24,10 +24,10 @@ export interface BookingResponse {
   bookingId?: string;
 }
 
-export const handleBookingSubmission: RequestHandler = (req, res) => {
+export const handleBookingSubmission: RequestHandler = async (req, res) => {
   try {
     const bookingData: BookingRequest = req.body;
-    
+
     // Validate required fields
     if (!bookingData.selectedCelebrity || !bookingData.selectedEventType || !bookingData.budget) {
       return res.status(400).json({
@@ -52,18 +52,52 @@ export const handleBookingSubmission: RequestHandler = (req, res) => {
 
     // Generate a booking ID
     const bookingId = `HYBE-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
-    
-    // In a real application, you would:
-    // 1. Save to database
-    // 2. Send confirmation emails
-    // 3. Notify booking team
-    // 4. Process payment/deposit
-    
+
+    // Prepare data for Netlify form submission
+    const netlifyFormData = {
+      "form-name": "hybe-booking",
+      "booking-id": bookingId,
+      "celebrity": bookingData.selectedCelebrity,
+      "event-type": bookingData.selectedEventType,
+      "budget": bookingData.budget,
+      "custom-amount": bookingData.customAmount || "",
+      "attendees": bookingData.attendees,
+      "preferred-date": bookingData.preferredDate,
+      "location": bookingData.location,
+      "special-requests": bookingData.specialRequests,
+      "subscription-id": bookingData.subscriptionId || "",
+      "contact-name": bookingData.contactInfo.name,
+      "contact-email": bookingData.contactInfo.email,
+      "contact-phone": bookingData.contactInfo.phone,
+      "contact-organization": bookingData.contactInfo.organization,
+      "submission-time": new Date().toISOString()
+    };
+
+    // Submit to Netlify forms (this would work when deployed to Netlify)
+    try {
+      if (process.env.NODE_ENV === 'production') {
+        const netlifyResponse = await fetch('/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams(netlifyFormData).toString()
+        });
+
+        if (!netlifyResponse.ok) {
+          console.warn('Netlify form submission failed, continuing with local processing');
+        }
+      }
+    } catch (netlifyError) {
+      console.warn('Netlify form submission error:', netlifyError);
+      // Continue with local processing even if Netlify submission fails
+    }
+
+    // Log the booking for development/backup purposes
     console.log("New booking received:", {
       bookingId,
       celebrity: bookingData.selectedCelebrity,
       eventType: bookingData.selectedEventType,
       budget: bookingData.budget,
+      customAmount: bookingData.customAmount,
       subscriptionId: bookingData.subscriptionId || "None",
       contact: bookingData.contactInfo.email,
       hasValidSubscription: !!bookingData.subscriptionId
