@@ -38,11 +38,12 @@ const HybeFooter = () => {
           </p>
 
           {/* Footer Navigation */}
-          <ul className="fnb flex flex-wrap items-center justify-center gap-4 text-sm">
+          <ul className="fnb flex flex-wrap items-center justify-center gap-4 md:gap-6 text-sm">
             <li>
               <a
-                href="/cookie"
+                href="/eng/cookie"
                 className="text-gray-600 hover:text-gray-900 transition-colors duration-150"
+                rel="nosublink"
               >
                 Cookie Policy
               </a>
@@ -54,7 +55,7 @@ const HybeFooter = () => {
                   id="footer-privacy-select"
                   value={selectedPrivacyPolicy}
                   onChange={handlePrivacyPolicyChange}
-                  className="text-gray-600 hover:text-gray-900 bg-transparent border-none outline-none cursor-pointer transition-colors duration-150"
+                  className="text-gray-600 hover:text-gray-900 bg-transparent border border-gray-300 rounded px-2 py-1 outline-none cursor-pointer transition-colors duration-150"
                 >
                   <option value="" disabled>
                     Privacy & Policy
@@ -79,8 +80,9 @@ const HybeFooter = () => {
             </li>
             <li>
               <a
-                href="/related/site"
+                href="/eng/related/site"
                 className="view_site text-gray-600 hover:text-gray-900 transition-colors duration-150"
+                rel="nosublink"
               >
                 <span>Related Link</span>
               </a>
