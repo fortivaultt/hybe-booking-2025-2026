@@ -169,7 +169,8 @@
   }
 
   .hybe-text-shimmer {
-    background: linear-gradient(90deg,
+    background: linear-gradient(
+      90deg,
       hsl(260 85% 55%) 0%,
       hsl(315 85% 65%) 25%,
       hsl(220 85% 60%) 50%,
@@ -234,7 +235,8 @@
 }
 
 @keyframes floating {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px);
   }
   50% {
@@ -243,7 +245,8 @@
 }
 
 @keyframes pulseGlow {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
   }
   50% {
