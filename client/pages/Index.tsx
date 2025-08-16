@@ -410,7 +410,7 @@ export default function Index() {
           <SocialMediaFeeds />
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-6 lg:gap-12 relative z-10">
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 xl:gap-12 relative z-10">
           {/* Booking Form */}
           <div className="bg-white rounded-lg border border-gray-200 shadow-lg hover:shadow-xl transition-shadow duration-300">
             <Card className="border-0 shadow-none">
