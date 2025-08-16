@@ -21,6 +21,8 @@ export function createServer() {
 
   app.get("/api/demo", handleDemo);
   app.post("/api/booking", handleBookingSubmission);
+  app.post("/api/subscription/validate", validateSubscriptionId);
+  app.get("/api/subscription/types", listSubscriptionTypes);
 
   return app;
 }
