@@ -362,6 +362,34 @@ export default function Index() {
                   />
                 </div>
 
+                {/* Subscription ID */}
+                <div className="space-y-2">
+                  <Label htmlFor="subscriptionId" className="text-base font-semibold">
+                    HYBE Subscription ID (Optional)
+                    <span className="block text-xs font-normal text-muted-foreground mt-1">
+                      Format: HYB followed by 10 alphanumeric characters (e.g., HYBABC1234567)
+                    </span>
+                  </Label>
+                  <Input
+                    id="subscriptionId"
+                    placeholder="HYBABC1234567"
+                    value={subscriptionId}
+                    onChange={(e) => setSubscriptionId(e.target.value.toUpperCase())}
+                    className={`h-12 ${subscriptionId && !isValidSubscriptionId(subscriptionId) ? 'border-red-300 focus:border-red-500' : ''}`}
+                    maxLength={13}
+                  />
+                  {subscriptionId && !isValidSubscriptionId(subscriptionId) && (
+                    <p className="text-xs text-red-600">
+                      Invalid format. Must start with HYB followed by 10 alphanumeric characters.
+                    </p>
+                  )}
+                  {subscriptionId && isValidSubscriptionId(subscriptionId) && (
+                    <p className="text-xs text-green-600">
+                      ✓ Valid subscription ID format
+                    </p>
+                  )}
+                </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="requests" className="text-base font-semibold">Special Requests</Label>
                   <Textarea
