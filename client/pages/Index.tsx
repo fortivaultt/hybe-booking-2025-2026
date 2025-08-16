@@ -398,7 +398,8 @@ export default function Index() {
       </section>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 bg-gray-50 min-h-screen">
+      <main className="bg-gray-50 min-h-screen">
+        <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-12">
         {/* HYBE Video Slider */}
         <div className="mb-8">
           <HybeVideoSlider />
@@ -411,8 +412,8 @@ export default function Index() {
 
         <div className="grid lg:grid-cols-2 gap-6 lg:gap-12 relative z-10">
           {/* Booking Form */}
-          <div className="hybe-gradient-border hybe-card-hover">
-            <Card className="hybe-gradient-border-content shadow-2xl">
+          <div className="bg-white rounded-lg border border-gray-200 shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <Card className="border-0 shadow-none">
               <CardHeader className="text-center">
                 <CardTitle className="text-3xl font-bold text-gray-900">
                   Book Your Experience
@@ -1111,6 +1112,7 @@ export default function Index() {
               </CardContent>
             </Card>
           </div>
+        </div>
         </div>
       </main>
 
