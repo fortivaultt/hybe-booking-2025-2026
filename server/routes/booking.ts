@@ -65,7 +65,8 @@ export const handleBookingSubmission: RequestHandler = (req, res) => {
       eventType: bookingData.selectedEventType,
       budget: bookingData.budget,
       subscriptionId: bookingData.subscriptionId || "None",
-      contact: bookingData.contactInfo.email
+      contact: bookingData.contactInfo.email,
+      hasValidSubscription: !!bookingData.subscriptionId
     });
 
     const response: BookingResponse = {
