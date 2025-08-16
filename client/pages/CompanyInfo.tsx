@@ -26,14 +26,16 @@ export default function CompanyInfo() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-gray-700 leading-relaxed">
-                  HYBE Corporation is a South Korean multinational entertainment company 
-                  established in 2005. Originally known as Big Hit Entertainment, the company 
-                  was rebranded to HYBE in 2021 to reflect its expansion beyond music into 
-                  various entertainment platforms.
+                  HYBE Corporation is a South Korean multinational entertainment
+                  company established in 2005. Originally known as Big Hit
+                  Entertainment, the company was rebranded to HYBE in 2021 to
+                  reflect its expansion beyond music into various entertainment
+                  platforms.
                 </p>
                 <p className="text-gray-700 leading-relaxed">
-                  We are home to some of the world's biggest K-pop acts including BTS, 
-                  BLACKPINK, NewJeans, LE SSERAFIM, SEVENTEEN, TWICE, Stray Kids, and IVE.
+                  We are home to some of the world's biggest K-pop acts
+                  including BTS, BLACKPINK, NewJeans, LE SSERAFIM, SEVENTEEN,
+                  TWICE, Stray Kids, and IVE.
                 </p>
               </CardContent>
             </Card>
@@ -44,9 +46,10 @@ export default function CompanyInfo() {
               </CardHeader>
               <CardContent>
                 <p className="text-gray-700 leading-relaxed">
-                  To connect music and people, and to bring positive influence to the world 
-                  through our content and platform. We believe in the power of music to 
-                  transcend boundaries and unite people across cultures.
+                  To connect music and people, and to bring positive influence
+                  to the world through our content and platform. We believe in
+                  the power of music to transcend boundaries and unite people
+                  across cultures.
                 </p>
               </CardContent>
             </Card>
@@ -57,10 +60,22 @@ export default function CompanyInfo() {
               </CardHeader>
               <CardContent>
                 <ul className="space-y-3 text-gray-700">
-                  <li>• <strong>Innovation:</strong> Pioneering new technologies and platforms in entertainment</li>
-                  <li>• <strong>Excellence:</strong> Maintaining the highest standards in all our endeavors</li>
-                  <li>• <strong>Diversity:</strong> Embracing different cultures and perspectives</li>
-                  <li>• <strong>Authenticity:</strong> Staying true to our artists' unique voices and stories</li>
+                  <li>
+                    • <strong>Innovation:</strong> Pioneering new technologies
+                    and platforms in entertainment
+                  </li>
+                  <li>
+                    • <strong>Excellence:</strong> Maintaining the highest
+                    standards in all our endeavors
+                  </li>
+                  <li>
+                    • <strong>Diversity:</strong> Embracing different cultures
+                    and perspectives
+                  </li>
+                  <li>
+                    • <strong>Authenticity:</strong> Staying true to our
+                    artists' unique voices and stories
+                  </li>
                 </ul>
               </CardContent>
             </Card>
