@@ -382,6 +382,11 @@ export default function Index() {
             Official HYBE celebrity booking platform. Book exclusive experiences with the world's biggest K-pop stars.
             From intimate meet & greets to luxury vacation packages.
           </p>
+          <div className="mt-4 px-4 py-2 bg-white/10 rounded-lg backdrop-blur-sm inline-block">
+            <p className="text-sm text-purple-100">
+              🎯 Powered by <strong>HYBE Corporation</strong> - Home to BTS, BLACKPINK, NewJeans & More
+            </p>
+          </div>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 mt-6 sm:mt-8 text-sm text-purple-200">
             <div className="flex items-center gap-2">
               <Star className="h-4 w-4" />
@@ -1052,7 +1057,7 @@ export default function Index() {
                     <li>• Fast-track booking process</li>
                     <li>• 10% discount on bookings</li>
                     <li>• Early access to new artists</li>
-                    <li>• Priority customer support</li>
+                    <li>�� Priority customer support</li>
                   </ul>
                 </div>
 
