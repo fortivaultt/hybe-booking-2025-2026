@@ -2,26 +2,36 @@ import { RequestHandler } from "express";
 import { z } from "zod";
 import fs from "fs";
 import path from "path";
+import { createClient } from "redis";
 
-// In-memory store for OTPs
-// In a production environment, you would use a more persistent store like Redis or a database table.
-const otpStore: Record<string, { otp: string; expiresAt: number }> = {};
+// Initialize Redis Client
+const redisUrl = "redis://default:kPoLgM4FzXb9vsjWskfDHl4X9FkxJrJG@redis-15524.c14.us-east-1-3.ec2.redns.redis-cloud.com:15524";
+const redisClient = createClient({ url: redisUrl });
+
+redisClient.on('error', err => console.error('Redis Client Error', err));
+
+// Note: This is a top-level await. This is fine in modern Node.js modules.
+// For the test runner to exit gracefully, this connection should be explicitly closed.
+// e.g., in a test setup file with an afterAll hook: `afterAll(() => redisClient.quit());`
+redisClient.connect();
 
 const sendOtpBodySchema = z.object({
   email: z.string().email(),
 });
 
-export const handleSendOtp: RequestHandler = (req, res) => {
+export const handleSendOtp: RequestHandler = async (req, res) => {
   try {
     const { email } = sendOtpBodySchema.parse(req.body);
-
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const expiresAt = Date.now() + 5 * 60 * 1000; // 5 minutes expiration
+    const otpKey = `otp:${email}`;
+    const otpExpiration = 300; // 5 minutes in seconds
 
-    otpStore[email] = { otp, expiresAt };
+    // Store OTP in Redis with expiration
+    await redisClient.set(otpKey, otp, {
+      EX: otpExpiration,
+    });
 
-    // In a real application, you would send the OTP via email here.
-    // For this example, we'll read an HTML template, inject the OTP, and log it.
+    // Simulate sending email
     try {
       const templatePath = path.join(__dirname, '../email-templates/otp-template.html');
       const template = fs.readFileSync(templatePath, 'utf-8');
@@ -32,10 +42,8 @@ export const handleSendOtp: RequestHandler = (req, res) => {
       console.log(`Subject: Your HYBE Booking OTP`);
       console.log(emailHtml);
       console.log('--- END SIMULATED OTP EMAIL ---');
-
     } catch (templateError) {
       console.error("Failed to read or process email template:", templateError);
-      // Fallback to simple console log if template fails
       console.log(`OTP for ${email}: ${otp}`);
     }
 
@@ -54,27 +62,23 @@ const verifyOtpBodySchema = z.object({
   otp: z.string().length(6),
 });
 
-export const handleVerifyOtp: RequestHandler = (req, res) => {
+export const handleVerifyOtp: RequestHandler = async (req, res) => {
   try {
     const { email, otp } = verifyOtpBodySchema.parse(req.body);
+    const otpKey = `otp:${email}`;
 
-    const storedOtpData = otpStore[email];
+    const storedOtp = await redisClient.get(otpKey);
 
-    if (!storedOtpData) {
-      return res.status(400).json({ success: false, message: "OTP not found for this email. Please request a new one." });
+    if (!storedOtp) {
+      return res.status(400).json({ success: false, message: "OTP not found or has expired. Please request a new one." });
     }
 
-    if (Date.now() > storedOtpData.expiresAt) {
-      delete otpStore[email]; // Clean up expired OTP
-      return res.status(400).json({ success: false, message: "OTP has expired. Please request a new one." });
-    }
-
-    if (storedOtpData.otp !== otp) {
+    if (storedOtp !== otp) {
       return res.status(400).json({ success: false, message: "Invalid OTP." });
     }
 
     // OTP is correct, clean it up so it can't be reused
-    delete otpStore[email];
+    await redisClient.del(otpKey);
 
     res.status(200).json({ success: true, message: "OTP verified successfully." });
   } catch (error) {
