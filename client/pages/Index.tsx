@@ -1087,7 +1087,7 @@ export default function Index() {
             </Card>
 
             {/* Contact Info */}
-            <Card className="bg-white/95 backdrop-blur-sm shadow-xl hybe-card-hover">
+            <Card className="bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-shadow duration-300">
               <CardHeader>
                 <CardTitle className="text-xl font-bold text-center">
                   Need Help?
