@@ -120,6 +120,64 @@ export default function Index() {
     return regex.test(id);
   };
 
+  // Validate subscription ID against database
+  const validateSubscriptionIdInDatabase = async (id: string) => {
+    if (!isValidSubscriptionId(id)) {
+      setSubscriptionValidation({
+        isValidating: false,
+        isValid: false,
+        message: "Invalid format. Must start with HYB followed by 10 alphanumeric characters."
+      });
+      return;
+    }
+
+    setSubscriptionValidation(prev => ({ ...prev, isValidating: true }));
+
+    try {
+      const response = await fetch("/api/subscription/validate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ subscriptionId: id } as SubscriptionValidationRequest),
+      });
+
+      const result: SubscriptionValidationResponse = await response.json();
+
+      setSubscriptionValidation({
+        isValidating: false,
+        isValid: result.isValid,
+        message: result.message,
+        subscriptionType: result.subscriptionType,
+        userName: result.userName,
+      });
+    } catch (error) {
+      setSubscriptionValidation({
+        isValidating: false,
+        isValid: false,
+        message: "Error validating subscription ID. Please try again."
+      });
+    }
+  };
+
+  // Debounced validation effect
+  useEffect(() => {
+    if (!subscriptionId) {
+      setSubscriptionValidation({
+        isValidating: false,
+        isValid: null,
+        message: ""
+      });
+      return;
+    }
+
+    const timeoutId = setTimeout(() => {
+      validateSubscriptionIdInDatabase(subscriptionId);
+    }, 500); // 500ms delay for debouncing
+
+    return () => clearTimeout(timeoutId);
+  }, [subscriptionId]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
