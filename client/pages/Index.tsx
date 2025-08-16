@@ -947,9 +947,9 @@ export default function Index() {
           </div>
 
           {/* Information Panel */}
-          <div className="space-y-8">
+          <div className="space-y-6">
             {/* Event Types */}
-            <Card className="bg-white/95 backdrop-blur-sm shadow-xl hybe-card-hover">
+            <Card className="bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-shadow duration-300">
               <CardHeader>
                 <CardTitle className="text-2xl font-bold text-center">
                   Experience Types
