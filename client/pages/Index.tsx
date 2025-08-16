@@ -936,7 +936,7 @@ export default function Index() {
           {/* Information Panel */}
           <div className="space-y-8">
             {/* Event Types */}
-            <Card className="bg-white/95 backdrop-blur-sm shadow-xl">
+            <Card className="bg-white/95 backdrop-blur-sm shadow-xl hybe-card-hover">
               <CardHeader>
                 <CardTitle className="text-2xl font-bold text-center">
                   Experience Types
@@ -968,7 +968,7 @@ export default function Index() {
             </Card>
 
             {/* Pricing Info */}
-            <Card className="bg-white/95 backdrop-blur-sm shadow-xl">
+            <Card className="bg-white/95 backdrop-blur-sm shadow-xl hybe-card-hover">
               <CardHeader>
                 <CardTitle className="text-2xl font-bold text-center">
                   Artist Tiers
@@ -1019,7 +1019,7 @@ export default function Index() {
             </Card>
 
             {/* Subscription Benefits */}
-            <Card className="bg-white/95 backdrop-blur-sm shadow-xl">
+            <Card className="bg-white/95 backdrop-blur-sm shadow-xl hybe-card-hover">
               <CardHeader>
                 <CardTitle className="text-xl font-bold text-center">
                   Subscription Benefits
@@ -1074,7 +1074,7 @@ export default function Index() {
             </Card>
 
             {/* Contact Info */}
-            <Card className="bg-white/95 backdrop-blur-sm shadow-xl">
+            <Card className="bg-white/95 backdrop-blur-sm shadow-xl hybe-card-hover">
               <CardHeader>
                 <CardTitle className="text-xl font-bold text-center">
                   Need Help?
