@@ -350,9 +350,15 @@ export default function Index() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-hybe-purple via-purple-600 to-hybe-pink">
+    <div className="min-h-screen bg-gradient-to-br from-hybe-purple via-purple-600 to-hybe-pink relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-white/5 rounded-full blur-3xl hybe-floating"></div>
+        <div className="absolute top-3/4 right-1/4 w-96 h-96 bg-hybe-pink/10 rounded-full blur-3xl hybe-floating" style={{animationDelay: '2s'}}></div>
+        <div className="absolute top-1/2 left-1/2 w-80 h-80 bg-hybe-blue/10 rounded-full blur-3xl hybe-floating" style={{animationDelay: '4s'}}></div>
+      </div>
       {/* Header */}
-      <header className="relative">
+      <header className="relative z-10">
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="relative z-10 container mx-auto px-4 sm:px-6 py-8 sm:py-12 text-center text-white">
           <div className="flex flex-col items-center justify-center mb-4 sm:mb-6">
@@ -361,12 +367,12 @@ export default function Index() {
               <img
                 src="/images/common/logo-b.svg"
                 alt="HYBE"
-                className="h-16 sm:h-20 lg:h-24 w-auto mx-auto filter drop-shadow-lg"
+                className="h-16 sm:h-20 lg:h-24 w-auto mx-auto filter drop-shadow-2xl hybe-pulse-glow"
               />
             </div>
             <div className="flex items-center justify-center gap-2 sm:gap-3">
               <Sparkles className="h-6 w-6 sm:h-8 sm:w-8" />
-              <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
+              <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold hybe-text-shimmer">
                 CELEBRITY BOOKING
               </h1>
               <Sparkles className="h-6 w-6 sm:h-8 sm:w-8" />
@@ -405,7 +411,7 @@ export default function Index() {
           <SocialMediaFeeds />
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-6 lg:gap-12">
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-12 relative z-10">
           {/* Booking Form */}
           <Card className="bg-white/95 backdrop-blur-sm shadow-2xl">
             <CardHeader className="text-center">
