@@ -400,7 +400,7 @@ export default function Index() {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12">
+      <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 bg-gray-50 min-h-screen">
         {/* HYBE Video Slider */}
         <div className="mb-8">
           <HybeVideoSlider />
