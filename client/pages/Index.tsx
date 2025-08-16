@@ -78,13 +78,16 @@ const eventTypes = [
 ];
 
 export default function Index() {
-  const [selectedCelebrity, setSelectedCelebrity] = useState("");
+  const [fanPreference, setFanPreference] = useState("");
+  const [selectedGroup, setSelectedGroup] = useState("");
+  const [selectedArtist, setSelectedArtist] = useState("");
   const [selectedEventType, setSelectedEventType] = useState("");
   const [budget, setBudget] = useState("");
   const [attendees, setAttendees] = useState("");
   const [preferredDate, setPreferredDate] = useState("");
   const [location, setLocation] = useState("");
   const [specialRequests, setSpecialRequests] = useState("");
+  const [subscriptionId, setSubscriptionId] = useState("");
   const [contactInfo, setContactInfo] = useState({
     name: "",
     email: "",
@@ -95,6 +98,15 @@ export default function Index() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
   const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  // Get selected group data
+  const selectedGroupData = kpopGroups.find(group => group.name === selectedGroup);
+
+  // Validate subscription ID format (HYB + 10 alphanumeric)
+  const isValidSubscriptionId = (id: string) => {
+    const regex = /^HYB[A-Z0-9]{10}$/i;
+    return regex.test(id);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
