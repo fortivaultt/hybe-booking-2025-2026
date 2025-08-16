@@ -27,15 +27,16 @@ export default function Success() {
             Booking Request Submitted Successfully!
           </CardTitle>
         </CardHeader>
-        
+
         <CardContent className="space-y-6 text-center">
           <div className="p-6 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200">
             <h3 className="text-lg font-semibold text-green-800 mb-2">
               Thank You for Your Request!
             </h3>
             <p className="text-green-700 text-sm leading-relaxed">
-              Your HYBE celebrity booking request has been successfully sent to our management team. 
-              We have received all your details and will begin processing your request immediately.
+              Your HYBE celebrity booking request has been successfully sent to
+              our management team. We have received all your details and will
+              begin processing your request immediately.
             </p>
           </div>
 
@@ -56,7 +57,9 @@ export default function Success() {
             <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
               <div className="flex items-center gap-2 mb-2">
                 <Mail className="w-4 h-4 text-purple-600" />
-                <h4 className="font-semibold text-purple-800">What to Expect</h4>
+                <h4 className="font-semibold text-purple-800">
+                  What to Expect
+                </h4>
               </div>
               <ul className="text-sm text-purple-700 space-y-1">
                 <li>• Email confirmation within 2 hours</li>
@@ -70,24 +73,34 @@ export default function Success() {
           <div className="p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border border-yellow-200">
             <div className="flex items-center gap-2 mb-2">
               <Phone className="w-4 h-4 text-yellow-600" />
-              <h4 className="font-semibold text-yellow-800">Need Immediate Assistance?</h4>
+              <h4 className="font-semibold text-yellow-800">
+                Need Immediate Assistance?
+              </h4>
             </div>
             <p className="text-sm text-yellow-700 mb-3">
-              Our VIP booking specialists are available 24/7 for urgent requests or questions.
+              Our VIP booking specialists are available 24/7 for urgent requests
+              or questions.
             </p>
             <div className="space-y-1 text-sm text-yellow-700">
-              <p><strong>VIP Hotline:</strong> +1 (555) 123-HYBE</p>
-              <p><strong>Email:</strong> priority@hybe.com</p>
-              <p><strong>Emergency:</strong> +1 (555) 999-HYBE</p>
+              <p>
+                <strong>VIP Hotline:</strong> +1 (555) 123-HYBE
+              </p>
+              <p>
+                <strong>Email:</strong> priority@hybe.com
+              </p>
+              <p>
+                <strong>Emergency:</strong> +1 (555) 999-HYBE
+              </p>
             </div>
           </div>
 
           <div className="pt-4 border-t border-gray-200">
             <p className="text-sm text-gray-600 mb-4">
-              We appreciate your trust in HYBE Corporation. Your dream experience with your favorite K-pop artists is our priority.
+              We appreciate your trust in HYBE Corporation. Your dream
+              experience with your favorite K-pop artists is our priority.
             </p>
-            
-            <Button 
+
+            <Button
               onClick={() => navigate("/")}
               className="bg-gradient-to-r from-hybe-purple to-hybe-pink hover:from-purple-700 hover:to-pink-600 text-white px-8 py-2"
             >

@@ -2,7 +2,14 @@ import { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Play, Pause, ChevronLeft, ChevronRight, Volume2, VolumeX } from "lucide-react";
+import {
+  Play,
+  Pause,
+  ChevronLeft,
+  ChevronRight,
+  Volume2,
+  VolumeX,
+} from "lucide-react";
 
 const hybeVideos = [
   {
@@ -11,7 +18,7 @@ const hybeVideos = [
     title: "Dynamite (Official MV)",
     thumbnail: "https://img.youtube.com/vi/gdZLi9oWNZg/maxresdefault.jpg",
     videoId: "gdZLi9oWNZg",
-    duration: "3:19"
+    duration: "3:19",
   },
   {
     id: 2,
@@ -19,7 +26,7 @@ const hybeVideos = [
     title: "How You Like That (Official MV)",
     thumbnail: "https://img.youtube.com/vi/ioNng23DkIM/maxresdefault.jpg",
     videoId: "ioNng23DkIM",
-    duration: "3:01"
+    duration: "3:01",
   },
   {
     id: 3,
@@ -27,7 +34,7 @@ const hybeVideos = [
     title: "Get Up (Official MV)",
     thumbnail: "https://img.youtube.com/vi/ArmDp-zijuc/maxresdefault.jpg",
     videoId: "ArmDp-zijuc",
-    duration: "2:59"
+    duration: "2:59",
   },
   {
     id: 4,
@@ -35,7 +42,7 @@ const hybeVideos = [
     title: "UNFORGIVEN (Official MV)",
     thumbnail: "https://img.youtube.com/vi/UBURTj20HXI/maxresdefault.jpg",
     videoId: "UBURTj20HXI",
-    duration: "3:05"
+    duration: "3:05",
   },
   {
     id: 5,
@@ -43,7 +50,7 @@ const hybeVideos = [
     title: "God of Music (Official MV)",
     thumbnail: "https://img.youtube.com/vi/XfJGSMj6mMw/maxresdefault.jpg",
     videoId: "XfJGSMj6mMw",
-    duration: "3:27"
+    duration: "3:27",
   },
   {
     id: 6,
@@ -51,7 +58,7 @@ const hybeVideos = [
     title: "SET ME FREE (Official MV)",
     thumbnail: "https://img.youtube.com/vi/s5SX-DyNEqA/maxresdefault.jpg",
     videoId: "s5SX-DyNEqA",
-    duration: "3:18"
+    duration: "3:18",
   },
   {
     id: 7,
@@ -59,7 +66,7 @@ const hybeVideos = [
     title: "S-Class (Official MV)",
     thumbnail: "https://img.youtube.com/vi/pCZj96n-6-Q/maxresdefault.jpg",
     videoId: "pCZj96n-6-Q",
-    duration: "3:01"
+    duration: "3:01",
   },
   {
     id: 8,
@@ -67,8 +74,8 @@ const hybeVideos = [
     title: "I AM (Official MV)",
     thumbnail: "https://img.youtube.com/vi/6ZUIwj3FgUY/maxresdefault.jpg",
     videoId: "6ZUIwj3FgUY",
-    duration: "3:35"
-  }
+    duration: "3:35",
+  },
 ];
 
 export default function HybeVideoSlider() {
@@ -105,7 +112,9 @@ export default function HybeVideoSlider() {
   };
 
   const prevVideo = () => {
-    setCurrentIndex((prev) => (prev - 1 + hybeVideos.length) % hybeVideos.length);
+    setCurrentIndex(
+      (prev) => (prev - 1 + hybeVideos.length) % hybeVideos.length,
+    );
   };
 
   const togglePlayPause = () => {
@@ -143,7 +152,7 @@ export default function HybeVideoSlider() {
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
           />
-          
+
           {/* Video Controls Overlay */}
           <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
             <div className="flex items-center justify-between text-white">
@@ -153,10 +162,12 @@ export default function HybeVideoSlider() {
                   <Badge variant="secondary" className="text-xs">
                     {currentVideo.group}
                   </Badge>
-                  <span className="text-xs text-gray-300">{currentVideo.duration}</span>
+                  <span className="text-xs text-gray-300">
+                    {currentVideo.duration}
+                  </span>
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-2">
                 <Button
                   size="sm"
@@ -164,9 +175,13 @@ export default function HybeVideoSlider() {
                   onClick={toggleMute}
                   className="text-white hover:bg-white/20"
                 >
-                  {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+                  {isMuted ? (
+                    <VolumeX className="h-4 w-4" />
+                  ) : (
+                    <Volume2 className="h-4 w-4" />
+                  )}
                 </Button>
-                
+
                 <Button
                   size="sm"
                   variant="ghost"
@@ -175,16 +190,20 @@ export default function HybeVideoSlider() {
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
-                
+
                 <Button
                   size="sm"
                   variant="ghost"
                   onClick={togglePlayPause}
                   className="text-white hover:bg-white/20"
                 >
-                  {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                  {isPlaying ? (
+                    <Pause className="h-4 w-4" />
+                  ) : (
+                    <Play className="h-4 w-4" />
+                  )}
                 </Button>
-                
+
                 <Button
                   size="sm"
                   variant="ghost"
@@ -205,9 +224,9 @@ export default function HybeVideoSlider() {
               key={video.id}
               onClick={() => selectVideo(index)}
               className={`relative aspect-video rounded-md overflow-hidden transition-all duration-200 ${
-                index === currentIndex 
-                  ? 'ring-2 ring-hybe-purple shadow-lg scale-105' 
-                  : 'hover:ring-2 hover:ring-hybe-pink hover:scale-102'
+                index === currentIndex
+                  ? "ring-2 ring-hybe-purple shadow-lg scale-105"
+                  : "hover:ring-2 hover:ring-hybe-pink hover:scale-102"
               }`}
             >
               <img

@@ -166,7 +166,8 @@
 }
 
 @keyframes bounceSubtle {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(-2px);
   }
   50% {
