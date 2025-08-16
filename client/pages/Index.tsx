@@ -1,23 +1,52 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { BookingRequest, BookingResponse } from "@shared/booking";
-import { SubscriptionValidationRequest, SubscriptionValidationResponse } from "@shared/subscription";
+import {
+  SubscriptionValidationRequest,
+  SubscriptionValidationResponse,
+} from "@shared/subscription";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Calendar, CalendarDays, Star, Users, MapPin, Heart, Crown, Sparkles, Music } from "lucide-react";
+import {
+  Calendar,
+  CalendarDays,
+  Star,
+  Users,
+  MapPin,
+  Heart,
+  Crown,
+  Sparkles,
+  Music,
+  Loader2,
+} from "lucide-react";
+import HybeVideoSlider from "@/components/HybeVideoSlider";
+import SocialMediaFeeds from "@/components/SocialMediaFeeds";
 
 const fanPreferences = [
   "New to K-pop",
   "Casual Fan",
   "Dedicated Fan",
   "Super Fan",
-  "Ultimate Stan"
+  "Ultimate Stan",
 ];
 
 const kpopGroups = [
@@ -25,65 +54,120 @@ const kpopGroups = [
     name: "BTS",
     members: ["RM", "Jin", "Suga", "J-Hope", "Jimin", "V", "Jungkook"],
     tier: "Standard",
-    basePrice: "22,500"
+    basePrice: "22,500",
   },
   {
     name: "BLACKPINK",
     members: ["Jisoo", "Jennie", "Rosé", "Lisa"],
     tier: "Premium",
-    basePrice: "800,000"
+    basePrice: "800,000",
   },
   {
     name: "NewJeans",
     members: ["Minji", "Hanni", "Danielle", "Haerin", "Hyein"],
     tier: "Elite",
-    basePrice: "600,000"
+    basePrice: "600,000",
   },
   {
     name: "LE SSERAFIM",
     members: ["Sakura", "Chaewon", "Yunjin", "Kazuha", "Eunchae"],
     tier: "Elite",
-    basePrice: "550,000"
+    basePrice: "550,000",
   },
   {
     name: "SEVENTEEN",
-    members: ["S.Coups", "Jeonghan", "Joshua", "Jun", "Hoshi", "Wonwoo", "Woozi", "DK", "Mingyu", "The8", "Seungkwan", "Vernon", "Dino"],
+    members: [
+      "S.Coups",
+      "Jeonghan",
+      "Joshua",
+      "Jun",
+      "Hoshi",
+      "Wonwoo",
+      "Woozi",
+      "DK",
+      "Mingyu",
+      "The8",
+      "Seungkwan",
+      "Vernon",
+      "Dino",
+    ],
     tier: "Premium",
-    basePrice: "750,000"
+    basePrice: "750,000",
   },
   {
     name: "TWICE",
-    members: ["Nayeon", "Jeongyeon", "Momo", "Sana", "Jihyo", "Mina", "Dahyun", "Chaeyoung", "Tzuyu"],
+    members: [
+      "Nayeon",
+      "Jeongyeon",
+      "Momo",
+      "Sana",
+      "Jihyo",
+      "Mina",
+      "Dahyun",
+      "Chaeyoung",
+      "Tzuyu",
+    ],
     tier: "Elite",
-    basePrice: "650,000"
+    basePrice: "650,000",
   },
   {
     name: "Stray Kids",
-    members: ["Bang Chan", "Lee Know", "Changbin", "Hyunjin", "Han", "Felix", "Seungmin", "I.N"],
+    members: [
+      "Bang Chan",
+      "Lee Know",
+      "Changbin",
+      "Hyunjin",
+      "Han",
+      "Felix",
+      "Seungmin",
+      "I.N",
+    ],
     tier: "Elite",
-    basePrice: "500,000"
+    basePrice: "500,000",
   },
   {
     name: "IVE",
     members: ["Yujin", "Gaeul", "Rei", "Wonyoung", "Liz", "Leeseo"],
     tier: "Standard",
-    basePrice: "400,000"
-  }
+    basePrice: "400,000",
+  },
 ];
 
 const eventTypes = [
-  { name: "Meet & Greet", description: "Personal interaction with your favorite artist", icon: Heart, duration: "30-60 min" },
-  { name: "Private Event", description: "Exclusive performance for your special occasion", icon: Crown, duration: "2-4 hours" },
-  { name: "Vacation Package", description: "Travel experience with celebrity appearances", icon: MapPin, duration: "3-7 days" },
-  { name: "Studio Session", description: "Behind-the-scenes studio experience", icon: Music, duration: "4-8 hours" },
+  {
+    name: "Meet & Greet",
+    description: "Personal interaction with your favorite artist",
+    icon: Heart,
+    duration: "30-60 min",
+  },
+  {
+    name: "Private Event",
+    description: "Exclusive performance for your special occasion",
+    icon: Crown,
+    duration: "2-4 hours",
+  },
+  {
+    name: "Vacation Package",
+    description: "Travel experience with celebrity appearances",
+    icon: MapPin,
+    duration: "3-7 days",
+  },
+  {
+    name: "Studio Session",
+    description: "Behind-the-scenes studio experience",
+    icon: Music,
+    duration: "4-8 hours",
+  },
 ];
 
 export default function Index() {
+  const navigate = useNavigate();
   const [fanPreference, setFanPreference] = useState("");
   const [selectedGroup, setSelectedGroup] = useState("");
   const [selectedArtist, setSelectedArtist] = useState("");
   const [selectedEventType, setSelectedEventType] = useState("");
   const [budget, setBudget] = useState("");
+  const [customAmount, setCustomAmount] = useState("");
   const [attendees, setAttendees] = useState("");
   const [preferredDate, setPreferredDate] = useState("");
   const [location, setLocation] = useState("");
@@ -104,15 +188,18 @@ export default function Index() {
     name: "",
     email: "",
     phone: "",
-    organization: ""
+    organization: "",
   });
   const [privacyConsent, setPrivacyConsent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [loadingStep, setLoadingStep] = useState("");
 
   // Get selected group data
-  const selectedGroupData = kpopGroups.find(group => group.name === selectedGroup);
+  const selectedGroupData = kpopGroups.find(
+    (group) => group.name === selectedGroup,
+  );
 
   // Validate subscription ID format (HYB + 10 alphanumeric)
   const isValidSubscriptionId = (id: string) => {
@@ -126,12 +213,13 @@ export default function Index() {
       setSubscriptionValidation({
         isValidating: false,
         isValid: false,
-        message: "Invalid format. Must start with HYB followed by 10 alphanumeric characters."
+        message:
+          "Invalid format. Must start with HYB followed by 10 alphanumeric characters.",
       });
       return;
     }
 
-    setSubscriptionValidation(prev => ({ ...prev, isValidating: true }));
+    setSubscriptionValidation((prev) => ({ ...prev, isValidating: true }));
 
     try {
       const response = await fetch("/api/subscription/validate", {
@@ -139,7 +227,9 @@ export default function Index() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ subscriptionId: id } as SubscriptionValidationRequest),
+        body: JSON.stringify({
+          subscriptionId: id,
+        } as SubscriptionValidationRequest),
       });
 
       const result: SubscriptionValidationResponse = await response.json();
@@ -155,10 +245,28 @@ export default function Index() {
       setSubscriptionValidation({
         isValidating: false,
         isValid: false,
-        message: "Error validating subscription ID. Please try again."
+        message: "Error validating subscription ID. Please try again.",
       });
     }
   };
+
+  // Auto-populate contact name when subscription is validated
+  useEffect(() => {
+    if (
+      subscriptionValidation.isValid &&
+      subscriptionValidation.userName &&
+      !contactInfo.name
+    ) {
+      setContactInfo((prev) => ({
+        ...prev,
+        name: subscriptionValidation.userName || "",
+      }));
+    }
+  }, [
+    subscriptionValidation.userName,
+    subscriptionValidation.isValid,
+    contactInfo.name,
+  ]);
 
   // Debounced validation effect
   useEffect(() => {
@@ -166,7 +274,7 @@ export default function Index() {
       setSubscriptionValidation({
         isValidating: false,
         isValid: null,
-        message: ""
+        message: "",
       });
       return;
     }
@@ -183,17 +291,32 @@ export default function Index() {
     setIsSubmitting(true);
     setSubmitMessage("");
 
+    // Loading simulation with steps
+    const loadingSteps = [
+      "Verifying subscription ID...",
+      "Checking form fields...",
+      "Submitting form...",
+      "Form submitted successfully!",
+    ];
+
+    for (let i = 0; i < loadingSteps.length; i++) {
+      setLoadingStep(loadingSteps[i]);
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // 1 second delay per step
+    }
+
+    const finalBudget = budget === "custom" ? customAmount : budget;
+
     const bookingData: BookingRequest = {
       selectedCelebrity: `${selectedGroup} - ${selectedArtist}`,
       selectedEventType,
-      budget,
+      budget: finalBudget,
       attendees,
       preferredDate,
       location,
       specialRequests,
       subscriptionId: subscriptionId || undefined,
       contactInfo,
-      privacyConsent
+      privacyConsent,
     };
 
     try {
@@ -208,35 +331,21 @@ export default function Index() {
       const result: BookingResponse = await response.json();
 
       if (result.success) {
-        setSubmitSuccess(true);
-        setSubmitMessage(`${result.message} Booking ID: ${result.bookingId}`);
-        // Reset form
-        setFanPreference("");
-        setSelectedGroup("");
-        setSelectedArtist("");
-        setSelectedEventType("");
-        setBudget("");
-        setAttendees("");
-        setPreferredDate("");
-        setLocation("");
-        setSpecialRequests("");
-        setSubscriptionId("");
-        setSubscriptionValidation({
-          isValidating: false,
-          isValid: null,
-          message: ""
-        });
-        setContactInfo({ name: "", email: "", phone: "", organization: "" });
-        setPrivacyConsent(false);
+        // Redirect to success page
+        navigate("/success");
       } else {
         setSubmitSuccess(false);
         setSubmitMessage(result.message);
+        setIsSubmitting(false);
+        setLoadingStep("");
       }
     } catch (error) {
       setSubmitSuccess(false);
-      setSubmitMessage("Network error. Please check your connection and try again.");
-    } finally {
+      setSubmitMessage(
+        "Network error. Please check your connection and try again.",
+      );
       setIsSubmitting(false);
+      setLoadingStep("");
     }
   };
 
@@ -254,7 +363,8 @@ export default function Index() {
             <Sparkles className="h-6 w-6 sm:h-8 sm:w-8" />
           </div>
           <p className="text-base sm:text-xl text-purple-100 max-w-2xl mx-auto">
-            Book exclusive experiences with the world's biggest K-pop stars. From intimate meet & greets to luxury vacation packages.
+            Book exclusive experiences with the world's biggest K-pop stars.
+            From intimate meet & greets to luxury vacation packages.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 mt-6 sm:mt-8 text-sm text-purple-200">
             <div className="flex items-center gap-2">
@@ -275,21 +385,42 @@ export default function Index() {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12">
+        {/* HYBE Video Slider */}
+        <div className="mb-8">
+          <HybeVideoSlider />
+        </div>
+
+        {/* Social Media Feeds */}
+        <div className="mb-8">
+          <SocialMediaFeeds />
+        </div>
+
         <div className="grid lg:grid-cols-2 gap-6 lg:gap-12">
           {/* Booking Form */}
           <Card className="bg-white/95 backdrop-blur-sm shadow-2xl">
             <CardHeader className="text-center">
-              <CardTitle className="text-3xl font-bold text-gray-900">Book Your Experience</CardTitle>
+              <CardTitle className="text-3xl font-bold text-gray-900">
+                Book Your Experience
+              </CardTitle>
               <CardDescription className="text-lg">
-                Fill out the form below to request a custom booking with your chosen artist
+                Fill out the form below to request a custom booking with your
+                chosen artist
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Fan to Artist Preference */}
                 <div className="space-y-2">
-                  <Label htmlFor="fanPreference" className="text-base font-semibold">Select Fan to Artist Preference</Label>
-                  <Select value={fanPreference} onValueChange={setFanPreference}>
+                  <Label
+                    htmlFor="fanPreference"
+                    className="text-base font-semibold"
+                  >
+                    Select Fan to Artist Preference
+                  </Label>
+                  <Select
+                    value={fanPreference}
+                    onValueChange={setFanPreference}
+                  >
                     <SelectTrigger className="h-12">
                       <SelectValue placeholder="How would you describe your K-pop fandom?" />
                     </SelectTrigger>
@@ -305,11 +436,16 @@ export default function Index() {
 
                 {/* Group Selection */}
                 <div className="space-y-2">
-                  <Label htmlFor="group" className="text-base font-semibold">Select Your Favorite Group</Label>
-                  <Select value={selectedGroup} onValueChange={(value) => {
-                    setSelectedGroup(value);
-                    setSelectedArtist(""); // Reset artist selection when group changes
-                  }}>
+                  <Label htmlFor="group" className="text-base font-semibold">
+                    Select Your Favorite Group
+                  </Label>
+                  <Select
+                    value={selectedGroup}
+                    onValueChange={(value) => {
+                      setSelectedGroup(value);
+                      setSelectedArtist(""); // Reset artist selection when group changes
+                    }}
+                  >
                     <SelectTrigger className="h-12">
                       <SelectValue placeholder="Choose your favorite K-pop group" />
                     </SelectTrigger>
@@ -319,10 +455,21 @@ export default function Index() {
                           <div className="flex items-center justify-between w-full">
                             <span className="font-medium">{group.name}</span>
                             <div className="flex items-center gap-2 ml-4">
-                              <Badge variant={group.tier === "Premium" ? "default" : group.tier === "Elite" ? "secondary" : "outline"} className="text-xs">
+                              <Badge
+                                variant={
+                                  group.tier === "Premium"
+                                    ? "default"
+                                    : group.tier === "Elite"
+                                      ? "secondary"
+                                      : "outline"
+                                }
+                                className="text-xs"
+                              >
                                 {group.tier}
                               </Badge>
-                              <span className="text-xs text-muted-foreground">from ${group.basePrice}</span>
+                              <span className="text-xs text-muted-foreground">
+                                from ${group.basePrice}
+                              </span>
                             </div>
                           </div>
                         </SelectItem>
@@ -333,21 +480,31 @@ export default function Index() {
 
                 {/* Artist Selection */}
                 <div className="space-y-2">
-                  <Label htmlFor="artist" className="text-base font-semibold">Select Favorite Artist</Label>
+                  <Label htmlFor="artist" className="text-base font-semibold">
+                    Select Favorite Artist
+                  </Label>
                   <Select
                     value={selectedArtist}
                     onValueChange={setSelectedArtist}
                     disabled={!selectedGroup}
                   >
                     <SelectTrigger className="h-12">
-                      <SelectValue placeholder={selectedGroup ? "Choose your favorite member" : "Select a group first"} />
+                      <SelectValue
+                        placeholder={
+                          selectedGroup
+                            ? "Choose your favorite member"
+                            : "Select a group first"
+                        }
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       {selectedGroupData?.members.map((member) => (
                         <SelectItem key={member} value={member}>
                           <div className="flex items-center gap-2">
                             <span className="font-medium">{member}</span>
-                            <span className="text-xs text-muted-foreground">({selectedGroup})</span>
+                            <span className="text-xs text-muted-foreground">
+                              ({selectedGroup})
+                            </span>
                           </div>
                         </SelectItem>
                       ))}
@@ -357,8 +514,16 @@ export default function Index() {
 
                 {/* Event Type */}
                 <div className="space-y-2">
-                  <Label htmlFor="eventType" className="text-base font-semibold">Event Type</Label>
-                  <Select value={selectedEventType} onValueChange={setSelectedEventType}>
+                  <Label
+                    htmlFor="eventType"
+                    className="text-base font-semibold"
+                  >
+                    Event Type
+                  </Label>
+                  <Select
+                    value={selectedEventType}
+                    onValueChange={setSelectedEventType}
+                  >
                     <SelectTrigger className="h-12">
                       <SelectValue placeholder="Select event type" />
                     </SelectTrigger>
@@ -369,7 +534,9 @@ export default function Index() {
                             <event.icon className="h-4 w-4" />
                             <div>
                               <div className="font-medium">{event.name}</div>
-                              <div className="text-xs text-muted-foreground">{event.duration}</div>
+                              <div className="text-xs text-muted-foreground">
+                                {event.duration}
+                              </div>
                             </div>
                           </div>
                         </SelectItem>
@@ -383,29 +550,81 @@ export default function Index() {
                   <Label htmlFor="budget" className="text-base font-semibold">
                     Total Budget (USD)
                     <span className="block text-xs font-normal text-muted-foreground mt-1">
-                      Covers accommodation, HYBE fees, artist fees, travel, and all associated costs
+                      Covers accommodation, HYBE fees, artist fees, travel, and
+                      all associated costs
                     </span>
                   </Label>
-                  <Select value={budget} onValueChange={setBudget}>
+                  <Select
+                    value={budget}
+                    onValueChange={(value) => {
+                      setBudget(value);
+                      if (value !== "custom") {
+                        setCustomAmount("");
+                      }
+                    }}
+                  >
                     <SelectTrigger className="h-12">
                       <SelectValue placeholder="Select your complete budget range" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="22500-50000">$22,500 - $50,000</SelectItem>
-                      <SelectItem value="50000-100000">$50,000 - $100,000</SelectItem>
-                      <SelectItem value="100000-250000">$100,000 - $250,000</SelectItem>
-                      <SelectItem value="250000-500000">$250,000 - $500,000</SelectItem>
-                      <SelectItem value="500000-750000">$500,000 - $750,000</SelectItem>
-                      <SelectItem value="750000-1000000">$750,000 - $1,000,000</SelectItem>
+                      <SelectItem value="22500-50000">
+                        $22,500 - $50,000
+                      </SelectItem>
+                      <SelectItem value="50000-100000">
+                        $50,000 - $100,000
+                      </SelectItem>
+                      <SelectItem value="100000-250000">
+                        $100,000 - $250,000
+                      </SelectItem>
+                      <SelectItem value="250000-500000">
+                        $250,000 - $500,000
+                      </SelectItem>
+                      <SelectItem value="500000-750000">
+                        $500,000 - $750,000
+                      </SelectItem>
+                      <SelectItem value="750000-1000000">
+                        $750,000 - $1,000,000
+                      </SelectItem>
                       <SelectItem value="1000000+">$1,000,000+</SelectItem>
+                      <SelectItem value="custom">Custom Amount</SelectItem>
                     </SelectContent>
                   </Select>
+
+                  {/* Custom Amount Input */}
+                  {budget === "custom" && (
+                    <div className="mt-3">
+                      <Label
+                        htmlFor="customAmount"
+                        className="text-sm font-medium"
+                      >
+                        Enter Your Custom Amount (USD) *
+                      </Label>
+                      <Input
+                        id="customAmount"
+                        type="number"
+                        placeholder="e.g., 750000"
+                        value={customAmount}
+                        onChange={(e) => setCustomAmount(e.target.value)}
+                        className="h-12 mt-1"
+                        min="22500"
+                        required
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Minimum amount: $22,500
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Additional Details */}
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="attendees" className="text-base font-semibold">Number of Attendees</Label>
+                    <Label
+                      htmlFor="attendees"
+                      className="text-base font-semibold"
+                    >
+                      Number of Attendees
+                    </Label>
                     <Input
                       id="attendees"
                       type="number"
@@ -416,7 +635,9 @@ export default function Index() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="date" className="text-base font-semibold">Preferred Date</Label>
+                    <Label htmlFor="date" className="text-base font-semibold">
+                      Preferred Date
+                    </Label>
                     <Input
                       id="date"
                       type="date"
@@ -428,7 +649,9 @@ export default function Index() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="location" className="text-base font-semibold">Location/Venue</Label>
+                  <Label htmlFor="location" className="text-base font-semibold">
+                    Location/Venue
+                  </Label>
                   <Input
                     id="location"
                     placeholder="City, Country or specific venue"
@@ -440,7 +663,10 @@ export default function Index() {
 
                 {/* Subscription ID */}
                 <div className="space-y-2">
-                  <Label htmlFor="subscriptionId" className="text-base font-semibold">
+                  <Label
+                    htmlFor="subscriptionId"
+                    className="text-base font-semibold"
+                  >
                     HYBE Subscription ID (Recommended)
                     <span className="block text-xs font-normal text-muted-foreground mt-1">
                       Valid subscription provides priority booking and discounts
@@ -451,10 +677,15 @@ export default function Index() {
                       id="subscriptionId"
                       placeholder="HYBABC1234567"
                       value={subscriptionId}
-                      onChange={(e) => setSubscriptionId(e.target.value.toUpperCase())}
+                      onChange={(e) =>
+                        setSubscriptionId(e.target.value.toUpperCase())
+                      }
                       className={`h-12 pr-10 ${
-                        subscriptionValidation.isValid === false ? 'border-red-300 focus:border-red-500' :
-                        subscriptionValidation.isValid === true ? 'border-green-300 focus:border-green-500' : ''
+                        subscriptionValidation.isValid === false
+                          ? "border-red-300 focus:border-red-500"
+                          : subscriptionValidation.isValid === true
+                            ? "border-green-300 focus:border-green-500"
+                            : ""
                       }`}
                       maxLength={13}
                     />
@@ -476,39 +707,84 @@ export default function Index() {
                   </div>
 
                   {subscriptionValidation.message && (
-                    <div className={`text-xs ${
-                      subscriptionValidation.isValid === true ? 'text-green-600' :
-                      subscriptionValidation.isValid === false ? 'text-red-600' :
-                      'text-gray-600'
-                    }`}>
+                    <div
+                      className={`text-xs ${
+                        subscriptionValidation.isValid === true
+                          ? "text-green-600"
+                          : subscriptionValidation.isValid === false
+                            ? "text-red-600"
+                            : "text-gray-600"
+                      }`}
+                    >
                       {subscriptionValidation.message}
                     </div>
                   )}
 
-                  {subscriptionValidation.isValid === true && subscriptionValidation.subscriptionType && (
-                    <div className="flex items-center gap-2 mt-2">
-                      <Badge variant={
-                        subscriptionValidation.subscriptionType === "premium" ? "default" :
-                        subscriptionValidation.subscriptionType === "elite" ? "secondary" :
-                        "outline"
-                      } className="text-xs">
-                        {subscriptionValidation.subscriptionType.toUpperCase()} MEMBER
-                      </Badge>
-                      {subscriptionValidation.subscriptionType === "premium" && (
-                        <span className="text-xs text-yellow-600">🎯 Priority booking & 15% discount</span>
-                      )}
-                      {subscriptionValidation.subscriptionType === "elite" && (
-                        <span className="text-xs text-purple-600">⭐ Fast-track booking & 10% discount</span>
-                      )}
-                      {subscriptionValidation.subscriptionType === "standard" && (
-                        <span className="text-xs text-blue-600">✨ Standard member benefits</span>
-                      )}
-                    </div>
-                  )}
+                  {subscriptionValidation.isValid === true &&
+                    subscriptionValidation.userName && (
+                      <div className="p-3 bg-green-50 border border-green-200 rounded-lg mt-3">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                          <span className="text-sm font-medium text-green-800">
+                            Verified Member
+                          </span>
+                        </div>
+                        <p className="text-sm text-green-700">
+                          <strong>
+                            Welcome, {subscriptionValidation.userName}!
+                          </strong>
+                        </p>
+                        <p className="text-xs text-green-600 mt-1">
+                          Your subscription benefits will be automatically
+                          applied to your booking.
+                        </p>
+                      </div>
+                    )}
+
+                  {subscriptionValidation.isValid === true &&
+                    subscriptionValidation.subscriptionType && (
+                      <div className="flex items-center gap-2 mt-2">
+                        <Badge
+                          variant={
+                            subscriptionValidation.subscriptionType ===
+                            "premium"
+                              ? "default"
+                              : subscriptionValidation.subscriptionType ===
+                                  "elite"
+                                ? "secondary"
+                                : "outline"
+                          }
+                          className="text-xs"
+                        >
+                          {subscriptionValidation.subscriptionType.toUpperCase()}{" "}
+                          MEMBER
+                        </Badge>
+                        {subscriptionValidation.subscriptionType ===
+                          "premium" && (
+                          <span className="text-xs text-yellow-600">
+                            🎯 Priority booking & 15% discount
+                          </span>
+                        )}
+                        {subscriptionValidation.subscriptionType ===
+                          "elite" && (
+                          <span className="text-xs text-purple-600">
+                            ⭐ Fast-track booking & 10% discount
+                          </span>
+                        )}
+                        {subscriptionValidation.subscriptionType ===
+                          "standard" && (
+                          <span className="text-xs text-blue-600">
+                            ✨ Standard member benefits
+                          </span>
+                        )}
+                      </div>
+                    )}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="requests" className="text-base font-semibold">Special Requests</Label>
+                  <Label htmlFor="requests" className="text-base font-semibold">
+                    Special Requests
+                  </Label>
                   <Textarea
                     id="requests"
                     placeholder="Any specific requirements or special requests for your event..."
@@ -530,7 +806,12 @@ export default function Index() {
                         id="name"
                         required
                         value={contactInfo.name}
-                        onChange={(e) => setContactInfo({...contactInfo, name: e.target.value})}
+                        onChange={(e) =>
+                          setContactInfo({
+                            ...contactInfo,
+                            name: e.target.value,
+                          })
+                        }
                         className="h-12"
                       />
                     </div>
@@ -541,7 +822,12 @@ export default function Index() {
                         type="email"
                         required
                         value={contactInfo.email}
-                        onChange={(e) => setContactInfo({...contactInfo, email: e.target.value})}
+                        onChange={(e) =>
+                          setContactInfo({
+                            ...contactInfo,
+                            email: e.target.value,
+                          })
+                        }
                         className="h-12"
                       />
                     </div>
@@ -551,16 +837,28 @@ export default function Index() {
                         id="phone"
                         required
                         value={contactInfo.phone}
-                        onChange={(e) => setContactInfo({...contactInfo, phone: e.target.value})}
+                        onChange={(e) =>
+                          setContactInfo({
+                            ...contactInfo,
+                            phone: e.target.value,
+                          })
+                        }
                         className="h-12"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="organization">Organization (Optional)</Label>
+                      <Label htmlFor="organization">
+                        Organization (Optional)
+                      </Label>
                       <Input
                         id="organization"
                         value={contactInfo.organization}
-                        onChange={(e) => setContactInfo({...contactInfo, organization: e.target.value})}
+                        onChange={(e) =>
+                          setContactInfo({
+                            ...contactInfo,
+                            organization: e.target.value,
+                          })
+                        }
                         className="h-12"
                       />
                     </div>
@@ -572,7 +870,9 @@ export default function Index() {
                   <Checkbox
                     id="privacy"
                     checked={privacyConsent}
-                    onCheckedChange={(checked) => setPrivacyConsent(checked as boolean)}
+                    onCheckedChange={(checked) =>
+                      setPrivacyConsent(checked as boolean)
+                    }
                   />
                   <Label htmlFor="privacy" className="text-sm">
                     I agree to HYBE's privacy policy and terms of service *
@@ -581,10 +881,13 @@ export default function Index() {
 
                 {/* Success/Error Message */}
                 {submitMessage && (
-                  <div className={`p-4 rounded-lg border ${submitSuccess
-                    ? 'bg-green-50 border-green-200 text-green-800'
-                    : 'bg-red-50 border-red-200 text-red-800'
-                  }`}>
+                  <div
+                    className={`p-4 rounded-lg border ${
+                      submitSuccess
+                        ? "bg-green-50 border-green-200 text-green-800"
+                        : "bg-red-50 border-red-200 text-red-800"
+                    }`}
+                  >
                     <p className="text-sm font-medium">{submitMessage}</p>
                   </div>
                 )}
@@ -593,9 +896,20 @@ export default function Index() {
                 <Button
                   type="submit"
                   className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-hybe-purple to-hybe-pink hover:from-purple-700 hover:to-pink-600 transition-all duration-300 disabled:opacity-50"
-                  disabled={!privacyConsent || isSubmitting}
+                  disabled={
+                    !privacyConsent ||
+                    isSubmitting ||
+                    (budget === "custom" && !customAmount)
+                  }
                 >
-                  {isSubmitting ? "Submitting..." : "Submit Booking Request"}
+                  {isSubmitting ? (
+                    <div className="flex items-center gap-2">
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                      {loadingStep}
+                    </div>
+                  ) : (
+                    "Submit Booking Request"
+                  )}
                 </Button>
               </form>
             </CardContent>
@@ -606,17 +920,26 @@ export default function Index() {
             {/* Event Types */}
             <Card className="bg-white/95 backdrop-blur-sm shadow-xl">
               <CardHeader>
-                <CardTitle className="text-2xl font-bold text-center">Experience Types</CardTitle>
+                <CardTitle className="text-2xl font-bold text-center">
+                  Experience Types
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {eventTypes.map((event) => (
-                  <div key={event.name} className="flex items-start gap-4 p-4 rounded-lg bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 transition-colors">
+                  <div
+                    key={event.name}
+                    className="flex items-start gap-4 p-4 rounded-lg bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 transition-colors"
+                  >
                     <div className="p-2 rounded-lg bg-white shadow-sm">
                       <event.icon className="h-6 w-6 text-purple-600" />
                     </div>
                     <div className="flex-1">
-                      <h4 className="font-semibold text-gray-900">{event.name}</h4>
-                      <p className="text-sm text-gray-600 mt-1">{event.description}</p>
+                      <h4 className="font-semibold text-gray-900">
+                        {event.name}
+                      </h4>
+                      <p className="text-sm text-gray-600 mt-1">
+                        {event.description}
+                      </p>
                       <Badge variant="outline" className="mt-2 text-xs">
                         {event.duration}
                       </Badge>
@@ -629,34 +952,50 @@ export default function Index() {
             {/* Pricing Info */}
             <Card className="bg-white/95 backdrop-blur-sm shadow-xl">
               <CardHeader>
-                <CardTitle className="text-2xl font-bold text-center">Artist Tiers</CardTitle>
+                <CardTitle className="text-2xl font-bold text-center">
+                  Artist Tiers
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="p-4 rounded-lg bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200">
                   <div className="flex items-center gap-2 mb-2">
                     <Crown className="h-5 w-5 text-yellow-600" />
-                    <h4 className="font-semibold text-yellow-800">Premium Tier</h4>
+                    <h4 className="font-semibold text-yellow-800">
+                      Premium Tier
+                    </h4>
                   </div>
-                  <p className="text-sm text-yellow-700">$750,000 - $1,000,000+</p>
-                  <p className="text-xs text-yellow-600 mt-1">BLACKPINK, SEVENTEEN</p>
+                  <p className="text-sm text-yellow-700">
+                    $750,000 - $1,000,000+
+                  </p>
+                  <p className="text-xs text-yellow-600 mt-1">
+                    BLACKPINK, SEVENTEEN
+                  </p>
                 </div>
 
                 <div className="p-4 rounded-lg bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200">
                   <div className="flex items-center gap-2 mb-2">
                     <Star className="h-5 w-5 text-purple-600" />
-                    <h4 className="font-semibold text-purple-800">Elite Tier</h4>
+                    <h4 className="font-semibold text-purple-800">
+                      Elite Tier
+                    </h4>
                   </div>
                   <p className="text-sm text-purple-700">$500,000 - $750,000</p>
-                  <p className="text-xs text-purple-600 mt-1">NewJeans, LE SSERAFIM, TWICE, Stray Kids</p>
+                  <p className="text-xs text-purple-600 mt-1">
+                    NewJeans, LE SSERAFIM, TWICE, Stray Kids
+                  </p>
                 </div>
 
                 <div className="p-4 rounded-lg bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200">
                   <div className="flex items-center gap-2 mb-2">
                     <Users className="h-5 w-5 text-blue-600" />
-                    <h4 className="font-semibold text-blue-800">Standard Tier</h4>
+                    <h4 className="font-semibold text-blue-800">
+                      Standard Tier
+                    </h4>
                   </div>
                   <p className="text-sm text-blue-700">$22,500 - $500,000</p>
-                  <p className="text-xs text-blue-600 mt-1">BTS, IVE, Rising Artists</p>
+                  <p className="text-xs text-blue-600 mt-1">
+                    BTS, IVE, Rising Artists
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -664,13 +1003,17 @@ export default function Index() {
             {/* Subscription Benefits */}
             <Card className="bg-white/95 backdrop-blur-sm shadow-xl">
               <CardHeader>
-                <CardTitle className="text-xl font-bold text-center">Subscription Benefits</CardTitle>
+                <CardTitle className="text-xl font-bold text-center">
+                  Subscription Benefits
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="p-3 rounded-lg bg-gradient-to-r from-yellow-50 to-yellow-100 border border-yellow-200">
                   <div className="flex items-center gap-2 mb-2">
                     <Crown className="h-4 w-4 text-yellow-600" />
-                    <h4 className="font-semibold text-yellow-800 text-sm">Premium Members</h4>
+                    <h4 className="font-semibold text-yellow-800 text-sm">
+                      Premium Members
+                    </h4>
                   </div>
                   <ul className="text-xs text-yellow-700 space-y-1">
                     <li>• Priority booking queue</li>
@@ -683,7 +1026,9 @@ export default function Index() {
                 <div className="p-3 rounded-lg bg-gradient-to-r from-purple-50 to-purple-100 border border-purple-200">
                   <div className="flex items-center gap-2 mb-2">
                     <Star className="h-4 w-4 text-purple-600" />
-                    <h4 className="font-semibold text-purple-800 text-sm">Elite Members</h4>
+                    <h4 className="font-semibold text-purple-800 text-sm">
+                      Elite Members
+                    </h4>
                   </div>
                   <ul className="text-xs text-purple-700 space-y-1">
                     <li>• Fast-track booking process</li>
@@ -696,7 +1041,9 @@ export default function Index() {
                 <div className="p-3 rounded-lg bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200">
                   <div className="flex items-center gap-2 mb-2">
                     <Users className="h-4 w-4 text-blue-600" />
-                    <h4 className="font-semibold text-blue-800 text-sm">Standard Members</h4>
+                    <h4 className="font-semibold text-blue-800 text-sm">
+                      Standard Members
+                    </h4>
                   </div>
                   <ul className="text-xs text-blue-700 space-y-1">
                     <li>• Member-only event notifications</li>
@@ -711,16 +1058,25 @@ export default function Index() {
             {/* Contact Info */}
             <Card className="bg-white/95 backdrop-blur-sm shadow-xl">
               <CardHeader>
-                <CardTitle className="text-xl font-bold text-center">Need Help?</CardTitle>
+                <CardTitle className="text-xl font-bold text-center">
+                  Need Help?
+                </CardTitle>
               </CardHeader>
               <CardContent className="text-center space-y-3">
                 <p className="text-sm text-gray-600">
-                  Our celebrity booking specialists are available 24/7 to assist with your request.
+                  Our celebrity booking specialists are available 24/7 to assist
+                  with your request.
                 </p>
                 <div className="space-y-2 text-sm">
-                  <p><strong>Phone:</strong> +1 (555) 123-HYBE</p>
-                  <p><strong>Email:</strong> bookings@hybe.com</p>
-                  <p><strong>Emergency:</strong> +1 (555) 999-HYBE</p>
+                  <p>
+                    <strong>Phone:</strong> +1 (555) 123-HYBE
+                  </p>
+                  <p>
+                    <strong>Email:</strong> bookings@hybe.com
+                  </p>
+                  <p>
+                    <strong>Emergency:</strong> +1 (555) 999-HYBE
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -733,10 +1089,13 @@ export default function Index() {
         <div className="container mx-auto px-4 sm:px-6 text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Music className="h-5 w-5 sm:h-6 sm:w-6" />
-            <span className="text-lg sm:text-xl font-bold">HYBE CORPORATION</span>
+            <span className="text-lg sm:text-xl font-bold">
+              HYBE CORPORATION
+            </span>
           </div>
           <p className="text-gray-300 text-xs sm:text-sm max-w-lg mx-auto">
-            © 2024 HYBE Corporation. All rights reserved. Connecting fans with their idols through unforgettable experiences.
+            © 2024 HYBE Corporation. All rights reserved. Connecting fans with
+            their idols through unforgettable experiences.
           </p>
         </div>
       </footer>
