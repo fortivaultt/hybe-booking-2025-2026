@@ -355,15 +355,25 @@ export default function Index() {
       <header className="relative">
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="relative z-10 container mx-auto px-4 sm:px-6 py-8 sm:py-12 text-center text-white">
-          <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4 sm:mb-6">
-            <Sparkles className="h-6 w-6 sm:h-8 sm:w-8" />
-            <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
-              HYBE CELEBRITY BOOKING
-            </h1>
-            <Sparkles className="h-6 w-6 sm:h-8 sm:w-8" />
+          <div className="flex flex-col items-center justify-center mb-4 sm:mb-6">
+            {/* HYBE Logo */}
+            <div className="mb-4">
+              <img
+                src="/images/common/logo-b.svg"
+                alt="HYBE"
+                className="h-16 sm:h-20 lg:h-24 w-auto mx-auto filter drop-shadow-lg"
+              />
+            </div>
+            <div className="flex items-center justify-center gap-2 sm:gap-3">
+              <Sparkles className="h-6 w-6 sm:h-8 sm:w-8" />
+              <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
+                CELEBRITY BOOKING
+              </h1>
+              <Sparkles className="h-6 w-6 sm:h-8 sm:w-8" />
+            </div>
           </div>
           <p className="text-base sm:text-xl text-purple-100 max-w-2xl mx-auto">
-            Book exclusive experiences with the world's biggest K-pop stars.
+            Official HYBE celebrity booking platform. Book exclusive experiences with the world's biggest K-pop stars.
             From intimate meet & greets to luxury vacation packages.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 mt-6 sm:mt-8 text-sm text-purple-200">
@@ -1087,8 +1097,12 @@ export default function Index() {
       {/* Footer */}
       <footer className="bg-black/80 text-white py-6 sm:py-8 mt-8 sm:mt-16">
         <div className="container mx-auto px-4 sm:px-6 text-center">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Music className="h-5 w-5 sm:h-6 sm:w-6" />
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <img
+              src="/images/common/logo-b.svg"
+              alt="HYBE"
+              className="h-6 w-auto sm:h-8"
+            />
             <span className="text-lg sm:text-xl font-bold">
               HYBE CORPORATION
             </span>
