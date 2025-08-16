@@ -114,7 +114,7 @@ export default function Index() {
     setSubmitMessage("");
 
     const bookingData: BookingRequest = {
-      selectedCelebrity,
+      selectedCelebrity: `${selectedGroup} - ${selectedArtist}`,
       selectedEventType,
       budget,
       attendees,
