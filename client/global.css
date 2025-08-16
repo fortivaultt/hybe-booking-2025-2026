@@ -10,34 +10,34 @@
   */
   :root {
     --background: 0 0% 100%;
-    --foreground: 235 15% 15%;
+    --foreground: 0 0% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 235 15% 15%;
+    --card-foreground: 0 0% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 235 15% 15%;
+    --popover-foreground: 0 0% 15%;
 
-    --primary: 260 85% 55%;
+    --primary: 0 0% 15%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 260 15% 95%;
-    --secondary-foreground: 260 85% 25%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 15%;
 
-    --muted: 260 10% 96%;
-    --muted-foreground: 260 5% 45%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 315 85% 65%;
+    --accent: 260 85% 55%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 260 15% 90%;
-    --input: 260 15% 94%;
+    --border: 0 0% 90%;
+    --input: 0 0% 94%;
     --ring: 260 85% 55%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
 
