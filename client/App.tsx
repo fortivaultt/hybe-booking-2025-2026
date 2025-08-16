@@ -10,6 +10,8 @@ import Index from "./pages/Index";
 import CorporateIndex from "./pages/CorporateIndex";
 import Success from "./pages/Success";
 import NotFound from "./pages/NotFound";
+import CompanyInfo from "./pages/CompanyInfo";
+import ComingSoon from "./pages/ComingSoon";
 
 const queryClient = new QueryClient();
 
