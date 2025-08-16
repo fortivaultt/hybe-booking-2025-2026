@@ -221,6 +221,11 @@ export default function Index() {
         setLocation("");
         setSpecialRequests("");
         setSubscriptionId("");
+        setSubscriptionValidation({
+          isValidating: false,
+          isValid: null,
+          message: ""
+        });
         setContactInfo({ name: "", email: "", phone: "", organization: "" });
         setPrivacyConsent(false);
       } else {
