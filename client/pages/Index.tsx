@@ -11,15 +11,63 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Calendar, CalendarDays, Star, Users, MapPin, Heart, Crown, Sparkles, Music } from "lucide-react";
 
-const celebrities = [
-  { name: "BTS", category: "Group", tier: "Premium", price: "1,000,000" },
-  { name: "BLACKPINK", category: "Group", tier: "Premium", price: "800,000" },
-  { name: "NewJeans", category: "Group", tier: "Elite", price: "600,000" },
-  { name: "LE SSERAFIM", category: "Group", tier: "Elite", price: "550,000" },
-  { name: "SEVENTEEN", category: "Group", tier: "Premium", price: "750,000" },
-  { name: "TWICE", category: "Group", tier: "Elite", price: "650,000" },
-  { name: "Stray Kids", category: "Group", tier: "Elite", price: "500,000" },
-  { name: "IVE", category: "Group", tier: "Standard", price: "400,000" },
+const fanPreferences = [
+  "New to K-pop",
+  "Casual Fan",
+  "Dedicated Fan",
+  "Super Fan",
+  "Ultimate Stan"
+];
+
+const kpopGroups = [
+  {
+    name: "BTS",
+    members: ["RM", "Jin", "Suga", "J-Hope", "Jimin", "V", "Jungkook"],
+    tier: "Standard",
+    basePrice: "22,500"
+  },
+  {
+    name: "BLACKPINK",
+    members: ["Jisoo", "Jennie", "Rosé", "Lisa"],
+    tier: "Premium",
+    basePrice: "800,000"
+  },
+  {
+    name: "NewJeans",
+    members: ["Minji", "Hanni", "Danielle", "Haerin", "Hyein"],
+    tier: "Elite",
+    basePrice: "600,000"
+  },
+  {
+    name: "LE SSERAFIM",
+    members: ["Sakura", "Chaewon", "Yunjin", "Kazuha", "Eunchae"],
+    tier: "Elite",
+    basePrice: "550,000"
+  },
+  {
+    name: "SEVENTEEN",
+    members: ["S.Coups", "Jeonghan", "Joshua", "Jun", "Hoshi", "Wonwoo", "Woozi", "DK", "Mingyu", "The8", "Seungkwan", "Vernon", "Dino"],
+    tier: "Premium",
+    basePrice: "750,000"
+  },
+  {
+    name: "TWICE",
+    members: ["Nayeon", "Jeongyeon", "Momo", "Sana", "Jihyo", "Mina", "Dahyun", "Chaeyoung", "Tzuyu"],
+    tier: "Elite",
+    basePrice: "650,000"
+  },
+  {
+    name: "Stray Kids",
+    members: ["Bang Chan", "Lee Know", "Changbin", "Hyunjin", "Han", "Felix", "Seungmin", "I.N"],
+    tier: "Elite",
+    basePrice: "500,000"
+  },
+  {
+    name: "IVE",
+    members: ["Yujin", "Gaeul", "Rei", "Wonyoung", "Liz", "Leeseo"],
+    tier: "Standard",
+    basePrice: "400,000"
+  }
 ];
 
 const eventTypes = [
