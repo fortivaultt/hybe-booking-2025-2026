@@ -86,7 +86,7 @@ const CookieConsent = () => {
           <div className="floating-cookie-text text-sm text-gray-700 mb-4">
             Please allow service to collect cookies for a smooth experience with auto login.{" "}
             <strong>
-              <a href="/cookie" className="text-purple-600 hover:text-purple-800 underline">
+              <a href="/eng/cookie" className="text-purple-600 hover:text-purple-800 underline">
                 More
               </a>
             </strong>
