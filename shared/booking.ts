@@ -2,6 +2,7 @@ export interface BookingRequest {
   selectedCelebrity: string;
   selectedEventType: string;
   budget: string;
+  customAmount?: string;
   attendees: string;
   preferredDate: string;
   location: string;
