@@ -89,6 +89,17 @@ export default function Index() {
   const [location, setLocation] = useState("");
   const [specialRequests, setSpecialRequests] = useState("");
   const [subscriptionId, setSubscriptionId] = useState("");
+  const [subscriptionValidation, setSubscriptionValidation] = useState<{
+    isValidating: boolean;
+    isValid: boolean | null;
+    message: string;
+    subscriptionType?: string;
+    userName?: string;
+  }>({
+    isValidating: false,
+    isValid: null,
+    message: "",
+  });
   const [contactInfo, setContactInfo] = useState({
     name: "",
     email: "",
