@@ -354,19 +354,14 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Corporate Header */}
-      <header className="corporate-header border-b border-gray-200 bg-white">
-        <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 text-center">
-          <div className="flex flex-col items-center justify-center mb-4 sm:mb-6">
-            {/* HYBE Logo */}
-            <div className="mb-4">
-              <img
-                src="/images/common/logo-b.svg"
-                alt="HYBE"
-                className="h-12 sm:h-16 lg:h-20 w-auto mx-auto"
-              />
-            </div>
-            <div className="flex items-center justify-center gap-2 sm:gap-3">
+      {/* HYBE Corporate Header */}
+      <HybeHeader />
+
+      {/* Hero Section */}
+      <section className="bg-white border-b border-gray-200 py-12 sm:py-16">
+        <div className="container mx-auto px-4 sm:px-6 text-center">
+          <div className="flex flex-col items-center justify-center mb-6">
+            <div className="flex items-center justify-center gap-3 mb-4">
               <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600" />
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">
                 CELEBRITY BOOKING PLATFORM
@@ -374,18 +369,18 @@ export default function Index() {
               <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600" />
             </div>
           </div>
-          <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto mb-4">
+          <p className="text-base sm:text-lg text-gray-600 max-w-3xl mx-auto mb-6">
             Official HYBE celebrity booking platform. Book exclusive experiences
             with the world's biggest K-pop stars. From intimate meet & greets to
             luxury vacation packages.
           </p>
-          <div className="inline-flex items-center px-4 py-2 bg-gray-100 rounded-lg">
+          <div className="inline-flex items-center px-6 py-3 bg-gray-50 border border-gray-200 rounded-lg">
             <p className="text-sm text-gray-700">
               🎯 Powered by <strong className="text-purple-600">HYBE Corporation</strong> - Home to BTS,
               BLACKPINK, NewJeans & More
             </p>
           </div>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 mt-6 text-sm text-gray-600">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8 mt-8 text-sm text-gray-600">
             <div className="flex items-center gap-2">
               <Star className="h-4 w-4 text-purple-600" />
               <span>Premium Artists</span>
@@ -400,7 +395,7 @@ export default function Index() {
             </div>
           </div>
         </div>
-      </header>
+      </section>
 
       {/* Main Content */}
       <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 bg-gray-50 min-h-screen">
