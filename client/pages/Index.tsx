@@ -425,13 +425,13 @@ export default function Index() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-black/80 text-white py-8 mt-16">
-        <div className="container mx-auto px-6 text-center">
+      <footer className="bg-black/80 text-white py-6 sm:py-8 mt-8 sm:mt-16">
+        <div className="container mx-auto px-4 sm:px-6 text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <Music className="h-6 w-6" />
-            <span className="text-xl font-bold">HYBE CORPORATION</span>
+            <Music className="h-5 w-5 sm:h-6 sm:w-6" />
+            <span className="text-lg sm:text-xl font-bold">HYBE CORPORATION</span>
           </div>
-          <p className="text-gray-300 text-sm">
+          <p className="text-gray-300 text-xs sm:text-sm max-w-lg mx-auto">
             © 2024 HYBE Corporation. All rights reserved. Connecting fans with their idols through unforgettable experiences.
           </p>
         </div>
