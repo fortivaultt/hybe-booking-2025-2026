@@ -436,28 +436,69 @@ export default function Index() {
                 {/* Subscription ID */}
                 <div className="space-y-2">
                   <Label htmlFor="subscriptionId" className="text-base font-semibold">
-                    HYBE Subscription ID (Optional)
+                    HYBE Subscription ID (Recommended)
                     <span className="block text-xs font-normal text-muted-foreground mt-1">
-                      Format: HYB followed by 10 alphanumeric characters (e.g., HYBABC1234567)
+                      Valid subscription provides priority booking and discounts
                     </span>
                   </Label>
-                  <Input
-                    id="subscriptionId"
-                    placeholder="HYBABC1234567"
-                    value={subscriptionId}
-                    onChange={(e) => setSubscriptionId(e.target.value.toUpperCase())}
-                    className={`h-12 ${subscriptionId && !isValidSubscriptionId(subscriptionId) ? 'border-red-300 focus:border-red-500' : ''}`}
-                    maxLength={13}
-                  />
-                  {subscriptionId && !isValidSubscriptionId(subscriptionId) && (
-                    <p className="text-xs text-red-600">
-                      Invalid format. Must start with HYB followed by 10 alphanumeric characters.
-                    </p>
+                  <div className="relative">
+                    <Input
+                      id="subscriptionId"
+                      placeholder="HYBABC1234567"
+                      value={subscriptionId}
+                      onChange={(e) => setSubscriptionId(e.target.value.toUpperCase())}
+                      className={`h-12 pr-10 ${
+                        subscriptionValidation.isValid === false ? 'border-red-300 focus:border-red-500' :
+                        subscriptionValidation.isValid === true ? 'border-green-300 focus:border-green-500' : ''
+                      }`}
+                      maxLength={13}
+                    />
+                    {subscriptionValidation.isValidating && (
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                        <div className="animate-spin h-4 w-4 border-2 border-gray-300 border-t-blue-600 rounded-full"></div>
+                      </div>
+                    )}
+                    {subscriptionValidation.isValid === true && (
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                        <div className="h-4 w-4 text-green-600">✓</div>
+                      </div>
+                    )}
+                    {subscriptionValidation.isValid === false && (
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                        <div className="h-4 w-4 text-red-600">✗</div>
+                      </div>
+                    )}
+                  </div>
+
+                  {subscriptionValidation.message && (
+                    <div className={`text-xs ${
+                      subscriptionValidation.isValid === true ? 'text-green-600' :
+                      subscriptionValidation.isValid === false ? 'text-red-600' :
+                      'text-gray-600'
+                    }`}>
+                      {subscriptionValidation.message}
+                    </div>
                   )}
-                  {subscriptionId && isValidSubscriptionId(subscriptionId) && (
-                    <p className="text-xs text-green-600">
-                      ✓ Valid subscription ID format
-                    </p>
+
+                  {subscriptionValidation.isValid === true && subscriptionValidation.subscriptionType && (
+                    <div className="flex items-center gap-2 mt-2">
+                      <Badge variant={
+                        subscriptionValidation.subscriptionType === "premium" ? "default" :
+                        subscriptionValidation.subscriptionType === "elite" ? "secondary" :
+                        "outline"
+                      } className="text-xs">
+                        {subscriptionValidation.subscriptionType.toUpperCase()} MEMBER
+                      </Badge>
+                      {subscriptionValidation.subscriptionType === "premium" && (
+                        <span className="text-xs text-yellow-600">🎯 Priority booking & 15% discount</span>
+                      )}
+                      {subscriptionValidation.subscriptionType === "elite" && (
+                        <span className="text-xs text-purple-600">⭐ Fast-track booking & 10% discount</span>
+                      )}
+                      {subscriptionValidation.subscriptionType === "standard" && (
+                        <span className="text-xs text-blue-600">✨ Standard member benefits</span>
+                      )}
+                    </div>
                   )}
                 </div>
 
