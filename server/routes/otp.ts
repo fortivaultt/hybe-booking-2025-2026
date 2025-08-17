@@ -7,10 +7,13 @@ import nodemailer from "nodemailer";
 
 // --- Redis Client Setup ---
 let redisClient: RedisClientType | undefined;
-const redisUrl = "redis://default:kPoLgM4FzXb9vsjWskfDHl4X9FkxJrJG@redis-15524.c14.us-east-1-3.ec2.redns.redis-cloud.com:15524";
 
 async function getRedisClient() {
   if (!redisClient) {
+    const redisUrl = process.env.REDIS_URL;
+    if (!redisUrl) {
+      throw new Error("REDIS_URL environment variable not set.");
+    }
     const client = createClient({ url: redisUrl });
     client.on('error', err => console.error('Redis Client Error', err));
     await client.connect();

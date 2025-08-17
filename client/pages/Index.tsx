@@ -391,6 +391,7 @@ export default function Index() {
     const finalBudget = budget === "custom" ? customAmount : budget;
 
     const bookingData: BookingRequest = {
+      fanPreference,
       selectedCelebrity: `${selectedGroup} - ${selectedArtist}`,
       selectedEventType,
       budget: finalBudget,
