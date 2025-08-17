@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 
 export interface BookingRequest {
+  fanPreference: string;
   selectedCelebrity: string;
   selectedEventType: string;
   budget: string;
@@ -65,6 +66,7 @@ export const handleBookingSubmission: RequestHandler = async (req, res) => {
     const netlifyFormData = {
       "form-name": "hybe-booking",
       "booking-id": bookingId,
+      "fan-preference": bookingData.fanPreference,
       celebrity: bookingData.selectedCelebrity,
       "event-type": bookingData.selectedEventType,
       budget: bookingData.budget,
@@ -78,6 +80,7 @@ export const handleBookingSubmission: RequestHandler = async (req, res) => {
       "contact-email": bookingData.contactInfo.email,
       "contact-phone": bookingData.contactInfo.phone,
       "contact-organization": bookingData.contactInfo.organization,
+      "privacy-consent": String(bookingData.privacyConsent),
       "submission-time": new Date().toISOString(),
     };
 
