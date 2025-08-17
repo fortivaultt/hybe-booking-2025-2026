@@ -10,7 +10,6 @@ const redisClient = createClient({ url: redisUrl });
 
 redisClient.on('error', err => console.error('Redis Client Error', err));
 
-// Note: This is a top-level await. This is fine in modern Node.js modules.
 // For the test runner to exit gracefully, this connection should be explicitly closed.
 // e.g., in a test setup file with an afterAll hook: `afterAll(() => redisClient.quit());`
 redisClient.connect();
