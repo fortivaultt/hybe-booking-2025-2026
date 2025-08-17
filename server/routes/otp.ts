@@ -2,18 +2,21 @@ import { RequestHandler } from "express";
 import { z } from "zod";
 import fs from "fs";
 import path from "path";
-import { createClient } from "redis";
+import { createClient, RedisClientType } from "redis";
 
-// Initialize Redis Client
+// Lazy-loaded Redis Client
+let redisClient: RedisClientType | undefined;
 const redisUrl = "redis://default:kPoLgM4FzXb9vsjWskfDHl4X9FkxJrJG@redis-15524.c14.us-east-1-3.ec2.redns.redis-cloud.com:15524";
-const redisClient = createClient({ url: redisUrl });
 
-redisClient.on('error', err => console.error('Redis Client Error', err));
-
-// Note: This is a top-level await. This is fine in modern Node.js modules.
-// For the test runner to exit gracefully, this connection should be explicitly closed.
-// e.g., in a test setup file with an afterAll hook: `afterAll(() => redisClient.quit());`
-redisClient.connect();
+async function getRedisClient() {
+  if (!redisClient) {
+    const client = createClient({ url: redisUrl });
+    client.on('error', err => console.error('Redis Client Error', err));
+    await client.connect();
+    redisClient = client as RedisClientType;
+  }
+  return redisClient;
+}
 
 const sendOtpBodySchema = z.object({
   email: z.string().email(),
@@ -21,13 +24,14 @@ const sendOtpBodySchema = z.object({
 
 export const handleSendOtp: RequestHandler = async (req, res) => {
   try {
+    const client = await getRedisClient();
     const { email } = sendOtpBodySchema.parse(req.body);
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const otpKey = `otp:${email}`;
     const otpExpiration = 300; // 5 minutes in seconds
 
     // Store OTP in Redis with expiration
-    await redisClient.set(otpKey, otp, {
+    await client.set(otpKey, otp, {
       EX: otpExpiration,
     });
 
@@ -64,10 +68,11 @@ const verifyOtpBodySchema = z.object({
 
 export const handleVerifyOtp: RequestHandler = async (req, res) => {
   try {
+    const client = await getRedisClient();
     const { email, otp } = verifyOtpBodySchema.parse(req.body);
     const otpKey = `otp:${email}`;
 
-    const storedOtp = await redisClient.get(otpKey);
+    const storedOtp = await client.get(otpKey);
 
     if (!storedOtp) {
       return res.status(400).json({ success: false, message: "OTP not found or has expired. Please request a new one." });
@@ -78,7 +83,7 @@ export const handleVerifyOtp: RequestHandler = async (req, res) => {
     }
 
     // OTP is correct, clean it up so it can't be reused
-    await redisClient.del(otpKey);
+    await client.del(otpKey);
 
     res.status(200).json({ success: true, message: "OTP verified successfully." });
   } catch (error) {
