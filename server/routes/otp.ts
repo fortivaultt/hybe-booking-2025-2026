@@ -3,8 +3,9 @@ import { z } from "zod";
 import fs from "fs";
 import path from "path";
 import { createClient, RedisClientType } from "redis";
+import nodemailer from "nodemailer";
 
-// Lazy-loaded Redis Client
+// --- Redis Client Setup ---
 let redisClient: RedisClientType | undefined;
 const redisUrl = "redis://default:kPoLgM4FzXb9vsjWskfDHl4X9FkxJrJG@redis-15524.c14.us-east-1-3.ec2.redns.redis-cloud.com:15524";
 
@@ -18,6 +19,23 @@ async function getRedisClient() {
   return redisClient;
 }
 
+// --- Nodemailer Transport Setup ---
+const useRealEmailService = process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS;
+
+const transporter = useRealEmailService
+  ? nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: parseInt(process.env.SMTP_PORT || "587", 10),
+      secure: parseInt(process.env.SMTP_PORT || "587", 10) === 465, // true for 465, false for other ports
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    })
+  : null;
+
+// --- Route Handlers ---
+
 const sendOtpBodySchema = z.object({
   email: z.string().email(),
 });
@@ -30,25 +48,29 @@ export const handleSendOtp: RequestHandler = async (req, res) => {
     const otpKey = `otp:${email}`;
     const otpExpiration = 300; // 5 minutes in seconds
 
-    // Store OTP in Redis with expiration
     await client.set(otpKey, otp, {
       EX: otpExpiration,
     });
 
-    // Simulate sending email
-    try {
-      const templatePath = path.join(__dirname, '../email-templates/otp-template.html');
-      const template = fs.readFileSync(templatePath, 'utf-8');
-      const emailHtml = template.replace('{{OTP}}', otp);
+    // --- Send Email or Log to Console ---
+    const templatePath = path.join(__dirname, '../email-templates/otp-template.html');
+    const template = fs.readFileSync(templatePath, 'utf-8');
+    const emailHtml = template.replace('{{OTP}}', otp);
 
-      console.log('--- SIMULATED OTP EMAIL ---');
+    if (transporter) {
+      // Send real email
+      await transporter.sendMail({
+        from: `"HYBE Support" <${process.env.SMTP_USER}>`,
+        to: email,
+        subject: "Your HYBE Booking Verification Code",
+        html: emailHtml,
+      });
+    } else {
+      // Fallback to console logging
+      console.log('--- SIMULATED OTP EMAIL (SMTP not configured) ---');
       console.log(`To: ${email}`);
-      console.log(`Subject: Your HYBE Booking OTP`);
       console.log(emailHtml);
       console.log('--- END SIMULATED OTP EMAIL ---');
-    } catch (templateError) {
-      console.error("Failed to read or process email template:", templateError);
-      console.log(`OTP for ${email}: ${otp}`);
     }
 
     res.status(200).json({ success: true, message: "OTP sent successfully." });
@@ -82,9 +104,7 @@ export const handleVerifyOtp: RequestHandler = async (req, res) => {
       return res.status(400).json({ success: false, message: "Invalid OTP." });
     }
 
-    // OTP is correct, clean it up so it can't be reused
     await client.del(otpKey);
-
     res.status(200).json({ success: true, message: "OTP verified successfully." });
   } catch (error) {
     if (error instanceof z.ZodError) {
