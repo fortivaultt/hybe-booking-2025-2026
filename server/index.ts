@@ -5,6 +5,7 @@ import { handleDemo } from "./routes/demo";
 import { handleBookingSubmission } from "./routes/booking";
 import { validateSubscriptionId, listSubscriptionTypes } from "./routes/subscription";
 import { handleSendOtp, handleVerifyOtp } from "./routes/otp";
+import { getSystemHealth, getAnalyticsDashboard, getRealTimeMetrics } from "./routes/monitoring";
 import { initializeRedis } from "./utils/cache";
 import { requestLogger, Analytics } from "./utils/logger";
 import {
