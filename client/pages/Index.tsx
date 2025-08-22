@@ -313,9 +313,21 @@ export default function Index() {
       return;
     }
 
+    // Don't validate if the input is too short or obviously invalid
+    if (subscriptionId.length < 3) {
+      setSubscriptionValidation({
+        isValidating: false,
+        isValid: null,
+        message: "",
+      });
+      return;
+    }
+
+    // Increase debounce delay to reduce API calls while typing
     const timeoutId = setTimeout(() => {
+      // Only validate if the subscription ID hasn't changed recently
       validateSubscriptionIdInDatabase(subscriptionId);
-    }, 500); // 500ms delay for debouncing
+    }, 800); // Increased from 500ms to 800ms
 
     return () => clearTimeout(timeoutId);
   }, [subscriptionId]);
