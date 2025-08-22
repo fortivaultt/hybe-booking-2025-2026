@@ -2,25 +2,9 @@ import { RequestHandler } from "express";
 import { z } from "zod";
 import fs from "fs";
 import path from "path";
-import { createClient, RedisClientType } from "redis";
 import nodemailer from "nodemailer";
-
-// --- Redis Client Setup ---
-let redisClient: RedisClientType | undefined;
-
-async function getRedisClient() {
-  if (!redisClient) {
-    const redisUrl = process.env.REDIS_URL;
-    if (!redisUrl) {
-      throw new Error("REDIS_URL environment variable not set.");
-    }
-    const client = createClient({ url: redisUrl });
-    client.on('error', err => console.error('Redis Client Error', err));
-    await client.connect();
-    redisClient = client as RedisClientType;
-  }
-  return redisClient;
-}
+import { cacheService } from "../utils/cache";
+import { Analytics } from "../utils/logger";
 
 // --- Nodemailer Transport Setup ---
 const useRealEmailService = process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS;
