@@ -226,10 +226,8 @@ export default function Index() {
     const href = e.currentTarget.href;
     if (!href) return;
 
-    setIsRedirecting(true);
-    setTimeout(() => {
-      window.location.href = href;
-    }, 1500); // Show spinner for 1.5 seconds
+    // Open in new tab to avoid losing form data
+    window.open(href, '_blank');
   };
 
   // Get selected group data
