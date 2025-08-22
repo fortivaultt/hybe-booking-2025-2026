@@ -1,10 +1,16 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { BookingRequest, BookingResponse } from "@shared/booking";
 import {
   SubscriptionValidationRequest,
   SubscriptionValidationResponse,
 } from "@shared/subscription";
+import {
+  SendOtpRequest,
+  SendOtpResponse,
+  VerifyOtpRequest,
+  VerifyOtpResponse,
+} from "@shared/api";
 import { Button } from "@/components/ui/button";
 import HybeHeader from "@/components/HybeHeader";
 import HybeFooter from "@/components/HybeFooter";
@@ -187,6 +193,11 @@ export default function Index() {
     isValid: null,
     message: "",
   });
+
+  // Frontend cache for subscription validation results
+  const [validationCache, setValidationCache] = useState<Record<string, any>>(
+    {},
+  );
   const [contactInfo, setContactInfo] = useState({
     name: "",
     email: "",
@@ -198,31 +209,77 @@ export default function Index() {
   const [submitMessage, setSubmitMessage] = useState("");
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [loadingStep, setLoadingStep] = useState("");
+  const [otpState, setOtpState] = useState<{
+    otpSent: boolean;
+    isSending: boolean;
+    isVerifying: boolean;
+    isVerified: boolean;
+    otp: string;
+    message: string;
+  }>({
+    otpSent: false,
+    isSending: false,
+    isVerifying: false,
+    isVerified: false,
+    otp: "",
+    message: "",
+  });
+
+  const handleRedirectClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const href = e.currentTarget.href;
+    if (!href) return;
+
+    // Open in new tab to avoid losing form data
+    window.open(href, "_blank");
+  };
 
   // Get selected group data
   const selectedGroupData = kpopGroups.find(
     (group) => group.name === selectedGroup,
   );
 
-  // Validate subscription ID format (HYB + 10 alphanumeric) or special ID
+  // Validate subscription ID format (HYB + 10 alphanumeric)
   const isValidSubscriptionId = (id: string) => {
-    if (id === "B07200EF6667") {
-      return true;
-    }
-    const regex = /^HYB[A-Z0-9]{10}$/i;
-    return regex.test(id);
+    // Basic format validation - detailed validation happens server-side
+    const regex = /^[A-Z0-9]{10,13}$/i;
+    return regex.test(id) && id.length >= 10;
   };
 
   // Validate subscription ID against database
   const validateSubscriptionIdInDatabase = async (id: string) => {
     if (!isValidSubscriptionId(id)) {
-      setSubscriptionValidation({
+      const errorResult = {
         isValidating: false,
         isValid: false,
-        message:
-          "Invalid format. Must be a valid HYBE ID.",
-      });
+        message: "Invalid format. Please enter a valid subscription ID.",
+      };
+      setSubscriptionValidation(errorResult);
       return;
+    }
+
+    // Check frontend cache first
+    const cacheKey = id.toUpperCase();
+    if (validationCache[cacheKey]) {
+      const cachedResult = validationCache[cacheKey];
+      // Only use cache if it's less than 5 minutes old
+      if (Date.now() - cachedResult.timestamp < 300000) {
+        setSubscriptionValidation({
+          isValidating: false,
+          isValid: cachedResult.isValid,
+          message: cachedResult.message,
+          subscriptionType: cachedResult.subscriptionType,
+          userName: cachedResult.userName,
+        });
+        return;
+      } else {
+        // Remove expired cache entry
+        setValidationCache((prev) => {
+          const updated = { ...prev };
+          delete updated[cacheKey];
+          return updated;
+        });
+      }
     }
 
     setSubscriptionValidation((prev) => ({ ...prev, isValidating: true }));
@@ -240,19 +297,31 @@ export default function Index() {
 
       const result: SubscriptionValidationResponse = await response.json();
 
-      setSubscriptionValidation({
+      const validationResult = {
         isValidating: false,
         isValid: result.isValid,
         message: result.message,
         subscriptionType: result.subscriptionType,
         userName: result.userName,
-      });
+      };
+
+      setSubscriptionValidation(validationResult);
+
+      // Cache the result with timestamp
+      setValidationCache((prev) => ({
+        ...prev,
+        [cacheKey]: {
+          ...validationResult,
+          timestamp: Date.now(),
+        },
+      }));
     } catch (error) {
-      setSubscriptionValidation({
+      const errorResult = {
         isValidating: false,
         isValid: false,
         message: "Error validating subscription ID. Please try again.",
-      });
+      };
+      setSubscriptionValidation(errorResult);
     }
   };
 
@@ -285,15 +354,102 @@ export default function Index() {
       return;
     }
 
+    // Don't validate if the input is too short or obviously invalid
+    if (subscriptionId.length < 3) {
+      setSubscriptionValidation({
+        isValidating: false,
+        isValid: null,
+        message: "",
+      });
+      return;
+    }
+
+    // Increase debounce delay to reduce API calls while typing
     const timeoutId = setTimeout(() => {
+      // Only validate if the subscription ID hasn't changed recently
       validateSubscriptionIdInDatabase(subscriptionId);
-    }, 500); // 500ms delay for debouncing
+    }, 800); // Increased from 500ms to 800ms
 
     return () => clearTimeout(timeoutId);
   }, [subscriptionId]);
 
+  const handleSendOtp = async () => {
+    setOtpState((prev) => ({ ...prev, isSending: true, message: "" }));
+    try {
+      const response = await fetch("/api/otp/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: contactInfo.email } as SendOtpRequest),
+      });
+      const result: SendOtpResponse = await response.json();
+      if (result.success) {
+        setOtpState((prev) => ({
+          ...prev,
+          otpSent: true,
+          message: result.message,
+        }));
+      } else {
+        setOtpState((prev) => ({
+          ...prev,
+          message: result.message || "Failed to send OTP.",
+        }));
+      }
+    } catch (error) {
+      setOtpState((prev) => ({
+        ...prev,
+        message: "An unknown error occurred.",
+      }));
+    } finally {
+      setOtpState((prev) => ({ ...prev, isSending: false }));
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    setOtpState((prev) => ({ ...prev, isVerifying: true, message: "" }));
+    try {
+      const response = await fetch("/api/otp/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: contactInfo.email,
+          otp: otpState.otp,
+        } as VerifyOtpRequest),
+      });
+      const result: VerifyOtpResponse = await response.json();
+      if (result.success) {
+        setOtpState((prev) => ({
+          ...prev,
+          isVerified: true,
+          message: result.message,
+        }));
+      } else {
+        setOtpState((prev) => ({
+          ...prev,
+          isVerified: false,
+          message: result.message || "Failed to verify OTP.",
+        }));
+      }
+    } catch (error) {
+      setOtpState((prev) => ({
+        ...prev,
+        isVerified: false,
+        message: "An unknown error occurred.",
+      }));
+    } finally {
+      setOtpState((prev) => ({ ...prev, isVerifying: false }));
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!otpState.isVerified) {
+      setSubmitMessage(
+        "Please verify your email with an OTP before submitting.",
+      );
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitMessage("");
 
@@ -313,6 +469,7 @@ export default function Index() {
     const finalBudget = budget === "custom" ? customAmount : budget;
 
     const bookingData: BookingRequest = {
+      fanPreference,
       selectedCelebrity: `${selectedGroup} - ${selectedArtist}`,
       selectedEventType,
       budget: finalBudget,
@@ -591,9 +748,6 @@ export default function Index() {
                         value={budget}
                         onValueChange={(value) => {
                           setBudget(value);
-                          if (value !== "custom") {
-                            setCustomAmount("");
-                          }
                         }}
                       >
                         <SelectTrigger className="h-12">
@@ -624,7 +778,7 @@ export default function Index() {
                       </Select>
 
                       {/* Custom Amount Input */}
-                      {budget === "custom" && (
+                      {budget && (
                         <div className="mt-3">
                           <Label
                             htmlFor="customAmount"
@@ -715,7 +869,7 @@ export default function Index() {
                       <div className="relative">
                         <Input
                           id="subscriptionId"
-                          placeholder="HYBABC1234567"
+                          placeholder="Enter your subscription ID"
                           value={subscriptionId}
                           onChange={(e) =>
                             setSubscriptionId(e.target.value.toUpperCase())
@@ -727,7 +881,7 @@ export default function Index() {
                                 ? "border-green-300 focus:border-green-500"
                                 : ""
                           }`}
-                          maxLength={13}
+                          maxLength={15}
                         />
                         {subscriptionValidation.isValidating && (
                           <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -744,6 +898,15 @@ export default function Index() {
                             <div className="h-4 w-4 text-red-600">✗</div>
                           </div>
                         )}
+                      </div>
+                      <div className="text-xs text-right mt-1">
+                        <a
+                          href="https://hybecorpbooking.netlify.app/"
+                          onClick={handleRedirectClick}
+                          className="text-purple-600 hover:underline"
+                        >
+                          Don't have a subscription ID? Get one here ↗
+                        </a>
                       </div>
 
                       {subscriptionValidation.message && (
@@ -869,19 +1032,83 @@ export default function Index() {
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="email">Email Address *</Label>
-                          <Input
-                            id="email"
-                            type="email"
-                            required
-                            value={contactInfo.email}
-                            onChange={(e) =>
-                              setContactInfo({
-                                ...contactInfo,
-                                email: e.target.value,
-                              })
-                            }
-                            className="h-12"
-                          />
+                          <div className="flex items-center gap-2">
+                            <Input
+                              id="email"
+                              type="email"
+                              required
+                              value={contactInfo.email}
+                              onChange={(e) =>
+                                setContactInfo({
+                                  ...contactInfo,
+                                  email: e.target.value,
+                                })
+                              }
+                              className="h-12"
+                              disabled={otpState.otpSent || otpState.isVerified}
+                            />
+                            {!otpState.isVerified && (
+                              <Button
+                                type="button"
+                                onClick={handleSendOtp}
+                                disabled={
+                                  otpState.isSending ||
+                                  !contactInfo.email.includes("@")
+                                }
+                                className="h-12"
+                              >
+                                {otpState.isSending ? (
+                                  <Loader2 className="h-4 w-4 animate-spin" />
+                                ) : otpState.otpSent ? (
+                                  "Resend"
+                                ) : (
+                                  "Send OTP"
+                                )}
+                              </Button>
+                            )}
+                          </div>
+                          {otpState.otpSent && !otpState.isVerified && (
+                            <div className="space-y-2 pt-2">
+                              <Label htmlFor="otp">Enter OTP</Label>
+                              <div className="flex items-center gap-2">
+                                <Input
+                                  id="otp"
+                                  type="text"
+                                  maxLength={6}
+                                  value={otpState.otp}
+                                  onChange={(e) =>
+                                    setOtpState((prev) => ({
+                                      ...prev,
+                                      otp: e.target.value,
+                                    }))
+                                  }
+                                  className="h-12"
+                                />
+                                <Button
+                                  type="button"
+                                  onClick={handleVerifyOtp}
+                                  disabled={
+                                    otpState.isVerifying ||
+                                    otpState.otp.length !== 6
+                                  }
+                                  className="h-12"
+                                >
+                                  {otpState.isVerifying ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                  ) : (
+                                    "Verify"
+                                  )}
+                                </Button>
+                              </div>
+                            </div>
+                          )}
+                          {otpState.message && (
+                            <p
+                              className={`text-sm ${otpState.isVerified ? "text-green-600" : "text-red-600"}`}
+                            >
+                              {otpState.message}
+                            </p>
+                          )}
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="phone">Phone Number *</Label>
@@ -951,6 +1178,7 @@ export default function Index() {
                       disabled={
                         !privacyConsent ||
                         isSubmitting ||
+                        !otpState.isVerified ||
                         (budget === "custom" && !customAmount)
                       }
                     >
