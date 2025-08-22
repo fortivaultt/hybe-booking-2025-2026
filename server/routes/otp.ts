@@ -45,7 +45,7 @@ export const handleSendOtp: RequestHandler = async (req, res) => {
 
     // --- Send Email or Log to Console ---
     const templatePath = path.join(
-      __dirname,
+      path.dirname(new URL(import.meta.url).pathname),
       "../email-templates/otp-template.html",
     );
     const template = fs.readFileSync(templatePath, "utf-8");

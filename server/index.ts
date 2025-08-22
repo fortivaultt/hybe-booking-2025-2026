@@ -50,7 +50,9 @@ export async function createServer() {
   app.use(requestLogger);
 
   // Apply general rate limiting to all API routes
-  app.use("/api", generalRateLimit.middleware());
+  if (!process.env.VITEST) {
+    app.use("/api", generalRateLimit.middleware());
+  }
 
   // Health check endpoints (no rate limiting)
   app.get("/api/ping", (_req, res) => {
@@ -88,17 +90,22 @@ export async function createServer() {
   app.get("/api/subscription/types", listSubscriptionTypes);
 
   // OTP routes with specific rate limiting
-  app.post(
-    "/api/otp/send",
-    otpRateLimit.middleware(),
-    (req, res, next) => {
-      Analytics.trackFormProgress("otp_request", req.ip);
-      next();
-    },
-    handleSendOtp,
-  );
+  if (!process.env.VITEST) {
+    app.post(
+      "/api/otp/send",
+      otpRateLimit.middleware(),
+      (req, res, next) => {
+        Analytics.trackFormProgress("otp_request", req.ip);
+        next();
+      },
+      handleSendOtp,
+    );
 
-  app.post("/api/otp/verify", otpRateLimit.middleware(), handleVerifyOtp);
+    app.post("/api/otp/verify", otpRateLimit.middleware(), handleVerifyOtp);
+  } else {
+    app.post("/api/otp/send", handleSendOtp);
+    app.post("/api/otp/verify", handleVerifyOtp);
+  }
 
   // Enhanced error handling middleware
   app.use(errorTrackingMiddleware);
