@@ -711,7 +711,7 @@ export default function Index() {
                       </Select>
 
                       {/* Custom Amount Input */}
-                      {budget === "custom" && (
+                      {budget && (
                         <div className="mt-3">
                           <Label
                             htmlFor="customAmount"
