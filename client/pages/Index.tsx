@@ -247,13 +247,37 @@ export default function Index() {
   // Validate subscription ID against database
   const validateSubscriptionIdInDatabase = async (id: string) => {
     if (!isValidSubscriptionId(id)) {
-      setSubscriptionValidation({
+      const errorResult = {
         isValidating: false,
         isValid: false,
-        message:
-          "Invalid format. Please enter a valid subscription ID.",
-      });
+        message: "Invalid format. Please enter a valid subscription ID.",
+      };
+      setSubscriptionValidation(errorResult);
       return;
+    }
+
+    // Check frontend cache first
+    const cacheKey = id.toUpperCase();
+    if (validationCache[cacheKey]) {
+      const cachedResult = validationCache[cacheKey];
+      // Only use cache if it's less than 5 minutes old
+      if (Date.now() - cachedResult.timestamp < 300000) {
+        setSubscriptionValidation({
+          isValidating: false,
+          isValid: cachedResult.isValid,
+          message: cachedResult.message,
+          subscriptionType: cachedResult.subscriptionType,
+          userName: cachedResult.userName,
+        });
+        return;
+      } else {
+        // Remove expired cache entry
+        setValidationCache(prev => {
+          const updated = { ...prev };
+          delete updated[cacheKey];
+          return updated;
+        });
+      }
     }
 
     setSubscriptionValidation((prev) => ({ ...prev, isValidating: true }));
@@ -271,19 +295,32 @@ export default function Index() {
 
       const result: SubscriptionValidationResponse = await response.json();
 
-      setSubscriptionValidation({
+      const validationResult = {
         isValidating: false,
         isValid: result.isValid,
         message: result.message,
         subscriptionType: result.subscriptionType,
         userName: result.userName,
-      });
+      };
+
+      setSubscriptionValidation(validationResult);
+
+      // Cache the result with timestamp
+      setValidationCache(prev => ({
+        ...prev,
+        [cacheKey]: {
+          ...validationResult,
+          timestamp: Date.now()
+        }
+      }));
+
     } catch (error) {
-      setSubscriptionValidation({
+      const errorResult = {
         isValidating: false,
         isValid: false,
         message: "Error validating subscription ID. Please try again.",
-      });
+      };
+      setSubscriptionValidation(errorResult);
     }
   };
 
