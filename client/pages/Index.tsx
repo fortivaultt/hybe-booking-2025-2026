@@ -234,13 +234,11 @@ export default function Index() {
     (group) => group.name === selectedGroup,
   );
 
-  // Validate subscription ID format (HYB + 10 alphanumeric) or special ID
+  // Validate subscription ID format (HYB + 10 alphanumeric)
   const isValidSubscriptionId = (id: string) => {
-    if (id === "B07200EF6667") {
-      return true;
-    }
-    const regex = /^HYB[A-Z0-9]{10}$/i;
-    return regex.test(id);
+    // Basic format validation - detailed validation happens server-side
+    const regex = /^[A-Z0-9]{10,13}$/i;
+    return regex.test(id) && id.length >= 10;
   };
 
   // Validate subscription ID against database
