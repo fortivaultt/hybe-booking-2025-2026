@@ -193,6 +193,9 @@ export default function Index() {
     isValid: null,
     message: "",
   });
+
+  // Frontend cache for subscription validation results
+  const [validationCache, setValidationCache] = useState<Record<string, any>>({});
   const [contactInfo, setContactInfo] = useState({
     name: "",
     email: "",
