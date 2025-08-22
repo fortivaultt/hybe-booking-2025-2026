@@ -1,4 +1,5 @@
 import { RequestHandler } from "express";
+import { Analytics } from "../utils/logger";
 
 export interface BookingRequest {
   fanPreference: string;
