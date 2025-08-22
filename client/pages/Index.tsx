@@ -248,7 +248,7 @@ export default function Index() {
         isValidating: false,
         isValid: false,
         message:
-          "Invalid format. Must be a valid HYBE ID.",
+          "Invalid format. Please enter a valid subscription ID.",
       });
       return;
     }
