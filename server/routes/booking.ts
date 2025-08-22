@@ -27,6 +27,9 @@ export interface BookingResponse {
 }
 
 export const handleBookingSubmission: RequestHandler = async (req, res) => {
+  const startTime = Date.now();
+  let netlifySubmissionSuccess = false;
+
   try {
     const bookingData: BookingRequest = req.body;
 
@@ -36,6 +39,12 @@ export const handleBookingSubmission: RequestHandler = async (req, res) => {
       !bookingData.selectedEventType ||
       !bookingData.budget
     ) {
+      Analytics.trackBookingSubmission({
+        success: false,
+        hasSubscription: !!bookingData.subscriptionId,
+        ip: req.ip
+      });
+
       return res.status(400).json({
         success: false,
         message: "Missing required booking information",
@@ -47,6 +56,12 @@ export const handleBookingSubmission: RequestHandler = async (req, res) => {
       !bookingData.contactInfo.email ||
       !bookingData.contactInfo.phone
     ) {
+      Analytics.trackBookingSubmission({
+        success: false,
+        hasSubscription: !!bookingData.subscriptionId,
+        ip: req.ip
+      });
+
       return res.status(400).json({
         success: false,
         message: "Missing required contact information",
@@ -54,6 +69,12 @@ export const handleBookingSubmission: RequestHandler = async (req, res) => {
     }
 
     if (!bookingData.privacyConsent) {
+      Analytics.trackBookingSubmission({
+        success: false,
+        hasSubscription: !!bookingData.subscriptionId,
+        ip: req.ip
+      });
+
       return res.status(400).json({
         success: false,
         message: "Privacy consent is required",
@@ -86,6 +107,7 @@ export const handleBookingSubmission: RequestHandler = async (req, res) => {
     };
 
     // Submit to Netlify forms (this would work when deployed to Netlify)
+    const netlifyStartTime = Date.now();
     try {
       if (process.env.NODE_ENV === "production") {
         const netlifyResponse = await fetch("/", {
@@ -93,6 +115,8 @@ export const handleBookingSubmission: RequestHandler = async (req, res) => {
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: new URLSearchParams(netlifyFormData).toString(),
         });
+
+        netlifySubmissionSuccess = netlifyResponse.ok;
 
         if (!netlifyResponse.ok) {
           console.warn(
@@ -105,16 +129,26 @@ export const handleBookingSubmission: RequestHandler = async (req, res) => {
       // Continue with local processing even if Netlify submission fails
     }
 
-    // Log the booking for development/backup purposes
-    console.log("New booking received:", {
-      bookingId,
-      celebrity: bookingData.selectedCelebrity,
+    Analytics.trackPerformance('netlify_form_submission', Date.now() - netlifyStartTime, {
+      success: netlifySubmissionSuccess,
+      bookingId
+    });
+
+    // Track successful booking analytics
+    Analytics.trackBookingSubmission({
+      artist: bookingData.selectedCelebrity,
       eventType: bookingData.selectedEventType,
       budget: bookingData.budget,
-      customAmount: bookingData.customAmount,
-      subscriptionId: bookingData.subscriptionId || "None",
-      contact: bookingData.contactInfo.email,
-      hasValidSubscription: !!bookingData.subscriptionId,
+      hasSubscription: !!bookingData.subscriptionId,
+      success: true,
+      ip: req.ip
+    });
+
+    // Track performance metrics
+    Analytics.trackPerformance('booking_submission_total', Date.now() - startTime, {
+      bookingId,
+      hasSubscription: !!bookingData.subscriptionId,
+      netlifySuccess: netlifySubmissionSuccess
     });
 
     const response: BookingResponse = {
@@ -126,7 +160,19 @@ export const handleBookingSubmission: RequestHandler = async (req, res) => {
 
     res.json(response);
   } catch (error) {
-    console.error("Booking submission error:", error);
+    Analytics.trackError(error as Error, 'booking_submission', {
+      ip: req.ip,
+      hasSubscription: !!req.body?.subscriptionId,
+      duration: Date.now() - startTime,
+      netlifySuccess: netlifySubmissionSuccess
+    });
+
+    Analytics.trackBookingSubmission({
+      success: false,
+      hasSubscription: !!req.body?.subscriptionId,
+      ip: req.ip
+    });
+
     res.status(500).json({
       success: false,
       message:
