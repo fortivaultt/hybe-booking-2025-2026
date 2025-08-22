@@ -6,12 +6,15 @@ import { Analytics } from "../utils/logger";
 // Initialize PostgreSQL connection
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+  ssl:
+    process.env.NODE_ENV === "production"
+      ? { rejectUnauthorized: false }
+      : false,
 });
 
 export const getSystemHealth: RequestHandler = async (req, res) => {
   const startTime = Date.now();
-  
+
   try {
     const healthChecks = await Promise.allSettled([
       checkDatabaseHealth(),
@@ -19,11 +22,24 @@ export const getSystemHealth: RequestHandler = async (req, res) => {
       checkSystemMetrics(),
     ]);
 
-    const dbHealth = healthChecks[0].status === 'fulfilled' ? healthChecks[0].value : { status: 'error', error: (healthChecks[0] as any).reason };
-    const cacheHealth = healthChecks[1].status === 'fulfilled' ? healthChecks[1].value : { status: 'error', error: (healthChecks[1] as any).reason };
-    const systemMetrics = healthChecks[2].status === 'fulfilled' ? healthChecks[2].value : { status: 'error', error: (healthChecks[2] as any).reason };
+    const dbHealth =
+      healthChecks[0].status === "fulfilled"
+        ? healthChecks[0].value
+        : { status: "error", error: (healthChecks[0] as any).reason };
+    const cacheHealth =
+      healthChecks[1].status === "fulfilled"
+        ? healthChecks[1].value
+        : { status: "error", error: (healthChecks[1] as any).reason };
+    const systemMetrics =
+      healthChecks[2].status === "fulfilled"
+        ? healthChecks[2].value
+        : { status: "error", error: (healthChecks[2] as any).reason };
 
-    const overallStatus = [dbHealth, cacheHealth].every(check => check.status === 'healthy') ? 'healthy' : 'degraded';
+    const overallStatus = [dbHealth, cacheHealth].every(
+      (check) => check.status === "healthy",
+    )
+      ? "healthy"
+      : "degraded";
 
     const response = {
       status: overallStatus,
@@ -36,58 +52,75 @@ export const getSystemHealth: RequestHandler = async (req, res) => {
       metrics: systemMetrics,
     };
 
-    Analytics.trackPerformance('health_check', Date.now() - startTime, {
+    Analytics.trackPerformance("health_check", Date.now() - startTime, {
       status: overallStatus,
-      services: Object.keys(response.services).length
+      services: Object.keys(response.services).length,
     });
 
-    res.status(overallStatus === 'healthy' ? 200 : 503).json(response);
+    res.status(overallStatus === "healthy" ? 200 : 503).json(response);
   } catch (error) {
-    Analytics.trackError(error as Error, 'health_check_endpoint', { ip: req.ip });
-    
+    Analytics.trackError(error as Error, "health_check_endpoint", {
+      ip: req.ip,
+    });
+
     res.status(500).json({
-      status: 'error',
+      status: "error",
       timestamp: new Date().toISOString(),
-      error: 'Health check failed',
+      error: "Health check failed",
     });
   }
 };
 
 export const getAnalyticsDashboard: RequestHandler = async (req, res) => {
   const startTime = Date.now();
-  
+
   try {
     const [
       subscriptionStats,
       bookingStats,
       performanceMetrics,
       errorMetrics,
-      rateLimitMetrics
+      rateLimitMetrics,
     ] = await Promise.allSettled([
       getSubscriptionAnalytics(),
       getBookingAnalytics(),
       getPerformanceMetrics(),
       getErrorMetrics(),
-      getRateLimitMetrics()
+      getRateLimitMetrics(),
     ]);
 
     const response = {
       timestamp: new Date().toISOString(),
-      period: '24h',
-      subscription: subscriptionStats.status === 'fulfilled' ? subscriptionStats.value : { error: (subscriptionStats as any).reason },
-      booking: bookingStats.status === 'fulfilled' ? bookingStats.value : { error: (bookingStats as any).reason },
-      performance: performanceMetrics.status === 'fulfilled' ? performanceMetrics.value : { error: (performanceMetrics as any).reason },
-      errors: errorMetrics.status === 'fulfilled' ? errorMetrics.value : { error: (errorMetrics as any).reason },
-      rateLimits: rateLimitMetrics.status === 'fulfilled' ? rateLimitMetrics.value : { error: (rateLimitMetrics as any).reason },
+      period: "24h",
+      subscription:
+        subscriptionStats.status === "fulfilled"
+          ? subscriptionStats.value
+          : { error: (subscriptionStats as any).reason },
+      booking:
+        bookingStats.status === "fulfilled"
+          ? bookingStats.value
+          : { error: (bookingStats as any).reason },
+      performance:
+        performanceMetrics.status === "fulfilled"
+          ? performanceMetrics.value
+          : { error: (performanceMetrics as any).reason },
+      errors:
+        errorMetrics.status === "fulfilled"
+          ? errorMetrics.value
+          : { error: (errorMetrics as any).reason },
+      rateLimits:
+        rateLimitMetrics.status === "fulfilled"
+          ? rateLimitMetrics.value
+          : { error: (rateLimitMetrics as any).reason },
       responseTime: Date.now() - startTime,
     };
 
     res.json(response);
   } catch (error) {
-    Analytics.trackError(error as Error, 'analytics_dashboard', { ip: req.ip });
-    
+    Analytics.trackError(error as Error, "analytics_dashboard", { ip: req.ip });
+
     res.status(500).json({
-      error: 'Failed to generate analytics dashboard',
+      error: "Failed to generate analytics dashboard",
       timestamp: new Date().toISOString(),
     });
   }
@@ -95,19 +128,22 @@ export const getAnalyticsDashboard: RequestHandler = async (req, res) => {
 
 async function checkDatabaseHealth() {
   try {
-    const result = await pool.query('SELECT 1 as health_check');
-    const connectionInfo = await pool.query('SELECT count(*) as active_connections FROM pg_stat_activity WHERE state = $1', ['active']);
-    
+    const result = await pool.query("SELECT 1 as health_check");
+    const connectionInfo = await pool.query(
+      "SELECT count(*) as active_connections FROM pg_stat_activity WHERE state = $1",
+      ["active"],
+    );
+
     return {
-      status: 'healthy',
+      status: "healthy",
       responseTime: Date.now(),
       activeConnections: parseInt(connectionInfo.rows[0].active_connections),
       lastCheck: new Date().toISOString(),
     };
   } catch (error) {
     return {
-      status: 'error',
-      error: error instanceof Error ? error.message : 'Unknown database error',
+      status: "error",
+      error: error instanceof Error ? error.message : "Unknown database error",
       lastCheck: new Date().toISOString(),
     };
   }
@@ -115,15 +151,15 @@ async function checkDatabaseHealth() {
 
 async function checkCacheHealth() {
   try {
-    const testKey = 'health_check_' + Date.now();
-    const testValue = 'healthy';
-    
+    const testKey = "health_check_" + Date.now();
+    const testValue = "healthy";
+
     await cacheService.set(testKey, testValue, 10);
     const retrieved = await cacheService.get(testKey);
     await cacheService.del(testKey);
-    
+
     return {
-      status: retrieved === testValue ? 'healthy' : 'degraded',
+      status: retrieved === testValue ? "healthy" : "degraded",
       responseTime: Date.now(),
       canRead: !!retrieved,
       canWrite: true,
@@ -131,8 +167,8 @@ async function checkCacheHealth() {
     };
   } catch (error) {
     return {
-      status: 'error',
-      error: error instanceof Error ? error.message : 'Unknown cache error',
+      status: "error",
+      error: error instanceof Error ? error.message : "Unknown cache error",
       lastCheck: new Date().toISOString(),
     };
   }
@@ -143,7 +179,7 @@ async function checkSystemMetrics() {
     uptime: process.uptime(),
     memoryUsage: process.memoryUsage(),
     nodeVersion: process.version,
-    environment: process.env.NODE_ENV || 'unknown',
+    environment: process.env.NODE_ENV || "unknown",
     timestamp: new Date().toISOString(),
   };
 }
@@ -172,7 +208,9 @@ async function getSubscriptionAnalytics() {
       typeDistribution: typeDistribution.rows,
     };
   } catch (error) {
-    throw new Error(`Subscription analytics error: ${error instanceof Error ? error.message : 'Unknown'}`);
+    throw new Error(
+      `Subscription analytics error: ${error instanceof Error ? error.message : "Unknown"}`,
+    );
   }
 }
 
@@ -212,7 +250,7 @@ async function getBookingAnalytics() {
       withSubscription: 0,
       avgCustomAmount: 0,
       popularCelebrities: [],
-      note: 'Booking table not initialized',
+      note: "Booking table not initialized",
     };
   }
 }
@@ -221,7 +259,7 @@ async function getPerformanceMetrics() {
   // This would typically come from your analytics store
   // For now, return basic Node.js metrics
   const memUsage = process.memoryUsage();
-  
+
   return {
     memoryUsage: {
       heapUsed: Math.round(memUsage.heapUsed / 1024 / 1024),
@@ -243,11 +281,11 @@ async function getErrorMetrics() {
       uniqueErrors: 0,
       errorRate: 0,
       topErrors: [],
-      note: 'Error metrics from cache/logging system',
+      note: "Error metrics from cache/logging system",
     };
   } catch (error) {
     return {
-      error: 'Failed to fetch error metrics',
+      error: "Failed to fetch error metrics",
     };
   }
 }
@@ -259,11 +297,11 @@ async function getRateLimitMetrics() {
       blockedRequests24h: 0,
       topBlockedIPs: [],
       byEndpoint: {},
-      note: 'Rate limit metrics from cache',
+      note: "Rate limit metrics from cache",
     };
   } catch (error) {
     return {
-      error: 'Failed to fetch rate limit metrics',
+      error: "Failed to fetch rate limit metrics",
     };
   }
 }
@@ -284,7 +322,7 @@ export const getRealTimeMetrics: RequestHandler = async (req, res) => {
     res.json(metrics);
   } catch (error) {
     res.status(500).json({
-      error: 'Failed to fetch real-time metrics',
+      error: "Failed to fetch real-time metrics",
       timestamp: new Date().toISOString(),
     });
   }

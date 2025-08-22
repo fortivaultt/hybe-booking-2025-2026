@@ -195,7 +195,9 @@ export default function Index() {
   });
 
   // Frontend cache for subscription validation results
-  const [validationCache, setValidationCache] = useState<Record<string, any>>({});
+  const [validationCache, setValidationCache] = useState<Record<string, any>>(
+    {},
+  );
   const [contactInfo, setContactInfo] = useState({
     name: "",
     email: "",
@@ -229,7 +231,7 @@ export default function Index() {
     if (!href) return;
 
     // Open in new tab to avoid losing form data
-    window.open(href, '_blank');
+    window.open(href, "_blank");
   };
 
   // Get selected group data
@@ -272,7 +274,7 @@ export default function Index() {
         return;
       } else {
         // Remove expired cache entry
-        setValidationCache(prev => {
+        setValidationCache((prev) => {
           const updated = { ...prev };
           delete updated[cacheKey];
           return updated;
@@ -306,14 +308,13 @@ export default function Index() {
       setSubscriptionValidation(validationResult);
 
       // Cache the result with timestamp
-      setValidationCache(prev => ({
+      setValidationCache((prev) => ({
         ...prev,
         [cacheKey]: {
           ...validationResult,
-          timestamp: Date.now()
-        }
+          timestamp: Date.now(),
+        },
       }));
-
     } catch (error) {
       const errorResult = {
         isValidating: false,
@@ -382,12 +383,22 @@ export default function Index() {
       });
       const result: SendOtpResponse = await response.json();
       if (result.success) {
-        setOtpState((prev) => ({ ...prev, otpSent: true, message: result.message }));
+        setOtpState((prev) => ({
+          ...prev,
+          otpSent: true,
+          message: result.message,
+        }));
       } else {
-        setOtpState((prev) => ({ ...prev, message: result.message || "Failed to send OTP." }));
+        setOtpState((prev) => ({
+          ...prev,
+          message: result.message || "Failed to send OTP.",
+        }));
       }
     } catch (error) {
-      setOtpState((prev) => ({ ...prev, message: "An unknown error occurred." }));
+      setOtpState((prev) => ({
+        ...prev,
+        message: "An unknown error occurred.",
+      }));
     } finally {
       setOtpState((prev) => ({ ...prev, isSending: false }));
     }
@@ -399,16 +410,31 @@ export default function Index() {
       const response = await fetch("/api/otp/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: contactInfo.email, otp: otpState.otp } as VerifyOtpRequest),
+        body: JSON.stringify({
+          email: contactInfo.email,
+          otp: otpState.otp,
+        } as VerifyOtpRequest),
       });
       const result: VerifyOtpResponse = await response.json();
       if (result.success) {
-        setOtpState((prev) => ({ ...prev, isVerified: true, message: result.message }));
+        setOtpState((prev) => ({
+          ...prev,
+          isVerified: true,
+          message: result.message,
+        }));
       } else {
-        setOtpState((prev) => ({ ...prev, isVerified: false, message: result.message || "Failed to verify OTP." }));
+        setOtpState((prev) => ({
+          ...prev,
+          isVerified: false,
+          message: result.message || "Failed to verify OTP.",
+        }));
       }
     } catch (error) {
-      setOtpState((prev) => ({ ...prev, isVerified: false, message: "An unknown error occurred." }));
+      setOtpState((prev) => ({
+        ...prev,
+        isVerified: false,
+        message: "An unknown error occurred.",
+      }));
     } finally {
       setOtpState((prev) => ({ ...prev, isVerifying: false }));
     }
@@ -418,7 +444,9 @@ export default function Index() {
     e.preventDefault();
 
     if (!otpState.isVerified) {
-      setSubmitMessage("Please verify your email with an OTP before submitting.");
+      setSubmitMessage(
+        "Please verify your email with an OTP before submitting.",
+      );
       return;
     }
 
@@ -1023,10 +1051,19 @@ export default function Index() {
                               <Button
                                 type="button"
                                 onClick={handleSendOtp}
-                                disabled={otpState.isSending || !contactInfo.email.includes('@')}
+                                disabled={
+                                  otpState.isSending ||
+                                  !contactInfo.email.includes("@")
+                                }
                                 className="h-12"
                               >
-                                {otpState.isSending ? <Loader2 className="h-4 w-4 animate-spin" /> : (otpState.otpSent ? "Resend" : "Send OTP")}
+                                {otpState.isSending ? (
+                                  <Loader2 className="h-4 w-4 animate-spin" />
+                                ) : otpState.otpSent ? (
+                                  "Resend"
+                                ) : (
+                                  "Send OTP"
+                                )}
                               </Button>
                             )}
                           </div>
@@ -1039,22 +1076,36 @@ export default function Index() {
                                   type="text"
                                   maxLength={6}
                                   value={otpState.otp}
-                                  onChange={(e) => setOtpState(prev => ({ ...prev, otp: e.target.value }))}
+                                  onChange={(e) =>
+                                    setOtpState((prev) => ({
+                                      ...prev,
+                                      otp: e.target.value,
+                                    }))
+                                  }
                                   className="h-12"
                                 />
                                 <Button
                                   type="button"
                                   onClick={handleVerifyOtp}
-                                  disabled={otpState.isVerifying || otpState.otp.length !== 6}
+                                  disabled={
+                                    otpState.isVerifying ||
+                                    otpState.otp.length !== 6
+                                  }
                                   className="h-12"
                                 >
-                                  {otpState.isVerifying ? <Loader2 className="h-4 w-4 animate-spin" /> : "Verify"}
+                                  {otpState.isVerifying ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                  ) : (
+                                    "Verify"
+                                  )}
                                 </Button>
                               </div>
                             </div>
                           )}
                           {otpState.message && (
-                            <p className={`text-sm ${otpState.isVerified ? 'text-green-600' : 'text-red-600'}`}>
+                            <p
+                              className={`text-sm ${otpState.isVerified ? "text-green-600" : "text-red-600"}`}
+                            >
                               {otpState.message}
                             </p>
                           )}

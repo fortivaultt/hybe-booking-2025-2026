@@ -7,7 +7,8 @@ import { cacheService } from "../utils/cache";
 import { Analytics } from "../utils/logger";
 
 // --- Nodemailer Transport Setup ---
-const useRealEmailService = process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS;
+const useRealEmailService =
+  process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS;
 
 const transporter = useRealEmailService
   ? nodemailer.createTransport({
@@ -39,13 +40,16 @@ export const handleSendOtp: RequestHandler = async (req, res) => {
     // Use centralized cache service
     const cacheSuccess = await cacheService.set(otpKey, otp, otpExpiration);
     if (!cacheSuccess) {
-      throw new Error('Failed to store OTP in cache');
+      throw new Error("Failed to store OTP in cache");
     }
 
     // --- Send Email or Log to Console ---
-    const templatePath = path.join(__dirname, '../email-templates/otp-template.html');
-    const template = fs.readFileSync(templatePath, 'utf-8');
-    const emailHtml = template.replace('{{OTP}}', otp);
+    const templatePath = path.join(
+      __dirname,
+      "../email-templates/otp-template.html",
+    );
+    const template = fs.readFileSync(templatePath, "utf-8");
+    const emailHtml = template.replace("{{OTP}}", otp);
 
     const emailStartTime = Date.now();
     let emailSuccess = false;
@@ -61,32 +65,34 @@ export const handleSendOtp: RequestHandler = async (req, res) => {
       emailSuccess = true;
     } else {
       // Fallback to console logging
-      console.log('--- SIMULATED OTP EMAIL (SMTP not configured) ---');
+      console.log("--- SIMULATED OTP EMAIL (SMTP not configured) ---");
       console.log(`To: ${email}`);
       console.log(emailHtml);
-      console.log('--- END SIMULATED OTP EMAIL ---');
+      console.log("--- END SIMULATED OTP EMAIL ---");
       emailSuccess = true;
     }
 
-    Analytics.trackPerformance('email_send', Date.now() - emailStartTime, {
-      email_service: transporter ? 'smtp' : 'console',
-      success: emailSuccess
+    Analytics.trackPerformance("email_send", Date.now() - emailStartTime, {
+      email_service: transporter ? "smtp" : "console",
+      success: emailSuccess,
     });
 
     Analytics.trackOtpRequest(email, true, req.ip);
 
     res.status(200).json({ success: true, message: "OTP sent successfully." });
   } catch (error) {
-    Analytics.trackOtpRequest(req.body?.email || 'unknown', false, req.ip);
+    Analytics.trackOtpRequest(req.body?.email || "unknown", false, req.ip);
 
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ success: false, message: error.errors[0].message });
+      return res
+        .status(400)
+        .json({ success: false, message: error.errors[0].message });
     }
 
-    Analytics.trackError(error as Error, 'otp_send', {
+    Analytics.trackError(error as Error, "otp_send", {
       email: req.body?.email,
       ip: req.ip,
-      duration: Date.now() - startTime
+      duration: Date.now() - startTime,
     });
 
     res.status(500).json({ success: false, message: "Failed to send OTP." });
@@ -109,17 +115,22 @@ export const handleVerifyOtp: RequestHandler = async (req, res) => {
     const storedOtp = await cacheService.get<string>(otpKey);
 
     if (!storedOtp) {
-      Analytics.trackPerformance('otp_verification', Date.now() - startTime, {
+      Analytics.trackPerformance("otp_verification", Date.now() - startTime, {
         success: false,
-        reason: 'not_found_or_expired'
+        reason: "not_found_or_expired",
       });
-      return res.status(400).json({ success: false, message: "OTP not found or has expired. Please request a new one." });
+      return res
+        .status(400)
+        .json({
+          success: false,
+          message: "OTP not found or has expired. Please request a new one.",
+        });
     }
 
     if (storedOtp !== otp) {
-      Analytics.trackPerformance('otp_verification', Date.now() - startTime, {
+      Analytics.trackPerformance("otp_verification", Date.now() - startTime, {
         success: false,
-        reason: 'invalid_otp'
+        reason: "invalid_otp",
       });
       return res.status(400).json({ success: false, message: "Invalid OTP." });
     }
@@ -127,21 +138,25 @@ export const handleVerifyOtp: RequestHandler = async (req, res) => {
     // Clear the OTP after successful verification
     await cacheService.del(otpKey);
 
-    Analytics.trackPerformance('otp_verification', Date.now() - startTime, {
+    Analytics.trackPerformance("otp_verification", Date.now() - startTime, {
       success: true,
-      email: email.replace(/(.{2}).*@/, '$1***@') // Partially hide email
+      email: email.replace(/(.{2}).*@/, "$1***@"), // Partially hide email
     });
 
-    res.status(200).json({ success: true, message: "OTP verified successfully." });
+    res
+      .status(200)
+      .json({ success: true, message: "OTP verified successfully." });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ success: false, message: error.errors[0].message });
+      return res
+        .status(400)
+        .json({ success: false, message: error.errors[0].message });
     }
 
-    Analytics.trackError(error as Error, 'otp_verification', {
+    Analytics.trackError(error as Error, "otp_verification", {
       email: req.body?.email,
       ip: req.ip,
-      duration: Date.now() - startTime
+      duration: Date.now() - startTime,
     });
 
     res.status(500).json({ success: false, message: "Failed to verify OTP." });

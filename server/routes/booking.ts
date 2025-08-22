@@ -42,7 +42,7 @@ export const handleBookingSubmission: RequestHandler = async (req, res) => {
       Analytics.trackBookingSubmission({
         success: false,
         hasSubscription: !!bookingData.subscriptionId,
-        ip: req.ip
+        ip: req.ip,
       });
 
       return res.status(400).json({
@@ -59,7 +59,7 @@ export const handleBookingSubmission: RequestHandler = async (req, res) => {
       Analytics.trackBookingSubmission({
         success: false,
         hasSubscription: !!bookingData.subscriptionId,
-        ip: req.ip
+        ip: req.ip,
       });
 
       return res.status(400).json({
@@ -72,7 +72,7 @@ export const handleBookingSubmission: RequestHandler = async (req, res) => {
       Analytics.trackBookingSubmission({
         success: false,
         hasSubscription: !!bookingData.subscriptionId,
-        ip: req.ip
+        ip: req.ip,
       });
 
       return res.status(400).json({
@@ -129,10 +129,14 @@ export const handleBookingSubmission: RequestHandler = async (req, res) => {
       // Continue with local processing even if Netlify submission fails
     }
 
-    Analytics.trackPerformance('netlify_form_submission', Date.now() - netlifyStartTime, {
-      success: netlifySubmissionSuccess,
-      bookingId
-    });
+    Analytics.trackPerformance(
+      "netlify_form_submission",
+      Date.now() - netlifyStartTime,
+      {
+        success: netlifySubmissionSuccess,
+        bookingId,
+      },
+    );
 
     // Track successful booking analytics
     Analytics.trackBookingSubmission({
@@ -141,15 +145,19 @@ export const handleBookingSubmission: RequestHandler = async (req, res) => {
       budget: bookingData.budget,
       hasSubscription: !!bookingData.subscriptionId,
       success: true,
-      ip: req.ip
+      ip: req.ip,
     });
 
     // Track performance metrics
-    Analytics.trackPerformance('booking_submission_total', Date.now() - startTime, {
-      bookingId,
-      hasSubscription: !!bookingData.subscriptionId,
-      netlifySuccess: netlifySubmissionSuccess
-    });
+    Analytics.trackPerformance(
+      "booking_submission_total",
+      Date.now() - startTime,
+      {
+        bookingId,
+        hasSubscription: !!bookingData.subscriptionId,
+        netlifySuccess: netlifySubmissionSuccess,
+      },
+    );
 
     const response: BookingResponse = {
       success: true,
@@ -160,17 +168,17 @@ export const handleBookingSubmission: RequestHandler = async (req, res) => {
 
     res.json(response);
   } catch (error) {
-    Analytics.trackError(error as Error, 'booking_submission', {
+    Analytics.trackError(error as Error, "booking_submission", {
       ip: req.ip,
       hasSubscription: !!req.body?.subscriptionId,
       duration: Date.now() - startTime,
-      netlifySuccess: netlifySubmissionSuccess
+      netlifySuccess: netlifySubmissionSuccess,
     });
 
     Analytics.trackBookingSubmission({
       success: false,
       hasSubscription: !!req.body?.subscriptionId,
-      ip: req.ip
+      ip: req.ip,
     });
 
     res.status(500).json({

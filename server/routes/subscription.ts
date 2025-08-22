@@ -6,7 +6,10 @@ import { Analytics } from "../utils/logger";
 // Initialize PostgreSQL connection
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+  ssl:
+    process.env.NODE_ENV === "production"
+      ? { rejectUnauthorized: false }
+      : false,
 });
 
 export interface SubscriptionValidationRequest {
@@ -28,17 +31,17 @@ export const validateSubscriptionId: RequestHandler = async (req, res) => {
     const { subscriptionId } = req.body as SubscriptionValidationRequest;
 
     // Input validation
-    if (!subscriptionId || typeof subscriptionId !== 'string') {
+    if (!subscriptionId || typeof subscriptionId !== "string") {
       const response = {
         isValid: false,
-        message: "Invalid subscription ID provided."
+        message: "Invalid subscription ID provided.",
       } as SubscriptionValidationResponse;
 
       Analytics.trackSubscriptionValidation(
-        subscriptionId || 'invalid',
+        subscriptionId || "invalid",
         false,
         Date.now() - startTime,
-        req.ip
+        req.ip,
       );
 
       return res.json(response);
@@ -51,15 +54,21 @@ export const validateSubscriptionId: RequestHandler = async (req, res) => {
     if (normalizedId.length < 10 || normalizedId.length > 13) {
       const response = {
         isValid: false,
-        message: "Invalid subscription ID format."
+        message: "Invalid subscription ID format.",
       } as SubscriptionValidationResponse;
 
-      Analytics.trackSubscriptionValidation(normalizedId, false, Date.now() - startTime, req.ip);
+      Analytics.trackSubscriptionValidation(
+        normalizedId,
+        false,
+        Date.now() - startTime,
+        req.ip,
+      );
       return res.json(response);
     }
 
     // Check cache first
-    const cachedValidation = await cacheService.getCachedSubscriptionValidation(normalizedId);
+    const cachedValidation =
+      await cacheService.getCachedSubscriptionValidation(normalizedId);
     if (cachedValidation) {
       cachedResult = true;
       Analytics.trackCacheHit(`subscription:${normalizedId}`, true);
@@ -67,7 +76,7 @@ export const validateSubscriptionId: RequestHandler = async (req, res) => {
         normalizedId,
         cachedValidation.isValid,
         Date.now() - startTime,
-        req.ip
+        req.ip,
       );
 
       return res.json(cachedValidation);
@@ -92,21 +101,31 @@ export const validateSubscriptionId: RequestHandler = async (req, res) => {
 
     const dbStartTime = Date.now();
     const result = await pool.query(query, [normalizedId]);
-    Analytics.trackPerformance('database_query', Date.now() - dbStartTime, {
-      query: 'subscription_validation',
-      resultCount: result.rows.length
+    Analytics.trackPerformance("database_query", Date.now() - dbStartTime, {
+      query: "subscription_validation",
+      resultCount: result.rows.length,
     });
 
     if (result.rows.length === 0) {
       const response = {
         isValid: false,
-        message: "Subscription ID not found, inactive, or expired. Please check your ID and try again."
+        message:
+          "Subscription ID not found, inactive, or expired. Please check your ID and try again.",
       } as SubscriptionValidationResponse;
 
       // Cache negative results for shorter duration to avoid DoS via cache pollution
-      await cacheService.cacheSubscriptionValidation(normalizedId, response, 60); // 1 minute
+      await cacheService.cacheSubscriptionValidation(
+        normalizedId,
+        response,
+        60,
+      ); // 1 minute
 
-      Analytics.trackSubscriptionValidation(normalizedId, false, Date.now() - startTime, req.ip);
+      Analytics.trackSubscriptionValidation(
+        normalizedId,
+        false,
+        Date.now() - startTime,
+        req.ip,
+      );
 
       return res.json(response);
     }
@@ -117,27 +136,31 @@ export const validateSubscriptionId: RequestHandler = async (req, res) => {
       isValid: true,
       subscriptionType: subscription.subscription_type,
       userName: subscription.user_name,
-      message: `Valid ${subscription.subscription_type} subscription for ${subscription.user_name}`
+      message: `Valid ${subscription.subscription_type} subscription for ${subscription.user_name}`,
     } as SubscriptionValidationResponse;
 
     // Cache successful results for longer duration
     await cacheService.cacheSubscriptionValidation(normalizedId, response, 300); // 5 minutes
 
-    Analytics.trackSubscriptionValidation(normalizedId, true, Date.now() - startTime, req.ip);
+    Analytics.trackSubscriptionValidation(
+      normalizedId,
+      true,
+      Date.now() - startTime,
+      req.ip,
+    );
 
     return res.json(response);
-
   } catch (error) {
-    Analytics.trackError(error as Error, 'subscription_validation', {
+    Analytics.trackError(error as Error, "subscription_validation", {
       subscriptionId: req.body?.subscriptionId,
       ip: req.ip,
-      cached: cachedResult
+      cached: cachedResult,
     });
 
     // Don't expose internal error details
     return res.status(500).json({
       isValid: false,
-      message: "Service temporarily unavailable. Please try again later."
+      message: "Service temporarily unavailable. Please try again later.",
     } as SubscriptionValidationResponse);
   }
 };
@@ -151,18 +174,20 @@ export const listSubscriptionTypes: RequestHandler = async (req, res) => {
       GROUP BY subscription_type 
       ORDER BY subscription_type
     `;
-    
+
     const result = await pool.query(query);
-    
+
     res.json({
       subscriptionTypes: result.rows,
-      totalActive: result.rows.reduce((sum, row) => sum + parseInt(row.count), 0)
+      totalActive: result.rows.reduce(
+        (sum, row) => sum + parseInt(row.count),
+        0,
+      ),
     });
-
   } catch (error) {
     console.error("Error fetching subscription types:", error);
     res.status(500).json({
-      error: "Failed to fetch subscription types"
+      error: "Failed to fetch subscription types",
     });
   }
 };

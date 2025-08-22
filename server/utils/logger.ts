@@ -1,4 +1,4 @@
-import { createLogger, format, transports } from 'winston';
+import { createLogger, format, transports } from "winston";
 
 // Define log levels
 const levels = {
@@ -11,49 +11,57 @@ const levels = {
 
 // Define colors for each level
 const colors = {
-  error: 'red',
-  warn: 'yellow',
-  info: 'green',
-  http: 'magenta',
-  debug: 'white',
+  error: "red",
+  warn: "yellow",
+  info: "green",
+  http: "magenta",
+  debug: "white",
 };
 
 // Create custom format
 const customFormat = format.combine(
-  format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),
+  format.timestamp({ format: "YYYY-MM-DD HH:mm:ss:ms" }),
   format.colorize({ all: true }),
   format.printf((info) => {
     return `${info.timestamp} ${info.level}: ${info.message}`;
-  })
+  }),
 );
 
 const productionFormat = format.combine(
   format.timestamp(),
   format.errors({ stack: true }),
-  format.json()
+  format.json(),
 );
 
 // Create the logger
 export const logger = createLogger({
-  level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+  level: process.env.NODE_ENV === "production" ? "info" : "debug",
   levels,
-  format: process.env.NODE_ENV === 'production' ? productionFormat : customFormat,
+  format:
+    process.env.NODE_ENV === "production" ? productionFormat : customFormat,
   transports: [
     new transports.Console(),
     // In production, you might want to add file transports
-    ...(process.env.NODE_ENV === 'production' ? [
-      new transports.File({ filename: 'logs/error.log', level: 'error' }),
-      new transports.File({ filename: 'logs/combined.log' }),
-    ] : []),
+    ...(process.env.NODE_ENV === "production"
+      ? [
+          new transports.File({ filename: "logs/error.log", level: "error" }),
+          new transports.File({ filename: "logs/combined.log" }),
+        ]
+      : []),
   ],
 });
 
 // Analytics and metrics tracking
 export class Analytics {
-  static trackSubscriptionValidation(subscriptionId: string, isValid: boolean, duration: number, ip?: string) {
-    logger.info('Subscription validation attempt', {
-      event: 'subscription_validation',
-      subscriptionId: subscriptionId.substring(0, 3) + '***', // Partial ID for privacy
+  static trackSubscriptionValidation(
+    subscriptionId: string,
+    isValid: boolean,
+    duration: number,
+    ip?: string,
+  ) {
+    logger.info("Subscription validation attempt", {
+      event: "subscription_validation",
+      subscriptionId: subscriptionId.substring(0, 3) + "***", // Partial ID for privacy
       isValid,
       duration,
       ip,
@@ -62,9 +70,9 @@ export class Analytics {
   }
 
   static trackOtpRequest(email: string, success: boolean, ip?: string) {
-    logger.info('OTP request', {
-      event: 'otp_request',
-      email: email.replace(/(.{2}).*@/, '$1***@'), // Partially hide email
+    logger.info("OTP request", {
+      event: "otp_request",
+      email: email.replace(/(.{2}).*@/, "$1***@"), // Partially hide email
       success,
       ip,
       timestamp: new Date().toISOString(),
@@ -79,16 +87,16 @@ export class Analytics {
     success: boolean;
     ip?: string;
   }) {
-    logger.info('Booking submission', {
-      event: 'booking_submission',
+    logger.info("Booking submission", {
+      event: "booking_submission",
       ...data,
       timestamp: new Date().toISOString(),
     });
   }
 
   static trackFormProgress(step: string, ip?: string) {
-    logger.info('Form progress', {
-      event: 'form_progress',
+    logger.info("Form progress", {
+      event: "form_progress",
       step,
       ip,
       timestamp: new Date().toISOString(),
@@ -96,8 +104,8 @@ export class Analytics {
   }
 
   static trackError(error: Error, context: string, additionalData?: any) {
-    logger.error('Application error', {
-      event: 'error',
+    logger.error("Application error", {
+      event: "error",
       context,
       error: error.message,
       stack: error.stack,
@@ -106,9 +114,13 @@ export class Analytics {
     });
   }
 
-  static trackPerformance(operation: string, duration: number, additionalData?: any) {
-    logger.info('Performance metric', {
-      event: 'performance',
+  static trackPerformance(
+    operation: string,
+    duration: number,
+    additionalData?: any,
+  ) {
+    logger.info("Performance metric", {
+      event: "performance",
       operation,
       duration,
       additionalData,
@@ -117,17 +129,17 @@ export class Analytics {
   }
 
   static trackCacheHit(key: string, hit: boolean) {
-    logger.debug('Cache operation', {
-      event: 'cache_operation',
-      key: key.substring(0, 20) + '...', // Truncate for privacy
+    logger.debug("Cache operation", {
+      event: "cache_operation",
+      key: key.substring(0, 20) + "...", // Truncate for privacy
       hit,
       timestamp: new Date().toISOString(),
     });
   }
 
   static trackRateLimit(ip: string, endpoint: string, blocked: boolean) {
-    logger.warn('Rate limit check', {
-      event: 'rate_limit',
+    logger.warn("Rate limit check", {
+      event: "rate_limit",
       ip,
       endpoint,
       blocked,
@@ -139,8 +151,8 @@ export class Analytics {
 // Middleware for request logging
 export const requestLogger = (req: any, res: any, next: any) => {
   const start = Date.now();
-  
-  res.on('finish', () => {
+
+  res.on("finish", () => {
     const duration = Date.now() - start;
     logger.http(`${req.method} ${req.originalUrl}`, {
       method: req.method,
@@ -148,10 +160,10 @@ export const requestLogger = (req: any, res: any, next: any) => {
       status: res.statusCode,
       duration,
       ip: req.ip,
-      userAgent: req.get('User-Agent'),
+      userAgent: req.get("User-Agent"),
     });
   });
-  
+
   next();
 };
 
