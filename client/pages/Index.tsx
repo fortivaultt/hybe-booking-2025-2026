@@ -223,9 +223,12 @@ export default function Index() {
 
   const handleRedirectClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
+    const href = e.currentTarget.href;
+    if (!href) return;
+
     setIsRedirecting(true);
     setTimeout(() => {
-      window.location.href = e.currentTarget.href;
+      window.location.href = href;
     }, 1500); // Show spinner for 1.5 seconds
   };
 
