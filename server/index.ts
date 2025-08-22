@@ -13,6 +13,7 @@ import {
   otpRateLimit,
   bookingSubmissionRateLimit
 } from "./middleware/rateLimiter";
+import { errorTrackingMiddleware, errorTrackingHealthCheck } from "./middleware/errorTracking";
 
 export async function createServer() {
   const app = express();
