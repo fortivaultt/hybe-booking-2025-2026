@@ -219,7 +219,6 @@ export default function Index() {
     otp: "",
     message: "",
   });
-  const [isRedirecting, setIsRedirecting] = useState(false);
 
   const handleRedirectClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
