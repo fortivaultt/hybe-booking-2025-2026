@@ -83,23 +83,8 @@ export async function createServer() {
     handleVerifyOtp
   );
 
-  // Error handling middleware
-  app.use((error: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
-    Analytics.trackError(error, 'express_error_handler', {
-      url: req.url,
-      method: req.method,
-      ip: req.ip
-    });
-
-    if (res.headersSent) {
-      return next(error);
-    }
-
-    res.status(500).json({
-      error: 'Internal server error',
-      message: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong'
-    });
-  });
+  // Enhanced error handling middleware
+  app.use(errorTrackingMiddleware);
 
   return app;
 }
