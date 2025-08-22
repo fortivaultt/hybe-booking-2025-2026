@@ -836,7 +836,7 @@ export default function Index() {
                           onClick={handleRedirectClick}
                           className="text-purple-600 hover:underline"
                         >
-                          Don't have a subscription ID? Get one here.
+                          Don't have a subscription ID? Get one here ↗
                         </a>
                       </div>
 
