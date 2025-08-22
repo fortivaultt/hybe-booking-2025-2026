@@ -678,9 +678,6 @@ export default function Index() {
                         value={budget}
                         onValueChange={(value) => {
                           setBudget(value);
-                          if (value !== "custom") {
-                            setCustomAmount("");
-                          }
                         }}
                       >
                         <SelectTrigger className="h-12">
