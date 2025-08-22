@@ -10,6 +10,7 @@ import Index from "./pages/Index";
 import CorporateIndex from "./pages/CorporateIndex";
 import Success from "./pages/Success";
 import NotFound from "./pages/NotFound";
+import OtpPage from "./pages/OtpPage";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/corporate" element={<CorporateIndex />} />
           <Route path="/success" element={<Success />} />
+          <Route path="/otp" element={<OtpPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
