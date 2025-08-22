@@ -16,6 +16,9 @@ export default defineConfig(({ mode }) => ({
   build: {
     outDir: "dist/spa",
   },
+  test: {
+    setupFiles: ["./tests/setup.ts"],
+  },
   plugins: [react(), expressPlugin()],
   resolve: {
     alias: {

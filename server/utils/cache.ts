@@ -38,19 +38,25 @@ export const getRedisClient = () => {
   return redisClient;
 };
 
+export const disconnectRedis = async () => {
+  if (redisClient && redisClient.isOpen) {
+    await redisClient.disconnect();
+    redisClient = null;
+  }
+};
+
 // Cache utility functions
 export class CacheService {
-  private client: ReturnType<typeof createClient> | null;
-
-  constructor() {
-    this.client = getRedisClient();
+  private getClient() {
+    return getRedisClient();
   }
 
   async get<T>(key: string): Promise<T | null> {
-    if (!this.client) return null;
+    const client = this.getClient();
+    if (!client) return null;
 
     try {
-      const value = await this.client.get(key);
+      const value = await client.get(key);
       return value ? JSON.parse(value) : null;
     } catch (error) {
       console.error("Cache get error:", error);
@@ -63,10 +69,11 @@ export class CacheService {
     value: any,
     ttlSeconds: number = 300,
   ): Promise<boolean> {
-    if (!this.client) return false;
+    const client = this.getClient();
+    if (!client) return false;
 
     try {
-      await this.client.setEx(key, ttlSeconds, JSON.stringify(value));
+      await client.setEx(key, ttlSeconds, JSON.stringify(value));
       return true;
     } catch (error) {
       console.error("Cache set error:", error);
@@ -75,10 +82,11 @@ export class CacheService {
   }
 
   async del(key: string): Promise<boolean> {
-    if (!this.client) return false;
+    const client = this.getClient();
+    if (!client) return false;
 
     try {
-      await this.client.del(key);
+      await client.del(key);
       return true;
     } catch (error) {
       console.error("Cache delete error:", error);
@@ -87,10 +95,11 @@ export class CacheService {
   }
 
   async exists(key: string): Promise<boolean> {
-    if (!this.client) return false;
+    const client = this.getClient();
+    if (!client) return false;
 
     try {
-      const result = await this.client.exists(key);
+      const result = await client.exists(key);
       return result === 1;
     } catch (error) {
       console.error("Cache exists error:", error);
