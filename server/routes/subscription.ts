@@ -1,5 +1,7 @@
 import { RequestHandler } from "express";
 import { Pool } from "pg";
+import { cacheService } from "../utils/cache";
+import { Analytics } from "../utils/logger";
 
 // Initialize PostgreSQL connection
 const pool = new Pool({
