@@ -45,8 +45,11 @@ export async function createServer() {
     res.json({ message: ping });
   });
 
-  // Error tracking health check
+  // Health check and monitoring endpoints
   app.get("/api/health/error-tracking", errorTrackingHealthCheck);
+  app.get("/api/health/system", getSystemHealth);
+  app.get("/api/monitoring/dashboard", getAnalyticsDashboard);
+  app.get("/api/monitoring/metrics", getRealTimeMetrics);
 
   // Demo route
   app.get("/api/demo", handleDemo);
