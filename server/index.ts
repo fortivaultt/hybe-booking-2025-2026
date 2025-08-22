@@ -38,11 +38,14 @@ export async function createServer() {
   // Apply general rate limiting to all API routes
   app.use('/api', generalRateLimit.middleware());
 
-  // Health check endpoint (no rate limiting)
+  // Health check endpoints (no rate limiting)
   app.get("/api/ping", (_req, res) => {
     const ping = process.env.PING_MESSAGE ?? "ping";
     res.json({ message: ping });
   });
+
+  // Error tracking health check
+  app.get("/api/health/error-tracking", errorTrackingHealthCheck);
 
   // Demo route
   app.get("/api/demo", handleDemo);
