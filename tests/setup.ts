@@ -1,6 +1,6 @@
 import { afterAll } from 'vitest';
-import { disconnectRedis } from '../server/utils/cache';
+import { disconnectCache } from '../server/utils/cache';
 
-afterAll(async () => {
-  await disconnectRedis();
+afterAll(() => {
+  disconnectCache();
 });

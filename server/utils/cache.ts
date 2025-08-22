@@ -1,79 +1,70 @@
-import { createClient } from "redis";
+import { initializeDatabase, getDatabase, closeDatabase } from "./database";
 
-// Redis client singleton
-let redisClient: ReturnType<typeof createClient> | null = null;
+let cleanupInterval: NodeJS.Timeout | null = null;
 
-export const initializeRedis = async () => {
-  if (redisClient) {
-    return redisClient;
+export const initializeCache = async () => {
+  const db = await initializeDatabase();
+  if (db) {
+    // Periodically clean up expired cache entries
+    cleanupInterval = setInterval(() => {
+      try {
+        const now = Math.floor(Date.now() / 1000);
+        db.run("DELETE FROM cache WHERE expires_at IS NOT NULL AND expires_at < ?", [now]);
+      } catch (error) {
+        console.error("Error cleaning up expired cache entries:", error);
+      }
+    }, 60 * 1000); // Every minute
   }
-
-  try {
-    redisClient = createClient({
-      url: process.env.REDIS_URL || "redis://localhost:6379",
-      socket: {
-        connectTimeout: 5000,
-        lazyConnect: true,
-      },
-    });
-
-    redisClient.on("error", (err) => {
-      console.error("Redis Client Error:", err);
-    });
-
-    redisClient.on("connect", () => {
-      console.info("Redis Client Connected");
-    });
-
-    await redisClient.connect();
-    return redisClient;
-  } catch (error) {
-    console.error("Failed to initialize Redis:", error);
-    redisClient = null;
-    return null;
-  }
+  return db;
 };
 
-export const getRedisClient = () => {
-  return redisClient;
-};
-
-export const disconnectRedis = async () => {
-  if (redisClient && redisClient.isOpen) {
-    await redisClient.disconnect();
-    redisClient = null;
+export const disconnectCache = () => {
+  if (cleanupInterval) {
+    clearInterval(cleanupInterval);
+    cleanupInterval = null;
   }
+  closeDatabase();
 };
 
-// Cache utility functions
 export class CacheService {
   private getClient() {
-    return getRedisClient();
+    return getDatabase();
   }
 
-  async get<T>(key: string): Promise<T | null> {
-    const client = this.getClient();
-    if (!client) return null;
+  get<T>(key: string): T | null {
+    const db = this.getClient();
+    if (!db) return null;
 
     try {
-      const value = await client.get(key);
-      return value ? JSON.parse(value) : null;
+      const stmt = db.prepare("SELECT value FROM cache WHERE key = ? AND (expires_at IS NULL OR expires_at > ?)");
+      stmt.bind([key, Math.floor(Date.now() / 1000)]);
+      let result: T | null = null;
+      if (stmt.step()) {
+        const [value] = stmt.get();
+        result = JSON.parse(value as string);
+      }
+      stmt.free();
+      return result;
     } catch (error) {
       console.error("Cache get error:", error);
       return null;
     }
   }
 
-  async set(
+  set(
     key: string,
     value: any,
     ttlSeconds: number = 300,
-  ): Promise<boolean> {
-    const client = this.getClient();
-    if (!client) return false;
+  ): boolean {
+    const db = this.getClient();
+    if (!db) return false;
 
     try {
-      await client.setEx(key, ttlSeconds, JSON.stringify(value));
+      const expires_at = ttlSeconds ? Math.floor(Date.now() / 1000) + ttlSeconds : null;
+      db.run(
+        "REPLACE INTO cache (key, value, expires_at) VALUES (?, ?, ?)",
+        [key, JSON.stringify(value), expires_at]
+      );
       return true;
     } catch (error) {
       console.error("Cache set error:", error);
@@ -81,12 +72,12 @@ export class CacheService {
     }
   }
 
-  async del(key: string): Promise<boolean> {
-    const client = this.getClient();
-    if (!client) return false;
+  del(key: string): boolean {
+    const db = this.getClient();
+    if (!db) return false;
 
     try {
-      await client.del(key);
+      db.run("DELETE FROM cache WHERE key = ?", [key]);
       return true;
     } catch (error) {
       console.error("Cache delete error:", error);
@@ -94,13 +85,16 @@ export class CacheService {
     }
   }
 
-  async exists(key: string): Promise<boolean> {
-    const client = this.getClient();
-    if (!client) return false;
+  exists(key: string): boolean {
+    const db = this.getClient();
+    if (!db) return false;
 
     try {
-      const result = await client.exists(key);
-      return result === 1;
+      const stmt = db.prepare("SELECT 1 FROM cache WHERE key = ? AND (expires_at IS NULL OR expires_at > ?)");
+      stmt.bind([key, Math.floor(Date.now() / 1000)]);
+      const result = stmt.step();
+      stmt.free();
+      return result;
     } catch (error) {
       console.error("Cache exists error:", error);
       return false;
@@ -108,23 +102,23 @@ export class CacheService {
   }
 
   // Subscription-specific cache methods
-  async cacheSubscriptionValidation(
+  cacheSubscriptionValidation(
     subscriptionId: string,
     validationResult: any,
     ttlSeconds: number = 300,
-  ): Promise<boolean> {
+  ): boolean {
     const cacheKey = `subscription:${subscriptionId}`;
     return this.set(cacheKey, validationResult, ttlSeconds);
   }
 
-  async getCachedSubscriptionValidation(
+  getCachedSubscriptionValidation(
     subscriptionId: string,
-  ): Promise<any | null> {
+  ): any | null {
     const cacheKey = `subscription:${subscriptionId}`;
     return this.get(cacheKey);
   }
 
-  async invalidateSubscriptionCache(subscriptionId: string): Promise<boolean> {
+  invalidateSubscriptionCache(subscriptionId: string): boolean {
     const cacheKey = `subscription:${subscriptionId}`;
     return this.del(cacheKey);
   }

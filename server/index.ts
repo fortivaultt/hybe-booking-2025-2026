@@ -13,7 +13,7 @@ import {
   getAnalyticsDashboard,
   getRealTimeMetrics,
 } from "./routes/monitoring";
-import { initializeRedis } from "./utils/cache";
+import { initializeCache } from "./utils/cache";
 import { requestLogger, Analytics } from "./utils/logger";
 import {
   generalRateLimit,
@@ -29,13 +29,13 @@ import {
 export async function createServer() {
   const app = express();
 
-  // Initialize Redis cache
+  // Initialize SQLite cache
   try {
-    await initializeRedis();
-    console.info("✓ Redis cache initialized successfully");
+    await initializeCache();
+    console.info("✓ SQLite cache initialized successfully");
   } catch (error) {
     console.warn(
-      "⚠ Redis cache initialization failed, continuing without cache:",
+      "⚠ SQLite cache initialization failed, continuing without cache:",
       error,
     );
   }
