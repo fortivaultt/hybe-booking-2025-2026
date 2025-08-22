@@ -789,7 +789,7 @@ export default function Index() {
                       <div className="relative">
                         <Input
                           id="subscriptionId"
-                          placeholder="HYBABC1234567"
+                          placeholder="Enter your subscription ID"
                           value={subscriptionId}
                           onChange={(e) =>
                             setSubscriptionId(e.target.value.toUpperCase())
@@ -801,7 +801,7 @@ export default function Index() {
                                 ? "border-green-300 focus:border-green-500"
                                 : ""
                           }`}
-                          maxLength={13}
+                          maxLength={15}
                         />
                         {subscriptionValidation.isValidating && (
                           <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
