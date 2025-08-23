@@ -89,6 +89,8 @@ export const handleSendOtp: RequestHandler = async (req, res) => {
         .json({ success: false, message: error.errors[0].message });
     }
 
+    console.error("OTP send error:", error);
+
     Analytics.trackError(error as Error, "otp_send", {
       email: req.body?.email,
       ip: req.ip,
@@ -119,12 +121,10 @@ export const handleVerifyOtp: RequestHandler = async (req, res) => {
         success: false,
         reason: "not_found_or_expired",
       });
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "OTP not found or has expired. Please request a new one.",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "OTP not found or has expired. Please request a new one.",
+      });
     }
 
     if (storedOtp !== otp) {
