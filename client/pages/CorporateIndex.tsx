@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { Play, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import HybeHeader from "@/components/HybeHeader";
-import HybeFooter from "@/components/HybeFooter";
+import Layout from "@/components/Layout";
 import CookieConsent from "@/components/CookieConsent";
 
 interface VideoSlide {
@@ -91,10 +90,7 @@ const CorporateIndex = () => {
   const currentVideo = videoSlides[currentSlide];
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Header */}
-      <HybeHeader />
-
+    <Layout>
       {/* Main Video Slider Section */}
       <div className="swiper-container hybe_main relative h-screen overflow-hidden">
         <div className="swiper-wrapper relative h-full">
@@ -203,12 +199,9 @@ const CorporateIndex = () => {
         </div>
       </div>
 
-      {/* Footer */}
-      <HybeFooter />
-
       {/* Cookie Consent */}
       <CookieConsent />
-    </div>
+    </Layout>
   );
 };
 

@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useLocation, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 
 const HybeHeader = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const { pathname } = useLocation();
 
   const navigation = [
     {
@@ -63,8 +65,8 @@ const HybeHeader = () => {
       <div className="container mx-auto px-4 flex items-center justify-between h-16">
         {/* Logo */}
         <h1 className="logo">
-          <a
-            href="/"
+          <Link
+            to="/"
             className="flex items-center text-black text-xl font-bold"
           >
             <img
@@ -73,51 +75,65 @@ const HybeHeader = () => {
               className="h-8 w-auto mr-2"
             />
             HYBE
-          </a>
+          </Link>
         </h1>
 
         {/* Desktop Navigation */}
         <nav className="nav hidden lg:flex items-center space-x-8">
           <ul className="gnb flex items-center space-x-8">
-            {navigation.map((item) => (
-              <li
-                key={item.title}
-                className="relative group"
-                onMouseEnter={() => setActiveDropdown(item.title)}
-                onMouseLeave={() => setActiveDropdown(null)}
-              >
-                <a
-                  href="#"
-                  className="text-gray-900 hover:text-gray-600 font-medium transition-colors duration-200"
+            {navigation.map((item) => {
+              const isCategoryActive = pathname.startsWith(
+                `/${item.title.toLowerCase()}`,
+              );
+              return (
+                <li
+                  key={item.title}
+                  className="relative group"
+                  onMouseEnter={() => setActiveDropdown(item.title)}
+                  onMouseLeave={() => setActiveDropdown(null)}
                 >
-                  {item.title}
-                </a>
+                  <span
+                    className={`font-medium transition-colors duration-200 cursor-pointer ${
+                      isCategoryActive
+                        ? "text-purple-600"
+                        : "text-gray-900 hover:text-gray-600"
+                    }`}
+                  >
+                    {item.title}
+                  </span>
 
-                {/* Dropdown Menu */}
-                <ul
-                  className={`menu absolute top-full left-0 mt-2 w-64 bg-white shadow-lg border border-gray-200 rounded-lg py-2 transform transition-all duration-200 ${
-                    activeDropdown === item.title
-                      ? "opacity-100 visible translate-y-0"
-                      : "opacity-0 invisible -translate-y-2"
-                  }`}
-                >
-                  {item.items.map((subItem) => (
-                    <li key={subItem.label}>
-                      <a
-                        href={subItem.href}
-                        target={subItem.external ? "_blank" : undefined}
-                        rel={
-                          subItem.external ? "noopener noreferrer" : undefined
-                        }
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-150"
-                      >
-                        {subItem.label}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </li>
-            ))}
+                  {/* Dropdown Menu */}
+                  <ul
+                    className={`menu absolute top-full left-0 mt-2 w-64 bg-white shadow-lg border border-gray-200 rounded-lg py-2 transform transition-all duration-200 ${
+                      activeDropdown === item.title
+                        ? "opacity-100 visible translate-y-0"
+                        : "opacity-0 invisible -translate-y-2"
+                    }`}
+                  >
+                    {item.items.map((subItem) => (
+                      <li key={subItem.label}>
+                        <Link
+                          to={subItem.href}
+                          target={subItem.external ? "_blank" : undefined}
+                          rel={
+                            subItem.external
+                              ? "noopener noreferrer"
+                              : undefined
+                          }
+                          className={`block px-4 py-2 text-sm transition-colors duration-150 ${
+                            pathname === subItem.href
+                              ? "text-purple-600 bg-purple-50 font-semibold"
+                              : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                          }`}
+                        >
+                          {subItem.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              );
+            })}
           </ul>
 
           {/* Language Selector */}
@@ -128,16 +144,16 @@ const HybeHeader = () => {
             <ul className="absolute top-full left-0 mt-2 w-16 bg-white shadow-lg border border-gray-200 rounded-lg py-2 transform transition-all duration-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible">
               {languages.map((lang) => (
                 <li key={lang.code}>
-                  <a
-                    href={lang.href}
+                  <Link
+                    to={lang.href}
                     className={`block px-3 py-1 text-sm transition-colors duration-150 ${
-                      lang.active
+                      pathname === lang.href
                         ? "text-purple-600 font-medium"
                         : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                     }`}
                   >
                     {lang.code}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -166,25 +182,29 @@ const HybeHeader = () => {
             <div className="lnb space-y-4">
               {navigation.map((item) => (
                 <div key={item.title}>
-                  <a
-                    href="#"
-                    className="block text-gray-900 font-medium text-lg py-2"
-                  >
+                  <span className="block text-gray-900 font-medium text-lg py-2">
                     {item.title}
-                  </a>
+                  </span>
                   <ul className="list ml-4 space-y-2">
                     {item.items.map((subItem) => (
                       <li key={subItem.label}>
-                        <a
-                          href={subItem.href}
+                        <Link
+                          to={subItem.href}
                           target={subItem.external ? "_blank" : undefined}
                           rel={
-                            subItem.external ? "noopener noreferrer" : undefined
+                            subItem.external
+                              ? "noopener noreferrer"
+                              : undefined
                           }
-                          className="block text-gray-600 hover:text-gray-900 py-1 transition-colors duration-150"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className={`block py-1 transition-colors duration-150 ${
+                            pathname === subItem.href
+                              ? "text-purple-600 font-semibold"
+                              : "text-gray-600 hover:text-gray-900"
+                          }`}
                         >
                           {subItem.label}
-                        </a>
+                        </Link>
                       </li>
                     ))}
                   </ul>
@@ -195,17 +215,18 @@ const HybeHeader = () => {
               <div className="border-t border-gray-200 pt-4">
                 <div className="lang grid grid-cols-4 gap-2">
                   {languages.map((lang) => (
-                    <a
+                    <Link
                       key={lang.code}
-                      href={lang.href}
+                      to={lang.href}
+                      onClick={() => setIsMobileMenuOpen(false)}
                       className={`text-center py-2 px-3 rounded transition-colors duration-150 ${
-                        lang.active
+                        pathname === lang.href
                           ? "bg-purple-100 text-purple-600 font-medium"
                           : "text-gray-600 hover:bg-gray-100"
                       }`}
                     >
                       {lang.code}
-                    </a>
+                    </Link>
                   ))}
                 </div>
               </div>
