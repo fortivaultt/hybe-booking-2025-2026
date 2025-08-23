@@ -24,10 +24,10 @@ const transporter = useRealEmailService
   : null;
 
 // --- Email Template ---
-const templatePath = path.join(
-  path.dirname(new URL(import.meta.url).pathname),
-  "../email-templates/otp-template.hbs",
-);
+const isProd = process.env.NODE_ENV === "production";
+// In production, templates are copied to `dist`. In dev, they are in `src`.
+const templateDir = isProd ? "dist/email-templates" : "src/email-templates";
+const templatePath = path.join(process.cwd(), templateDir, "otp-template.hbs");
 const templateSource = fs.readFileSync(templatePath, "utf-8");
 const emailTemplate = Handlebars.compile(templateSource);
 
