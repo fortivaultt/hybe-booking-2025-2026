@@ -23,14 +23,6 @@ const transporter = useRealEmailService
     })
   : null;
 
-// --- Email Template ---
-const isProd = process.env.NODE_ENV === "production";
-// In production, templates are copied to `dist`. In dev, they are in `src`.
-const templateDir = isProd ? "dist/email-templates" : "src/email-templates";
-const templatePath = path.join(process.cwd(), templateDir, "otp-template.hbs");
-const templateSource = fs.readFileSync(templatePath, "utf-8");
-const emailTemplate = Handlebars.compile(templateSource);
-
 // --- Constants ---
 const OTP_EXPIRATION_SECONDS = 300; // 5 minutes
 const OTP_RESEND_COOLDOWN_SECONDS = 60; // 1 minute
@@ -74,6 +66,12 @@ export const handleSendOtp: RequestHandler = async (req, res) => {
     await cacheService.del(`otp_verify_attempts:${email}`);
 
     // --- Send Email or Log to Console ---
+    const isProd = process.env.NODE_ENV === "production";
+    const templateDir = isProd ? "dist/email-templates" : "src/email-templates";
+    const templatePath = path.join(process.cwd(), templateDir, "otp-template.hbs");
+    const templateSource = fs.readFileSync(templatePath, "utf-8");
+    const emailTemplate = Handlebars.compile(templateSource);
+
     const emailHtml = emailTemplate({
       OTP: otp,
       expirationMinutes: Math.round(OTP_EXPIRATION_SECONDS / 60),
