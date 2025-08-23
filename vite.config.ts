@@ -33,10 +33,16 @@ function expressPlugin(): Plugin {
     name: "express-plugin",
     apply: "serve", // Only apply during development (serve mode)
     configureServer(server) {
-      // Handle async createServer properly
+      // Handle async createServer properly and add middleware earlier in the chain
       createServer().then((app) => {
-        // Add Express app as middleware to Vite dev server with proper priority
-        server.middlewares.use('/api', app);
+        // Use return from configureServer to add pre middleware
+        server.middlewares.use((req, res, next) => {
+          if (req.url?.startsWith('/api')) {
+            app(req, res, next);
+          } else {
+            next();
+          }
+        });
       }).catch((error) => {
         console.error('Failed to create Express server:', error);
       });
