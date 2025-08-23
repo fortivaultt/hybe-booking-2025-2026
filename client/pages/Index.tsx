@@ -12,8 +12,7 @@ import {
   VerifyOtpResponse,
 } from "@shared/api";
 import { Button } from "@/components/ui/button";
-import HybeHeader from "@/components/HybeHeader";
-import HybeFooter from "@/components/HybeFooter";
+import Layout from "@/components/Layout";
 import CookieConsent from "@/components/CookieConsent";
 import {
   Card,
@@ -513,10 +512,7 @@ export default function Index() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* HYBE Corporate Header */}
-      <HybeHeader />
-
+    <Layout>
       {/* Hero Section */}
       <section className="bg-white border-b border-gray-200 py-12 sm:py-16">
         <div className="container mx-auto px-4 sm:px-6 text-center">
@@ -559,7 +555,7 @@ export default function Index() {
       </section>
 
       {/* Main Content */}
-      <main className="bg-gray-50 min-h-screen">
+      <div className="bg-gray-50 min-h-screen">
         <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-12">
           {/* HYBE Video Slider */}
           <div className="mb-8">
@@ -1366,13 +1362,10 @@ export default function Index() {
             </div>
           </div>
         </div>
-      </main>
-
-      {/* HYBE Corporate Footer */}
-      <HybeFooter />
+      </div>
 
       {/* Cookie Consent */}
       <CookieConsent />
-    </div>
+    </Layout>
   );
 }
