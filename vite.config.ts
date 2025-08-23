@@ -35,7 +35,7 @@ function expressPlugin(): Plugin {
     async configureServer(server) {
       // Get the Express app
       const app = await createServer();
-      console.log('✓ Express server initialized and integrated with Vite');
+      console.log("✓ Express server initialized and integrated with Vite");
 
       // Add Express app as middleware to Vite dev server
       server.middlewares.use(app);
