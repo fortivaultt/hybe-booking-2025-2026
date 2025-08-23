@@ -89,6 +89,8 @@ export const handleSendOtp: RequestHandler = async (req, res) => {
         .json({ success: false, message: error.errors[0].message });
     }
 
+    console.error("OTP send error:", error);
+
     Analytics.trackError(error as Error, "otp_send", {
       email: req.body?.email,
       ip: req.ip,
