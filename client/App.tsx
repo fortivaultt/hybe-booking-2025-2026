@@ -34,56 +34,59 @@ import EngRelatedSitePage from "./pages/EngRelatedSite";
 
 const queryClient = new QueryClient();
 
+const AppRouter = () => (
+  <BrowserRouter>
+    <Routes>
+      {/* Main Routes */}
+      <Route path="/" element={<Index />} />
+      <Route path="/corporate" element={<CorporateIndex />} />
+      <Route path="/success" element={<Success />} />
+
+      {/* Company Pages */}
+      <Route path="/company/info" element={<CompanyInfoPage />} />
+      <Route path="/company/artist" element={<CompanyArtistPage />} />
+      <Route path="/company/business" element={<CompanyBusinessPage />} />
+      <Route path="/company/ethical" element={<CompanyEthicalPage />} />
+
+      {/* IR Pages */}
+      <Route path="/ir/esg" element={<IrEsgPage />} />
+      <Route path="/ir/structure" element={<IrStructurePage />} />
+      <Route path="/ir/announce" element={<IrAnnouncePage />} />
+      <Route path="/ir/official" element={<IrOfficialPage />} />
+      <Route path="/ir/finance" element={<IrFinancePage />} />
+      <Route path="/ir/share" element={<IrSharePage />} />
+      <Route path="/ir/event" element={<IrEventPage />} />
+      <Route path="/ir/archive" element={<IrArchivePage />} />
+
+      {/* Newsroom Pages */}
+      <Route path="/news/announcements" element={<NewsAnnouncementsPage />} />
+      <Route path="/news/news" element={<NewsNewsPage />} />
+      <Route path="/news/notice" element={<NewsNoticePage />} />
+
+      {/* Career Pages */}
+      <Route path="/career/crew" element={<CareerCrewPage />} />
+
+      {/* Language Pages */}
+      <Route path="/kor/main" element={<KorMainPage />} />
+      <Route path="/chn/main" element={<ChnMainPage />} />
+      <Route path="/jpn/main" element={<JpnMainPage />} />
+
+      {/* Footer Pages */}
+      <Route path="/eng/cookie" element={<EngCookiePage />} />
+      <Route path="/eng/related/site" element={<EngRelatedSitePage />} />
+
+      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  </BrowserRouter>
+);
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
-        <Routes>
-          {/* Main Routes */}
-          <Route path="/" element={<Index />} />
-          <Route path="/corporate" element={<CorporateIndex />} />
-          <Route path="/success" element={<Success />} />
-
-          {/* Company Pages */}
-          <Route path="/company/info" element={<CompanyInfoPage />} />
-          <Route path="/company/artist" element={<CompanyArtistPage />} />
-          <Route path="/company/business" element={<CompanyBusinessPage />} />
-          <Route path="/company/ethical" element={<CompanyEthicalPage />} />
-
-          {/* IR Pages */}
-          <Route path="/ir/esg" element={<IrEsgPage />} />
-          <Route path="/ir/structure" element={<IrStructurePage />} />
-          <Route path="/ir/announce" element={<IrAnnouncePage />} />
-          <Route path="/ir/official" element={<IrOfficialPage />} />
-          <Route path="/ir/finance" element={<IrFinancePage />} />
-          <Route path="/ir/share" element={<IrSharePage />} />
-          <Route path="/ir/event" element={<IrEventPage />} />
-          <Route path="/ir/archive" element={<IrArchivePage />} />
-
-          {/* Newsroom Pages */}
-          <Route path="/news/announcements" element={<NewsAnnouncementsPage />} />
-          <Route path="/news/news" element={<NewsNewsPage />} />
-          <Route path="/news/notice" element={<NewsNoticePage />} />
-
-          {/* Career Pages */}
-          <Route path="/career/crew" element={<CareerCrewPage />} />
-
-          {/* Language Pages */}
-          <Route path="/kor/main" element={<KorMainPage />} />
-          <Route path="/chn/main" element={<ChnMainPage />} />
-          <Route path="/jpn/main" element={<JpnMainPage />} />
-
-          {/* Footer Pages */}
-          <Route path="/eng/cookie" element={<EngCookiePage />} />
-          <Route path="/eng/related/site" element={<EngRelatedSitePage />} />
-
-
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <AppRouter />
     </TooltipProvider>
   </QueryClientProvider>
 );
