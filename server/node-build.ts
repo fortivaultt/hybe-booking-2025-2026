@@ -2,32 +2,40 @@ import path from "path";
 import { createServer } from "./index";
 import express from "express";
 
-const app = createServer();
-const port = process.env.PORT || 3000;
+(async () => {
+  try {
+    const app = await createServer();
+    const port = process.env.PORT || 3000;
 
-// In production, serve the built SPA files
-const __dirname = import.meta.dirname;
-const distPath = path.join(__dirname, "../spa");
+    // In production, serve the built SPA files
+    const __dirname = import.meta.dirname;
+    const distPath = path.join(__dirname, "../spa");
 
-// Serve static files
-app.use(express.static(distPath));
+    // Serve static files
+    app.use(express.static(distPath));
 
-// Handle React Router - serve index.html for all non-API routes
-// Use a regex to avoid issues with path-to-regexp
-app.get(/(.*)/, (req, res, next) => {
-  // Don't serve index.html for API routes
-  if (req.path.startsWith("/api/") || req.path.startsWith("/health")) {
-    return res.status(404).json({ error: "API endpoint not found" });
+    // Handle React Router - serve index.html for all non-API routes
+    app.get(/(.*)/, (req, res) => {
+      // Don't serve index.html for API routes
+      if (req.path.startsWith("/api/") || req.path.startsWith("/health")) {
+        // This is a fallback for API routes that are not found.
+        // The main API router in `server/index.ts` will handle known routes.
+        return res.status(404).json({ error: "API endpoint not found" });
+      }
+
+      res.sendFile(path.join(distPath, "index.html"));
+    });
+
+    app.listen(port, () => {
+      console.log(`🚀 Fusion Starter server running on port ${port}`);
+      console.log(`📱 Frontend: http://localhost:${port}`);
+      console.log(`🔧 API: http://localhost:${port}/api`);
+    });
+  } catch (err) {
+    console.error("💥 Failed to start server:", err);
+    process.exit(1);
   }
-
-  res.sendFile(path.join(distPath, "index.html"));
-});
-
-app.listen(port, () => {
-  console.log(`🚀 Fusion Starter server running on port ${port}`);
-  console.log(`📱 Frontend: http://localhost:${port}`);
-  console.log(`🔧 API: http://localhost:${port}/api`);
-});
+})();
 
 // Graceful shutdown
 process.on("SIGTERM", () => {
