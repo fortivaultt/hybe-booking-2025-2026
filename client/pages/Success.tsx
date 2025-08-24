@@ -62,7 +62,7 @@ export default function Success() {
                 </h4>
               </div>
               <ul className="text-sm text-purple-700 space-y-1">
-                <li>• Email confirmation within 2 hours</li>
+                <li>• Email confirmation within 24 hours</li>
                 <li>• Dedicated booking specialist assigned</li>
                 <li>• Detailed proposal with timeline</li>
                 <li>• Secure payment options provided</li>
@@ -83,13 +83,7 @@ export default function Success() {
             </p>
             <div className="space-y-1 text-sm text-yellow-700">
               <p>
-                <strong>VIP Hotline:</strong> +1 (555) 123-HYBE
-              </p>
-              <p>
-                <strong>Email:</strong> priority@hybe.com
-              </p>
-              <p>
-                <strong>Emergency:</strong> +1 (555) 999-HYBE
+                <strong>Email:</strong> hybe.corp@zohomail.com
               </p>
             </div>
           </div>
