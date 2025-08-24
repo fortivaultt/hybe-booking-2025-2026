@@ -1,0 +1,37 @@
+# render.yaml
+# This file configures the deployment of the Fusion Starter application on Render.
+# For more information, see the Render documentation: https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: fusion-starter
+    env: node
+    plan: free
+    buildCommand: "pnpm install && pnpm build"
+    startCommand: "pnpm start"
+    envVars:
+      - key: NODE_VERSION
+        value: "20.11.0"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: fusion-db
+          property: connectionString
+      - key: PING_MESSAGE
+        value: "pong"
+      # --- Email (SMTP) Configuration ---
+      # For production, you should set these as secret environment variables in the Render dashboard.
+      # If not provided, OTPs will be logged to the console instead of being emailed.
+      - key: SMTP_HOST
+        value: "" # e.g., smtp.example.com
+      - key: SMTP_PORT
+        value: "" # e.g., 587
+      - key: SMTP_USER
+        value: "" # e.g., user@example.com
+      - key: SMTP_PASS
+        value: "" # e.g., your_password
+
+databases:
+  - name: fusion-db
+    databaseName: fusion_db
+    user: fusion_user
+    plan: free # The free plan may sleep after a period of inactivity.
