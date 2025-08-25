@@ -62,7 +62,7 @@ const HybeHeader = () => {
   return (
     <header className="header bg-white text-gray-900 relative z-50">
       {/* Desktop Header */}
-      <div className="container mx-auto px-4 flex items-center justify-between h-16">
+      <div className="container mx-auto px-4 sm:px-6 flex items-center justify-between h-16 sm:h-20">
         {/* Logo */}
         <h1 className="logo">
           <Link
@@ -164,7 +164,7 @@ const HybeHeader = () => {
         <Button
           variant="ghost"
           size="sm"
-          className="lg:hidden"
+          className="lg:hidden min-h-[44px] min-w-[44px] p-2"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
           {isMobileMenuOpen ? (
@@ -178,7 +178,7 @@ const HybeHeader = () => {
       {/* Mobile Navigation */}
       {isMobileMenuOpen && (
         <nav className="nav_mobile lg:hidden bg-white border-t border-gray-200">
-          <div className="container mx-auto px-4 py-4">
+          <div className="container mx-auto px-4 sm:px-6 py-4">
             <div className="lnb space-y-4">
               {navigation.map((item) => (
                 <div key={item.title}>
@@ -197,7 +197,7 @@ const HybeHeader = () => {
                               : undefined
                           }
                           onClick={() => setIsMobileMenuOpen(false)}
-                          className={`block py-1 transition-colors duration-150 ${
+                          className={`block py-3 transition-colors duration-150 min-h-[44px] flex items-center ${
                             pathname === subItem.href
                               ? "text-purple-600 font-semibold"
                               : "text-gray-600 hover:text-gray-900"
@@ -219,7 +219,7 @@ const HybeHeader = () => {
                       key={lang.code}
                       to={lang.href}
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className={`text-center py-2 px-3 rounded transition-colors duration-150 ${
+                      className={`text-center py-3 px-3 rounded transition-colors duration-150 min-h-[44px] flex items-center justify-center ${
                         pathname === lang.href
                           ? "bg-purple-100 text-purple-600 font-medium"
                           : "text-gray-600 hover:bg-gray-100"
