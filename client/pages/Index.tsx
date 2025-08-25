@@ -526,6 +526,30 @@ export default function Index() {
 
   return (
     <Layout>
+      {/* Hidden Netlify form for form processing */}
+      <form name="hybe-booking" netlify netlify-honeypot="bot-field" hidden>
+        <input type="text" name="booking-id" />
+        <input type="text" name="fan-preference" />
+        <input type="text" name="celebrity" />
+        <input type="text" name="event-type" />
+        <input type="text" name="budget" />
+        <input type="text" name="custom-amount" />
+        <input type="text" name="attendees" />
+        <input type="text" name="preferred-date" />
+        <input type="text" name="location" />
+        <textarea name="special-requests"></textarea>
+        <input type="text" name="subscription-id" />
+        <input type="text" name="contact-name" />
+        <input type="email" name="contact-email" />
+        <input type="tel" name="contact-phone" />
+        <input type="text" name="contact-organization" />
+        <input type="text" name="privacy-consent" />
+        <input type="text" name="submission-time" />
+        <input type="text" name="user-agent" />
+        <input type="text" name="ip-address" />
+        <input type="hidden" name="bot-field" />
+      </form>
+
       {/* Hero Section */}
       <section className="bg-white border-b border-gray-200 py-8 sm:py-12 lg:py-16">
         <div className="container mx-auto px-4 sm:px-6 text-center">
