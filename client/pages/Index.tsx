@@ -226,7 +226,9 @@ export default function Index() {
 
   const [isRedirecting, setIsRedirecting] = useState(false);
 
-  const handleRedirectClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleRedirectClick = async (
+    e: React.MouseEvent<HTMLAnchorElement>,
+  ) => {
     e.preventDefault();
     const href = e.currentTarget.href;
     if (!href) return;
@@ -235,7 +237,7 @@ export default function Index() {
     setIsRedirecting(true);
 
     // Extended portal opening simulation for immersive experience
-    await new Promise(resolve => setTimeout(resolve, 4000));
+    await new Promise((resolve) => setTimeout(resolve, 4000));
 
     // Open in new tab to avoid losing form data
     window.open(href, "_blank");
@@ -913,7 +915,6 @@ export default function Index() {
                           className="group relative inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 transition-all duration-300 hover:underline cursor-pointer"
                         >
                           Don't have a subscription ID? Get one here ↗
-
                           {/* Hover glow effect */}
                           <div className="absolute inset-0 rounded-md transition-all duration-500 group-hover:bg-gradient-to-r group-hover:from-purple-50 group-hover:to-pink-50 group-hover:scale-105 group-hover:shadow-sm"></div>
                         </a>
@@ -1387,7 +1388,10 @@ export default function Index() {
           {/* Animated background energy field */}
           <div className="absolute inset-0 overflow-hidden">
             <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
-            <div className="absolute bottom-1/4 right-1/4 w-40 h-40 bg-pink-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+            <div
+              className="absolute bottom-1/4 right-1/4 w-40 h-40 bg-pink-500/10 rounded-full blur-3xl animate-pulse"
+              style={{ animationDelay: "1s" }}
+            ></div>
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-purple-500/5 to-pink-500/5 rounded-full blur-3xl animate-ping opacity-30"></div>
           </div>
 
@@ -1406,7 +1410,10 @@ export default function Index() {
                 <div className="w-4 h-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full animate-pulse shadow-lg"></div>
                 {/* Portal energy effect */}
                 <div className="absolute w-24 h-24 border border-purple-100 rounded-full animate-ping opacity-30"></div>
-                <div className="absolute w-28 h-28 border border-pink-100 rounded-full animate-ping opacity-20" style={{ animationDelay: '0.5s' }}></div>
+                <div
+                  className="absolute w-28 h-28 border border-pink-100 rounded-full animate-ping opacity-20"
+                  style={{ animationDelay: "0.5s" }}
+                ></div>
               </div>
 
               {/* Loading Text */}
@@ -1430,11 +1437,26 @@ export default function Index() {
               {/* Floating particles effect */}
               <div className="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
                 <div className="absolute top-4 left-4 w-1 h-1 bg-purple-400 rounded-full animate-ping opacity-60"></div>
-                <div className="absolute top-8 right-6 w-1 h-1 bg-pink-400 rounded-full animate-ping opacity-50" style={{ animationDelay: '0.5s' }}></div>
-                <div className="absolute bottom-6 left-8 w-1 h-1 bg-purple-300 rounded-full animate-ping opacity-40" style={{ animationDelay: '1s' }}></div>
-                <div className="absolute bottom-4 right-4 w-1 h-1 bg-pink-300 rounded-full animate-ping opacity-70" style={{ animationDelay: '1.5s' }}></div>
-                <div className="absolute top-1/2 left-2 w-0.5 h-0.5 bg-purple-500 rounded-full animate-ping opacity-30" style={{ animationDelay: '0.8s' }}></div>
-                <div className="absolute top-1/3 right-2 w-0.5 h-0.5 bg-pink-500 rounded-full animate-ping opacity-50" style={{ animationDelay: '1.2s' }}></div>
+                <div
+                  className="absolute top-8 right-6 w-1 h-1 bg-pink-400 rounded-full animate-ping opacity-50"
+                  style={{ animationDelay: "0.5s" }}
+                ></div>
+                <div
+                  className="absolute bottom-6 left-8 w-1 h-1 bg-purple-300 rounded-full animate-ping opacity-40"
+                  style={{ animationDelay: "1s" }}
+                ></div>
+                <div
+                  className="absolute bottom-4 right-4 w-1 h-1 bg-pink-300 rounded-full animate-ping opacity-70"
+                  style={{ animationDelay: "1.5s" }}
+                ></div>
+                <div
+                  className="absolute top-1/2 left-2 w-0.5 h-0.5 bg-purple-500 rounded-full animate-ping opacity-30"
+                  style={{ animationDelay: "0.8s" }}
+                ></div>
+                <div
+                  className="absolute top-1/3 right-2 w-0.5 h-0.5 bg-pink-500 rounded-full animate-ping opacity-50"
+                  style={{ animationDelay: "1.2s" }}
+                ></div>
               </div>
 
               {/* Shimmer effect overlay */}
