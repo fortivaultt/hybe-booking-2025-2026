@@ -113,7 +113,7 @@ export const validateSubscriptionId: RequestHandler = async (req, res) => {
       } as SubscriptionValidationResponse;
 
       // Cache negative results for shorter duration to avoid DoS via cache pollution
-      await cacheService.cacheSubscriptionValidation(
+      cacheService.cacheSubscriptionValidation(
         normalizedId,
         response,
         60,
@@ -139,7 +139,7 @@ export const validateSubscriptionId: RequestHandler = async (req, res) => {
     } as SubscriptionValidationResponse;
 
     // Cache successful results for longer duration
-    await cacheService.cacheSubscriptionValidation(normalizedId, response, 300); // 5 minutes
+    cacheService.cacheSubscriptionValidation(normalizedId, response, 300); // 5 minutes
 
     Analytics.trackSubscriptionValidation(
       normalizedId,
