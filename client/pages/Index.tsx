@@ -1413,10 +1413,10 @@ export default function Index() {
 
                 {/* Animated progress dots */}
                 <div className="flex justify-center space-x-1 pt-2">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce bounce-delay-1"></div>
-                  <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce bounce-delay-2"></div>
-                  <div className="w-2 h-2 bg-pink-500 rounded-full animate-bounce bounce-delay-3"></div>
+                  <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce shadow-sm"></div>
+                  <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce bounce-delay-1 shadow-sm"></div>
+                  <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce bounce-delay-2 shadow-sm"></div>
+                  <div className="w-2 h-2 bg-pink-500 rounded-full animate-bounce bounce-delay-3 shadow-sm"></div>
                 </div>
               </div>
 
