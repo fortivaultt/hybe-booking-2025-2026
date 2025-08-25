@@ -1,15 +1,7 @@
 import { RequestHandler } from "express";
-import { Pool } from "pg";
 import { cacheService } from "../utils/cache";
 import { Analytics } from "../utils/logger";
-
-// Initialize PostgreSQL connection
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.DATABASE_URL?.includes("sslmode=require")
-    ? { rejectUnauthorized: false }
-    : false,
-});
+import { db } from "../utils/postgres";
 
 export const getSystemHealth: RequestHandler = async (req, res) => {
   const startTime = Date.now();
@@ -127,8 +119,20 @@ export const getAnalyticsDashboard: RequestHandler = async (req, res) => {
 
 async function checkDatabaseHealth() {
   try {
-    const result = await pool.query("SELECT 1 as health_check");
-    const connectionInfo = await pool.query(
+    const dbHealth = await db.healthCheck();
+    if (!dbHealth.connected) {
+      return {
+        status: "error",
+        error: dbHealth.error || "Database connection failed",
+        connectionString: dbHealth.connectionString,
+        attempts: dbHealth.attempts,
+        lastAttempt: dbHealth.lastAttempt,
+        lastCheck: new Date().toISOString(),
+      };
+    }
+
+    const result = await db.query("SELECT 1 as health_check");
+    const connectionInfo = await db.query(
       "SELECT count(*) as active_connections FROM pg_stat_activity WHERE state = $1",
       ["active"],
     );
@@ -137,6 +141,8 @@ async function checkDatabaseHealth() {
       status: "healthy",
       responseTime: Date.now(),
       activeConnections: parseInt(connectionInfo.rows[0].active_connections),
+      connectionString: dbHealth.connectionString,
+      attempts: dbHealth.attempts,
       lastCheck: new Date().toISOString(),
     };
   } catch (error) {
@@ -185,18 +191,30 @@ async function checkSystemMetrics() {
 
 async function getSubscriptionAnalytics() {
   try {
-    const validationStats = await pool.query(`
-      SELECT 
+    const dbHealth = await db.healthCheck();
+    if (!dbHealth.connected) {
+      return {
+        total: 0,
+        active: 0,
+        usedToday: 0,
+        typeDistribution: [],
+        note: "Database unavailable",
+        error: dbHealth.error,
+      };
+    }
+
+    const validationStats = await db.query(`
+      SELECT
         COUNT(*) as total_validations,
         COUNT(CASE WHEN is_active THEN 1 END) as active_subscriptions,
         COUNT(CASE WHEN last_used_at > NOW() - INTERVAL '24 hours' THEN 1 END) as used_today
       FROM subscription_ids
     `);
 
-    const typeDistribution = await pool.query(`
-      SELECT subscription_type, COUNT(*) as count 
-      FROM subscription_ids 
-      WHERE is_active = true 
+    const typeDistribution = await db.query(`
+      SELECT subscription_type, COUNT(*) as count
+      FROM subscription_ids
+      WHERE is_active = true
       GROUP BY subscription_type
     `);
 
@@ -215,8 +233,21 @@ async function getSubscriptionAnalytics() {
 
 async function getBookingAnalytics() {
   try {
-    const bookingStats = await pool.query(`
-      SELECT 
+    const dbHealth = await db.healthCheck();
+    if (!dbHealth.connected) {
+      return {
+        total: 0,
+        today: 0,
+        withSubscription: 0,
+        avgCustomAmount: 0,
+        popularCelebrities: [],
+        note: "Database unavailable",
+        error: dbHealth.error,
+      };
+    }
+
+    const bookingStats = await db.query(`
+      SELECT
         COUNT(*) as total_bookings,
         COUNT(CASE WHEN created_at > NOW() - INTERVAL '24 hours' THEN 1 END) as bookings_today,
         COUNT(CASE WHEN subscription_id IS NOT NULL THEN 1 END) as with_subscription,
@@ -225,7 +256,7 @@ async function getBookingAnalytics() {
       WHERE created_at > NOW() - INTERVAL '30 days'
     `);
 
-    const popularCelebrities = await pool.query(`
+    const popularCelebrities = await db.query(`
       SELECT celebrity, COUNT(*) as booking_count
       FROM booking_requests
       WHERE created_at > NOW() - INTERVAL '7 days'

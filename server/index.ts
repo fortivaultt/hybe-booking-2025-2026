@@ -13,7 +13,15 @@ import {
   getAnalyticsDashboard,
   getRealTimeMetrics,
 } from "./routes/monitoring";
+import {
+  getDatabaseHealth,
+  getDatabaseConnectionInfo,
+  testDatabaseConnection,
+  getDatabaseSchema,
+  initializeDatabaseSchema,
+} from "./routes/database-health";
 import { initializeCache } from "./utils/cache";
+import { initializeDatabase, checkDatabaseSchema } from "./utils/db-init";
 import { requestLogger, Analytics } from "./utils/logger";
 import {
   generalRateLimit,
@@ -36,6 +44,33 @@ export async function createServer() {
   } catch (error) {
     console.warn(
       "⚠ SQLite cache initialization failed, continuing without cache:",
+      error,
+    );
+  }
+
+  // Initialize database schema (if connected)
+  try {
+    const schemaCheck = await checkDatabaseSchema();
+    if (!schemaCheck.valid && schemaCheck.missingTables?.length) {
+      console.info(
+        `🔄 Missing tables detected: ${schemaCheck.missingTables.join(", ")}`,
+      );
+      const initialized = await initializeDatabase();
+      if (initialized) {
+        console.info("✓ Database schema initialized successfully");
+      } else {
+        console.warn(
+          "⚠ Database schema initialization failed, but continuing...",
+        );
+      }
+    } else if (schemaCheck.valid) {
+      console.info("✓ Database schema is up to date");
+    } else {
+      console.warn("⚠ Database schema check failed:", schemaCheck.error);
+    }
+  } catch (error) {
+    console.warn(
+      "⚠ Database initialization skipped (database may be unavailable):",
       error,
     );
   }
@@ -63,6 +98,11 @@ export async function createServer() {
   // Health check and monitoring endpoints
   app.get("/api/health/error-tracking", errorTrackingHealthCheck);
   app.get("/api/health/system", getSystemHealth);
+  app.get("/api/health/database", getDatabaseHealth);
+  app.get("/api/health/database/connection", getDatabaseConnectionInfo);
+  app.get("/api/health/database/schema", getDatabaseSchema);
+  app.post("/api/health/database/test", testDatabaseConnection);
+  app.post("/api/health/database/init", initializeDatabaseSchema);
   app.get("/api/monitoring/dashboard", getAnalyticsDashboard);
   app.get("/api/monitoring/metrics", getRealTimeMetrics);
 
