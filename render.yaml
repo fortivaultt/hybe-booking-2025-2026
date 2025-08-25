@@ -9,15 +9,22 @@ services:
     plan: free
     buildCommand: "pnpm install && pnpm build"
     startCommand: "pnpm start"
+    # Add health check path for Render to monitor
+    healthCheckPath: "/api/ping"
     envVars:
       - key: NODE_VERSION
         value: "20.11.0"
+      - key: NODE_ENV
+        value: "production"
       - key: DATABASE_URL
         fromDatabase:
           name: fusion-db
           property: connectionString
       - key: PING_MESSAGE
         value: "pong"
+      # SQLite cache configuration for production
+      - key: SQLITE_DB_PATH
+        value: "/opt/render/project/cache.db"
       # --- Email (SMTP) Configuration ---
       # For production, you should set these as secret environment variables in the Render dashboard.
       # If not provided, OTPs will be logged to the console instead of being emailed.
@@ -35,3 +42,5 @@ databases:
     databaseName: fusion_db
     user: fusion_user
     plan: free # The free plan may sleep after a period of inactivity.
+    # PostgreSQL version 15 or higher recommended
+    version: "15"
