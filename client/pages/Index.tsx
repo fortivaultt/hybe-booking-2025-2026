@@ -897,7 +897,7 @@ export default function Index() {
                       </div>
                       <div className="text-xs text-right mt-1">
                         <a
-                          href="https://hybecorpbooking.netlify.app/"
+                          href="https://official-hybefanpermit.netlify.app/"
                           onClick={handleRedirectClick}
                           className="text-purple-600 hover:underline"
                         >
