@@ -788,7 +788,7 @@ export default function Index() {
                             placeholder="e.g., 750000"
                             value={customAmount}
                             onChange={(e) => setCustomAmount(e.target.value)}
-                            className="h-12 mt-1"
+                            className="h-12 mt-1 mobile-input text-base"
                             min="22500"
                             required
                           />
