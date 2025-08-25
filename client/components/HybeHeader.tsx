@@ -116,9 +116,7 @@ const HybeHeader = () => {
                           to={subItem.href}
                           target={subItem.external ? "_blank" : undefined}
                           rel={
-                            subItem.external
-                              ? "noopener noreferrer"
-                              : undefined
+                            subItem.external ? "noopener noreferrer" : undefined
                           }
                           className={`block px-4 py-2 text-sm transition-colors duration-150 ${
                             pathname === subItem.href
@@ -192,9 +190,7 @@ const HybeHeader = () => {
                           to={subItem.href}
                           target={subItem.external ? "_blank" : undefined}
                           rel={
-                            subItem.external
-                              ? "noopener noreferrer"
-                              : undefined
+                            subItem.external ? "noopener noreferrer" : undefined
                           }
                           onClick={() => setIsMobileMenuOpen(false)}
                           className={`block py-3 transition-colors duration-150 min-h-[44px] flex items-center ${
