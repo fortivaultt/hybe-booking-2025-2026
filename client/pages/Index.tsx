@@ -1040,7 +1040,7 @@ export default function Index() {
                                   email: e.target.value,
                                 })
                               }
-                              className="h-12"
+                              className="h-12 mobile-input"
                               disabled={otpState.otpSent || otpState.isVerified}
                             />
                             {!otpState.isVerified && (
