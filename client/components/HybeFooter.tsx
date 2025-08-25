@@ -44,8 +44,8 @@ const HybeFooter = () => {
   };
 
   return (
-    <footer className="footer bg-white text-gray-900 py-8 border-t border-gray-200">
-      <div className="container mx-auto px-4">
+    <footer className="footer bg-white text-gray-900 py-6 sm:py-8 border-t border-gray-200">
+      <div className="container mx-auto px-4 sm:px-6">
         {/* Main Footer Content */}
         <div className="flex flex-col items-center space-y-6">
           {/* Copyright */}
