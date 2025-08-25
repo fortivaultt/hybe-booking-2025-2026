@@ -150,6 +150,7 @@ export const validateSubscriptionId: RequestHandler = async (req, res) => {
 
     return res.json(response);
   } catch (error) {
+    console.error("Subscription validation error:", error);
     Analytics.trackError(error as Error, "subscription_validation", {
       subscriptionId: req.body?.subscriptionId,
       ip: req.ip,
