@@ -1,11 +1,13 @@
 import { RequestHandler } from "express";
 import { Analytics } from "../utils/logger";
+import { sqliteDb, BookingRecord } from "../utils/sqlite-db";
 
 export interface BookingRequest {
-  fanPreference: string;
+  fanPreference?: string;
   selectedCelebrity: string;
   selectedEventType: string;
   budget: string;
+  customAmount?: string;
   attendees: string;
   preferredDate: string;
   location: string;
@@ -15,7 +17,7 @@ export interface BookingRequest {
     name: string;
     email: string;
     phone: string;
-    organization: string;
+    organization?: string;
   };
   privacyConsent: boolean;
 }
@@ -84,11 +86,41 @@ export const handleBookingSubmission: RequestHandler = async (req, res) => {
     // Generate a booking ID
     const bookingId = `HYBE-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
 
+    // Save to SQLite database first
+    const bookingRecord: Omit<BookingRecord, "id" | "created_at"> = {
+      booking_id: bookingId,
+      celebrity: bookingData.selectedCelebrity,
+      full_name: bookingData.contactInfo.name,
+      email: bookingData.contactInfo.email,
+      phone: bookingData.contactInfo.phone,
+      organization: bookingData.contactInfo.organization,
+      event_type: bookingData.selectedEventType,
+      event_date: bookingData.preferredDate,
+      location: bookingData.location,
+      budget_range: bookingData.budget,
+      custom_amount: bookingData.customAmount
+        ? parseFloat(bookingData.customAmount)
+        : undefined,
+      attendees: bookingData.attendees,
+      special_requests: bookingData.specialRequests,
+      subscription_id: bookingData.subscriptionId,
+      privacy_consent: bookingData.privacyConsent,
+      status: "pending",
+    };
+
+    try {
+      await sqliteDb.saveBooking(bookingRecord);
+      console.info(`✅ Booking saved to SQLite: ${bookingId}`);
+    } catch (sqliteError) {
+      console.error("❌ Failed to save booking to SQLite:", sqliteError);
+      // Continue with Netlify submission even if SQLite fails
+    }
+
     // Prepare data for Netlify form submission
     const netlifyFormData = {
       "form-name": "hybe-booking",
       "booking-id": bookingId,
-      "fan-preference": bookingData.fanPreference,
+      "fan-preference": bookingData.fanPreference || "",
       celebrity: bookingData.selectedCelebrity,
       "event-type": bookingData.selectedEventType,
       budget: bookingData.budget,
@@ -101,9 +133,11 @@ export const handleBookingSubmission: RequestHandler = async (req, res) => {
       "contact-name": bookingData.contactInfo.name,
       "contact-email": bookingData.contactInfo.email,
       "contact-phone": bookingData.contactInfo.phone,
-      "contact-organization": bookingData.contactInfo.organization,
+      "contact-organization": bookingData.contactInfo.organization || "",
       "privacy-consent": String(bookingData.privacyConsent),
       "submission-time": new Date().toISOString(),
+      "user-agent": req.headers["user-agent"] || "",
+      "ip-address": req.ip || "",
     };
 
     // Submit to Netlify forms (this would work when deployed to Netlify)

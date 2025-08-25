@@ -12,9 +12,9 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "pnpm run build:client && pnpm run build:server && pnpm run copy:templates",
+    "build": "vite build",
     "build:client": "vite build",
-    "copy:templates": "mkdir -p dist/email-templates && cp -r src/email-templates/* dist/email-templates/",
+    "copy:templates": "mkdir -p dist/email-templates && cp -r src/email-templates/* dist/email-templates/ || true",
     "build:server": "vite build --config vite.config.server.ts",
     "start": "node dist/server/node-build.mjs",
     "test": "vitest --run",
@@ -24,14 +24,12 @@
   },
   "dependencies": {
     "@types/handlebars": "^4.0.40",
-    "@types/pg": "^8.15.5",
     "@types/sql.js": "^1.4.9",
     "body-parser": "^2.2.0",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "handlebars": "^4.7.8",
     "nodemailer": "^7.0.5",
-    "pg": "^8.16.3",
     "sql.js": "^1.13.0",
     "winston": "^3.17.0",
     "zod": "^3.25.76"

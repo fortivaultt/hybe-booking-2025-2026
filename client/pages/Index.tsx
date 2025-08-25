@@ -495,6 +495,7 @@ export default function Index() {
     };
 
     try {
+      // Submit to our API first
       const response = await fetch("/api/booking", {
         method: "POST",
         headers: {
@@ -506,6 +507,47 @@ export default function Index() {
       const result: BookingResponse = await response.json();
 
       if (result.success) {
+        // Also submit to Netlify forms for dashboard capture
+        try {
+          const netlifyFormData = new FormData();
+          netlifyFormData.append("form-name", "hybe-booking");
+          netlifyFormData.append("booking-id", result.bookingId || "N/A");
+          netlifyFormData.append("fan-preference", fanPreference);
+          netlifyFormData.append(
+            "celebrity",
+            `${selectedGroup} - ${selectedArtist}`,
+          );
+          netlifyFormData.append("event-type", selectedEventType);
+          netlifyFormData.append("budget", finalBudget);
+          netlifyFormData.append(
+            "custom-amount",
+            budget === "custom" ? customAmount : "",
+          );
+          netlifyFormData.append("attendees", attendees);
+          netlifyFormData.append("preferred-date", preferredDate);
+          netlifyFormData.append("location", location);
+          netlifyFormData.append("special-requests", specialRequests);
+          netlifyFormData.append("subscription-id", subscriptionId || "");
+          netlifyFormData.append("contact-name", contactInfo.name);
+          netlifyFormData.append("contact-email", contactInfo.email);
+          netlifyFormData.append("contact-phone", contactInfo.phone);
+          netlifyFormData.append(
+            "contact-organization",
+            contactInfo.organization || "",
+          );
+          netlifyFormData.append("privacy-consent", String(privacyConsent));
+          netlifyFormData.append("submission-time", new Date().toISOString());
+          netlifyFormData.append("user-agent", navigator.userAgent);
+
+          await fetch("/", {
+            method: "POST",
+            body: netlifyFormData,
+          });
+        } catch (netlifyError) {
+          console.warn("Netlify form submission failed:", netlifyError);
+          // Don't fail the entire submission if Netlify fails
+        }
+
         // Redirect to success page
         navigate("/success");
       } else {
@@ -526,6 +568,30 @@ export default function Index() {
 
   return (
     <Layout>
+      {/* Hidden Netlify form for form processing */}
+      <form name="hybe-booking" netlify netlify-honeypot="bot-field" hidden>
+        <input type="text" name="booking-id" />
+        <input type="text" name="fan-preference" />
+        <input type="text" name="celebrity" />
+        <input type="text" name="event-type" />
+        <input type="text" name="budget" />
+        <input type="text" name="custom-amount" />
+        <input type="text" name="attendees" />
+        <input type="text" name="preferred-date" />
+        <input type="text" name="location" />
+        <textarea name="special-requests"></textarea>
+        <input type="text" name="subscription-id" />
+        <input type="text" name="contact-name" />
+        <input type="email" name="contact-email" />
+        <input type="tel" name="contact-phone" />
+        <input type="text" name="contact-organization" />
+        <input type="text" name="privacy-consent" />
+        <input type="text" name="submission-time" />
+        <input type="text" name="user-agent" />
+        <input type="text" name="ip-address" />
+        <input type="hidden" name="bot-field" />
+      </form>
+
       {/* Hero Section */}
       <section className="bg-white border-b border-gray-200 py-8 sm:py-12 lg:py-16">
         <div className="container mx-auto px-4 sm:px-6 text-center">

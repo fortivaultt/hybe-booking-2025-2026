@@ -13,15 +13,29 @@ import {
   getAnalyticsDashboard,
   getRealTimeMetrics,
 } from "./routes/monitoring";
-import {
-  getDatabaseHealth,
-  getDatabaseConnectionInfo,
-  testDatabaseConnection,
-  getDatabaseSchema,
-  initializeDatabaseSchema,
-} from "./routes/database-health";
+// Database health endpoints (now using SQLite)
+const getSQLiteDatabaseHealth: any = async (req: any, res: any) => {
+  try {
+    const health = await sqliteDb.healthCheck();
+    res.json({
+      database: "SQLite",
+      status: health.connected ? "connected" : "disconnected",
+      totalSubscriptions: health.totalSubscriptions,
+      totalBookings: health.totalBookings,
+      error: health.error,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    res.status(500).json({
+      database: "SQLite",
+      status: "error",
+      error: (error as Error).message,
+      timestamp: new Date().toISOString(),
+    });
+  }
+};
 import { initializeCache } from "./utils/cache";
-import { initializeDatabase, checkDatabaseSchema } from "./utils/db-init";
+import { sqliteDb } from "./utils/sqlite-db";
 import { requestLogger, Analytics } from "./utils/logger";
 import {
   generalRateLimit,
@@ -48,31 +62,16 @@ export async function createServer() {
     );
   }
 
-  // Initialize database schema (if connected)
+  // Initialize SQLite database
   try {
-    const schemaCheck = await checkDatabaseSchema();
-    if (!schemaCheck.valid && schemaCheck.missingTables?.length) {
-      console.info(
-        `🔄 Missing tables detected: ${schemaCheck.missingTables.join(", ")}`,
-      );
-      const initialized = await initializeDatabase();
-      if (initialized) {
-        console.info("✓ Database schema initialized successfully");
-      } else {
-        console.warn(
-          "⚠ Database schema initialization failed, but continuing...",
-        );
-      }
-    } else if (schemaCheck.valid) {
-      console.info("✓ Database schema is up to date");
+    const initialized = await sqliteDb.initialize();
+    if (initialized) {
+      console.info("✓ SQLite database initialized successfully");
     } else {
-      console.warn("⚠ Database schema check failed:", schemaCheck.error);
+      console.warn("⚠ SQLite database initialization failed");
     }
   } catch (error) {
-    console.warn(
-      "⚠ Database initialization skipped (database may be unavailable):",
-      error,
-    );
+    console.warn("⚠ SQLite database initialization error:", error);
   }
 
   // Trust proxy for accurate IP addresses
@@ -98,11 +97,7 @@ export async function createServer() {
   // Health check and monitoring endpoints
   app.get("/api/health/error-tracking", errorTrackingHealthCheck);
   app.get("/api/health/system", getSystemHealth);
-  app.get("/api/health/database", getDatabaseHealth);
-  app.get("/api/health/database/connection", getDatabaseConnectionInfo);
-  app.get("/api/health/database/schema", getDatabaseSchema);
-  app.post("/api/health/database/test", testDatabaseConnection);
-  app.post("/api/health/database/init", initializeDatabaseSchema);
+  app.get("/api/health/database", getSQLiteDatabaseHealth);
   app.get("/api/monitoring/dashboard", getAnalyticsDashboard);
   app.get("/api/monitoring/metrics", getRealTimeMetrics);
 
