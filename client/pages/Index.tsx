@@ -1023,7 +1023,7 @@ export default function Index() {
                                 name: e.target.value,
                               })
                             }
-                            className="h-12"
+                            className="h-12 mobile-input"
                           />
                         </div>
                         <div className="space-y-2">
