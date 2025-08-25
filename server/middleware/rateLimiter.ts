@@ -88,16 +88,18 @@ export class RateLimiter {
           res.end = function (this: Response, ...args: any[]) {
             // If response is successful, decrement the counter
             if (res.statusCode < 400) {
-              cacheService
-                .set(
+              try {
+                cacheService.set(
                   key,
                   {
                     count: Math.max(0, count - 1),
                     resetTime,
                   },
                   ttlSeconds,
-                )
-                .catch(console.error);
+                );
+              } catch (error) {
+                console.error("Cache error:", error);
+              }
             }
             return originalEnd.apply(this, args);
           };
