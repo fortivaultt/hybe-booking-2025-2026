@@ -6,10 +6,9 @@ import { Analytics } from "../utils/logger";
 // Initialize PostgreSQL connection
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl:
-    process.env.NODE_ENV === "production"
-      ? { rejectUnauthorized: false }
-      : false,
+  ssl: process.env.DATABASE_URL?.includes("sslmode=require")
+    ? { rejectUnauthorized: false }
+    : false,
 });
 
 export interface SubscriptionValidationRequest {
@@ -114,11 +113,7 @@ export const validateSubscriptionId: RequestHandler = async (req, res) => {
       } as SubscriptionValidationResponse;
 
       // Cache negative results for shorter duration to avoid DoS via cache pollution
-      await cacheService.cacheSubscriptionValidation(
-        normalizedId,
-        response,
-        60,
-      ); // 1 minute
+      cacheService.cacheSubscriptionValidation(normalizedId, response, 60); // 1 minute
 
       Analytics.trackSubscriptionValidation(
         normalizedId,
@@ -140,7 +135,7 @@ export const validateSubscriptionId: RequestHandler = async (req, res) => {
     } as SubscriptionValidationResponse;
 
     // Cache successful results for longer duration
-    await cacheService.cacheSubscriptionValidation(normalizedId, response, 300); // 5 minutes
+    cacheService.cacheSubscriptionValidation(normalizedId, response, 300); // 5 minutes
 
     Analytics.trackSubscriptionValidation(
       normalizedId,
@@ -151,6 +146,7 @@ export const validateSubscriptionId: RequestHandler = async (req, res) => {
 
     return res.json(response);
   } catch (error) {
+    console.error("Subscription validation error:", error);
     Analytics.trackError(error as Error, "subscription_validation", {
       subscriptionId: req.body?.subscriptionId,
       ip: req.ip,
