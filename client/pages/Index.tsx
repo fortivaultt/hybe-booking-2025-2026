@@ -234,8 +234,8 @@ export default function Index() {
     // Start loading animation
     setIsRedirecting(true);
 
-    // Add a brief delay for better UX (loading animation)
-    await new Promise(resolve => setTimeout(resolve, 1200));
+    // Extended portal opening simulation for immersive experience
+    await new Promise(resolve => setTimeout(resolve, 4000));
 
     // Open in new tab to avoid losing form data
     window.open(href, "_blank");
