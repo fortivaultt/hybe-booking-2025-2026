@@ -231,6 +231,18 @@
     animation-delay: 0.3s;
   }
 
+  .modal-pop-in {
+    animation: modalPopIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  .portal-spin {
+    animation: portalSpin 2s linear infinite;
+  }
+
+  .portal-reverse-spin {
+    animation: portalSpin 1.5s linear infinite reverse;
+  }
+
   .corporate-header {
     background: white;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
