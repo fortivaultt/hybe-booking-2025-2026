@@ -1420,6 +1420,16 @@ export default function Index() {
                 </div>
               </div>
 
+              {/* Floating particles effect */}
+              <div className="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
+                <div className="absolute top-4 left-4 w-1 h-1 bg-purple-400 rounded-full animate-ping opacity-60"></div>
+                <div className="absolute top-8 right-6 w-1 h-1 bg-pink-400 rounded-full animate-ping opacity-50" style={{ animationDelay: '0.5s' }}></div>
+                <div className="absolute bottom-6 left-8 w-1 h-1 bg-purple-300 rounded-full animate-ping opacity-40" style={{ animationDelay: '1s' }}></div>
+                <div className="absolute bottom-4 right-4 w-1 h-1 bg-pink-300 rounded-full animate-ping opacity-70" style={{ animationDelay: '1.5s' }}></div>
+                <div className="absolute top-1/2 left-2 w-0.5 h-0.5 bg-purple-500 rounded-full animate-ping opacity-30" style={{ animationDelay: '0.8s' }}></div>
+                <div className="absolute top-1/3 right-2 w-0.5 h-0.5 bg-pink-500 rounded-full animate-ping opacity-50" style={{ animationDelay: '1.2s' }}></div>
+              </div>
+
               {/* Shimmer effect overlay */}
               <div className="absolute inset-0 rounded-2xl loading-shimmer opacity-30"></div>
             </div>
