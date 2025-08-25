@@ -924,22 +924,22 @@ export default function Index() {
 
                           {/* Modern Loading Spinner */}
                           {isRedirecting && (
-                            <div className="absolute inset-0 flex items-center justify-center">
-                              <div className="flex items-center gap-2 text-purple-600">
+                            <div className="absolute inset-0 flex items-center justify-center loading-shimmer">
+                              <div className="flex items-center gap-2 text-purple-600 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full border border-purple-200 shadow-lg">
                                 <div className="relative">
                                   {/* Outer spinning ring */}
-                                  <div className="w-4 h-4 border-2 border-purple-200 rounded-full animate-spin border-t-purple-600"></div>
+                                  <div className="w-4 h-4 border-2 border-purple-200 rounded-full animate-spin border-t-purple-600 shadow-sm"></div>
                                   {/* Inner pulsing dot */}
                                   <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1 h-1 bg-purple-600 rounded-full animate-pulse"></div>
                                 </div>
-                                <span className="text-xs font-medium animate-pulse">
-                                  Opening subscription portal...
+                                <span className="text-xs font-medium bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                                  Opening portal
                                 </span>
                                 {/* Animated dots */}
-                                <div className="flex space-x-1">
-                                  <div className="w-1 h-1 bg-purple-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                                  <div className="w-1 h-1 bg-purple-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                                  <div className="w-1 h-1 bg-purple-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                                <div className="flex space-x-0.5">
+                                  <div className="w-1 h-1 bg-purple-600 rounded-full animate-bounce"></div>
+                                  <div className="w-1 h-1 bg-purple-600 rounded-full animate-bounce bounce-delay-1"></div>
+                                  <div className="w-1 h-1 bg-purple-600 rounded-full animate-bounce bounce-delay-2"></div>
                                 </div>
                               </div>
                             </div>
