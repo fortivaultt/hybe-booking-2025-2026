@@ -1381,8 +1381,15 @@ export default function Index() {
       {/* Pop-out Loading Modal */}
       {isRedirecting && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-          {/* Backdrop with blur */}
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-md animate-fade-in"></div>
+          {/* Backdrop with blur and gradient */}
+          <div className="absolute inset-0 bg-gradient-to-br from-black/30 via-purple-900/20 to-pink-900/20 backdrop-blur-md animate-fade-in"></div>
+
+          {/* Animated background energy field */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute bottom-1/4 right-1/4 w-40 h-40 bg-pink-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-purple-500/5 to-pink-500/5 rounded-full blur-3xl animate-ping opacity-30"></div>
+          </div>
 
           {/* Modal Container */}
           <div className="relative z-10 modal-pop-in">
