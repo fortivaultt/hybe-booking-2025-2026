@@ -1,15 +1,7 @@
 import { RequestHandler } from "express";
-import { Pool } from "pg";
 import { cacheService } from "../utils/cache";
 import { Analytics } from "../utils/logger";
-
-// Initialize PostgreSQL connection
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.DATABASE_URL?.includes("sslmode=require")
-    ? { rejectUnauthorized: false }
-    : false,
-});
+import { db } from "../utils/postgres";
 
 export interface SubscriptionValidationRequest {
   subscriptionId: string;
@@ -83,6 +75,26 @@ export const validateSubscriptionId: RequestHandler = async (req, res) => {
 
     Analytics.trackCacheHit(`subscription:${normalizedId}`, false);
 
+    // Check database connection and gracefully fallback if unavailable
+    const dbHealth = await db.healthCheck();
+    if (!dbHealth.connected) {
+      console.warn("⚠ Database unavailable for subscription validation:", dbHealth.error);
+      Analytics.trackError(
+        new Error(`Database unavailable: ${dbHealth.error}`),
+        "subscription_validation",
+        { subscriptionId: normalizedId, dbHealth }
+      );
+
+      // Graceful fallback - return a maintenance message
+      const response = {
+        isValid: false,
+        message: "Subscription service is temporarily unavailable. Please try again in a few minutes.",
+      } as SubscriptionValidationResponse;
+
+      // Don't cache failed attempts due to infrastructure issues
+      return res.status(503).json(response);
+    }
+
     // Check against database with enhanced query
     const query = `
       SELECT
@@ -99,7 +111,7 @@ export const validateSubscriptionId: RequestHandler = async (req, res) => {
     `;
 
     const dbStartTime = Date.now();
-    const result = await pool.query(query, [normalizedId]);
+    const result = await db.query(query, [normalizedId]);
     Analytics.trackPerformance("database_query", Date.now() - dbStartTime, {
       query: "subscription_validation",
       resultCount: result.rows.length,
@@ -163,15 +175,25 @@ export const validateSubscriptionId: RequestHandler = async (req, res) => {
 
 export const listSubscriptionTypes: RequestHandler = async (req, res) => {
   try {
+    // Check database connection
+    const dbHealth = await db.healthCheck();
+    if (!dbHealth.connected) {
+      console.warn("⚠ Database unavailable for subscription types:", dbHealth.error);
+      return res.status(503).json({
+        error: "Subscription service is temporarily unavailable",
+        details: dbHealth.error,
+      });
+    }
+
     const query = `
-      SELECT subscription_type, COUNT(*) as count 
-      FROM subscription_ids 
-      WHERE is_active = true 
-      GROUP BY subscription_type 
+      SELECT subscription_type, COUNT(*) as count
+      FROM subscription_ids
+      WHERE is_active = true
+      GROUP BY subscription_type
       ORDER BY subscription_type
     `;
 
-    const result = await pool.query(query);
+    const result = await db.query(query);
 
     res.json({
       subscriptionTypes: result.rows,
@@ -182,6 +204,9 @@ export const listSubscriptionTypes: RequestHandler = async (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching subscription types:", error);
+    Analytics.trackError(error as Error, "subscription_types", {
+      context: "list_subscription_types"
+    });
     res.status(500).json({
       error: "Failed to fetch subscription types",
     });
