@@ -87,7 +87,7 @@ export const handleBookingSubmission: RequestHandler = async (req, res) => {
     const bookingId = `HYBE-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
 
     // Save to SQLite database first
-    const bookingRecord: Omit<BookingRecord, 'id' | 'created_at'> = {
+    const bookingRecord: Omit<BookingRecord, "id" | "created_at"> = {
       booking_id: bookingId,
       celebrity: bookingData.selectedCelebrity,
       full_name: bookingData.contactInfo.name,
@@ -98,12 +98,14 @@ export const handleBookingSubmission: RequestHandler = async (req, res) => {
       event_date: bookingData.preferredDate,
       location: bookingData.location,
       budget_range: bookingData.budget,
-      custom_amount: bookingData.customAmount ? parseFloat(bookingData.customAmount) : undefined,
+      custom_amount: bookingData.customAmount
+        ? parseFloat(bookingData.customAmount)
+        : undefined,
       attendees: bookingData.attendees,
       special_requests: bookingData.specialRequests,
       subscription_id: bookingData.subscriptionId,
       privacy_consent: bookingData.privacyConsent,
-      status: 'pending'
+      status: "pending",
     };
 
     try {
@@ -134,8 +136,8 @@ export const handleBookingSubmission: RequestHandler = async (req, res) => {
       "contact-organization": bookingData.contactInfo.organization || "",
       "privacy-consent": String(bookingData.privacyConsent),
       "submission-time": new Date().toISOString(),
-      "user-agent": req.headers['user-agent'] || '',
-      "ip-address": req.ip || '',
+      "user-agent": req.headers["user-agent"] || "",
+      "ip-address": req.ip || "",
     };
 
     // Submit to Netlify forms (this would work when deployed to Netlify)

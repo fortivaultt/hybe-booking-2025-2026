@@ -9,7 +9,7 @@ export interface SubscriptionRecord {
   id?: number;
   subscription_id: string;
   user_name: string;
-  subscription_type: 'premium' | 'elite' | 'standard';
+  subscription_type: "premium" | "elite" | "standard";
   is_active: boolean;
   created_at: string;
   expires_at?: string;
@@ -35,7 +35,7 @@ export interface BookingRecord {
   subscription_id?: string;
   privacy_consent: boolean;
   created_at: string;
-  status: 'pending' | 'confirmed' | 'completed' | 'cancelled';
+  status: "pending" | "confirmed" | "completed" | "cancelled";
 }
 
 class SQLiteManager {
@@ -63,7 +63,12 @@ class SQLiteManager {
         fs.mkdirSync(dir, { recursive: true });
       }
 
-      const wasmUrl = path.join("node_modules", "sql.js", "dist", "sql-wasm.wasm");
+      const wasmUrl = path.join(
+        "node_modules",
+        "sql.js",
+        "dist",
+        "sql-wasm.wasm",
+      );
       const SQL = await initSqlJs({
         locateFile: () => wasmUrl,
       });
@@ -164,7 +169,9 @@ class SQLiteManager {
     }
 
     // Check if data already exists
-    const existingCount = this.database.exec("SELECT COUNT(*) as count FROM subscription_ids")[0];
+    const existingCount = this.database.exec(
+      "SELECT COUNT(*) as count FROM subscription_ids",
+    )[0];
     if (existingCount && existingCount.values[0][0] > 0) {
       console.info("📊 SQLite sample data already exists, skipping insertion");
       return;
@@ -173,24 +180,24 @@ class SQLiteManager {
     // Insert sample subscription data from SUBSCRIPTION_IDS.md
     const subscriptions = [
       // Premium Members
-      { id: 'HYBABC1234567', name: 'Kim Taehyung', type: 'premium' },
-      { id: 'HYBGHI5555555', name: 'Jeon Jungkook', type: 'premium' },
-      { id: 'HYBPQR8888888', name: 'Jung Hoseok', type: 'premium' },
-      { id: 'HYBAAA6666666', name: 'Park Chaeyoung', type: 'premium' },
-      { id: 'HYBDDD1234321', name: 'Hanni Pham', type: 'premium' },
-      
+      { id: "HYBABC1234567", name: "Kim Taehyung", type: "premium" },
+      { id: "HYBGHI5555555", name: "Jeon Jungkook", type: "premium" },
+      { id: "HYBPQR8888888", name: "Jung Hoseok", type: "premium" },
+      { id: "HYBAAA6666666", name: "Park Chaeyoung", type: "premium" },
+      { id: "HYBDDD1234321", name: "Hanni Pham", type: "premium" },
+
       // Elite Members
-      { id: 'HYBDEF9876543', name: 'Park Jimin', type: 'elite' },
-      { id: 'HYBJKL7777777', name: 'Kim Namjoon', type: 'elite' },
-      { id: 'HYBSTU1111111', name: 'Kim Seokjin', type: 'elite' },
-      { id: 'HYBYZZ4444444', name: 'Kim Jennie', type: 'elite' },
-      { id: 'HYBCCC0000000', name: 'Minji Kim', type: 'elite' },
-      { id: 'HYBFFF9012345', name: 'Haerin Kang', type: 'elite' },
-      
+      { id: "HYBDEF9876543", name: "Park Jimin", type: "elite" },
+      { id: "HYBJKL7777777", name: "Kim Namjoon", type: "elite" },
+      { id: "HYBSTU1111111", name: "Kim Seokjin", type: "elite" },
+      { id: "HYBYZZ4444444", name: "Kim Jennie", type: "elite" },
+      { id: "HYBCCC0000000", name: "Minji Kim", type: "elite" },
+      { id: "HYBFFF9012345", name: "Haerin Kang", type: "elite" },
+
       // Standard Members
-      { id: 'B07200EF6667', name: 'Radhika Verma', type: 'standard' },
-      { id: 'HYB10250GB0680', name: 'Elisabete Magalhaes', type: 'standard' },
-      { id: 'HYB59371A4C9F2', name: 'MEGHANA VAISHNAVI', type: 'standard' },
+      { id: "B07200EF6667", name: "Radhika Verma", type: "standard" },
+      { id: "HYB10250GB0680", name: "Elisabete Magalhaes", type: "standard" },
+      { id: "HYB59371A4C9F2", name: "MEGHANA VAISHNAVI", type: "standard" },
     ];
 
     const stmt = this.database.prepare(`
@@ -198,13 +205,14 @@ class SQLiteManager {
       VALUES (?, ?, ?, ?)
     `);
 
-    subscriptions.forEach(sub => {
-      const expiresAt = sub.type === 'premium' ? 
-        new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString() : // 1 year
-        sub.type === 'elite' ? 
-        new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString() : // 6 months
-        null; // Standard never expires
-      
+    subscriptions.forEach((sub) => {
+      const expiresAt =
+        sub.type === "premium"
+          ? new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString() // 1 year
+          : sub.type === "elite"
+            ? new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString() // 6 months
+            : null; // Standard never expires
+
       stmt.run([sub.id, sub.name, sub.type, expiresAt]);
     });
 
@@ -215,7 +223,7 @@ class SQLiteManager {
 
   private saveToFile(): void {
     if (!this.database) return;
-    
+
     try {
       const data = this.database.export();
       fs.writeFileSync(this.dbPath, data);
@@ -244,20 +252,21 @@ class SQLiteManager {
 
     try {
       const normalizedId = subscriptionId.trim().toUpperCase();
-      
+
       const stmt = this.database.prepare(`
         SELECT subscription_id, user_name, subscription_type, is_active, expires_at, usage_count
         FROM subscription_ids
         WHERE subscription_id = ? AND is_active = 1
       `);
-      
+
       const result = stmt.get([normalizedId]);
       stmt.free();
 
       if (!result) {
         return {
           isValid: false,
-          message: "Subscription ID not found, inactive, or expired. Please check your ID and try again.",
+          message:
+            "Subscription ID not found, inactive, or expired. Please check your ID and try again.",
         };
       }
 
@@ -322,14 +331,14 @@ class SQLiteManager {
         return { subscriptionTypes: [], totalActive: 0 };
       }
 
-      const subscriptionTypes = result[0].values.map(row => ({
+      const subscriptionTypes = result[0].values.map((row) => ({
         subscription_type: row[0] as string,
         count: row[1] as string,
       }));
 
       const totalActive = subscriptionTypes.reduce(
         (sum, row) => sum + parseInt(row.count),
-        0
+        0,
       );
 
       return { subscriptionTypes, totalActive };
@@ -340,7 +349,9 @@ class SQLiteManager {
   }
 
   // Booking methods
-  async saveBooking(booking: Omit<BookingRecord, 'id' | 'created_at'>): Promise<string> {
+  async saveBooking(
+    booking: Omit<BookingRecord, "id" | "created_at">,
+  ): Promise<string> {
     if (!this.database) {
       await this.initialize();
     }
@@ -374,7 +385,7 @@ class SQLiteManager {
         booking.special_requests,
         booking.subscription_id || null,
         booking.privacy_consent ? 1 : 0,
-        booking.status
+        booking.status,
       ]);
 
       stmt.free();
@@ -412,7 +423,7 @@ class SQLiteManager {
       }
 
       const columns = result[0].columns;
-      return result[0].values.map(row => {
+      return result[0].values.map((row) => {
         const booking: any = {};
         columns.forEach((col, index) => {
           booking[col] = row[index];
@@ -453,13 +464,17 @@ class SQLiteManager {
         };
       }
 
-      const subResult = this.database.exec("SELECT COUNT(*) FROM subscription_ids");
-      const bookingResult = this.database.exec("SELECT COUNT(*) FROM booking_requests");
+      const subResult = this.database.exec(
+        "SELECT COUNT(*) FROM subscription_ids",
+      );
+      const bookingResult = this.database.exec(
+        "SELECT COUNT(*) FROM booking_requests",
+      );
 
       return {
         connected: true,
-        totalSubscriptions: subResult[0]?.values[0]?.[0] as number || 0,
-        totalBookings: bookingResult[0]?.values[0]?.[0] as number || 0,
+        totalSubscriptions: (subResult[0]?.values[0]?.[0] as number) || 0,
+        totalBookings: (bookingResult[0]?.values[0]?.[0] as number) || 0,
       };
     } catch (error) {
       return {

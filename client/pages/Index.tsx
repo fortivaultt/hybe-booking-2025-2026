@@ -513,10 +513,16 @@ export default function Index() {
           netlifyFormData.append("form-name", "hybe-booking");
           netlifyFormData.append("booking-id", result.bookingId || "N/A");
           netlifyFormData.append("fan-preference", fanPreference);
-          netlifyFormData.append("celebrity", `${selectedGroup} - ${selectedArtist}`);
+          netlifyFormData.append(
+            "celebrity",
+            `${selectedGroup} - ${selectedArtist}`,
+          );
           netlifyFormData.append("event-type", selectedEventType);
           netlifyFormData.append("budget", finalBudget);
-          netlifyFormData.append("custom-amount", budget === "custom" ? customAmount : "");
+          netlifyFormData.append(
+            "custom-amount",
+            budget === "custom" ? customAmount : "",
+          );
           netlifyFormData.append("attendees", attendees);
           netlifyFormData.append("preferred-date", preferredDate);
           netlifyFormData.append("location", location);
@@ -525,7 +531,10 @@ export default function Index() {
           netlifyFormData.append("contact-name", contactInfo.name);
           netlifyFormData.append("contact-email", contactInfo.email);
           netlifyFormData.append("contact-phone", contactInfo.phone);
-          netlifyFormData.append("contact-organization", contactInfo.organization || "");
+          netlifyFormData.append(
+            "contact-organization",
+            contactInfo.organization || "",
+          );
           netlifyFormData.append("privacy-consent", String(privacyConsent));
           netlifyFormData.append("submission-time", new Date().toISOString());
           netlifyFormData.append("user-agent", navigator.userAgent);
