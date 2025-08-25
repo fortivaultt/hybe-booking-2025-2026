@@ -208,6 +208,29 @@
     animation: pulseGlow 2s ease-in-out infinite;
   }
 
+  .loading-shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(124, 58, 237, 0.2) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+
+  .bounce-delay-1 {
+    animation-delay: 0.1s;
+  }
+
+  .bounce-delay-2 {
+    animation-delay: 0.2s;
+  }
+
+  .bounce-delay-3 {
+    animation-delay: 0.3s;
+  }
+
   .corporate-header {
     background: white;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
