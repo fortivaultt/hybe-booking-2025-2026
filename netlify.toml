@@ -1,11 +1,11 @@
 [build]
-  # Use the correct build command and directory
+  # Simple client build only
   command = "npm run build"
-  publish = "dist/spa"
-  
+  publish = "dist"
+
   # Environment variables for build
   [build.environment]
-    NODE_VERSION = "18"
+    NODE_VERSION = "20"
     NPM_FLAGS = "--legacy-peer-deps"
 
 [functions]
