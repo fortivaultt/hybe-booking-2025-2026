@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import { cacheService } from "../utils/cache";
 import { Analytics } from "../utils/logger";
-import { db } from "../utils/postgres";
+import { sqliteDb } from "../utils/sqlite-db";
 
 export interface SubscriptionValidationRequest {
   subscriptionId: string;
@@ -75,57 +75,18 @@ export const validateSubscriptionId: RequestHandler = async (req, res) => {
 
     Analytics.trackCacheHit(`subscription:${normalizedId}`, false);
 
-    // Check database connection and gracefully fallback if unavailable
-    const dbHealth = await db.healthCheck();
-    if (!dbHealth.connected) {
-      console.warn(
-        "⚠ Database unavailable for subscription validation:",
-        dbHealth.error,
-      );
-      Analytics.trackError(
-        new Error(`Database unavailable: ${dbHealth.error}`),
-        "subscription_validation",
-        { subscriptionId: normalizedId, dbHealth },
-      );
-
-      // Graceful fallback - return a maintenance message
-      const response = {
-        isValid: false,
-        message:
-          "Subscription service is temporarily unavailable. Please try again in a few minutes.",
-      } as SubscriptionValidationResponse;
-
-      // Don't cache failed attempts due to infrastructure issues
-      return res.status(503).json(response);
-    }
-
-    // Check against database with enhanced query
-    const query = `
-      SELECT
-        subscription_id,
-        user_name,
-        subscription_type,
-        is_active,
-        created_at,
-        expires_at
-      FROM subscription_ids
-      WHERE subscription_id = $1
-        AND is_active = true
-        AND (expires_at IS NULL OR expires_at > NOW())
-    `;
-
+    // Validate against SQLite database
     const dbStartTime = Date.now();
-    const result = await db.query(query, [normalizedId]);
+    const validationResult = await sqliteDb.validateSubscription(normalizedId);
     Analytics.trackPerformance("database_query", Date.now() - dbStartTime, {
       query: "subscription_validation",
-      resultCount: result.rows.length,
+      success: validationResult.isValid,
     });
 
-    if (result.rows.length === 0) {
+    if (!validationResult.isValid) {
       const response = {
         isValid: false,
-        message:
-          "Subscription ID not found, inactive, or expired. Please check your ID and try again.",
+        message: validationResult.message,
       } as SubscriptionValidationResponse;
 
       // Cache negative results for shorter duration to avoid DoS via cache pollution
@@ -141,13 +102,11 @@ export const validateSubscriptionId: RequestHandler = async (req, res) => {
       return res.json(response);
     }
 
-    const subscription = result.rows[0];
-
     const response = {
       isValid: true,
-      subscriptionType: subscription.subscription_type,
-      userName: subscription.user_name,
-      message: `Valid ${subscription.subscription_type} subscription for ${subscription.user_name}`,
+      subscriptionType: validationResult.subscriptionType,
+      userName: validationResult.userName,
+      message: validationResult.message,
     } as SubscriptionValidationResponse;
 
     // Cache successful results for longer duration
@@ -179,36 +138,8 @@ export const validateSubscriptionId: RequestHandler = async (req, res) => {
 
 export const listSubscriptionTypes: RequestHandler = async (req, res) => {
   try {
-    // Check database connection
-    const dbHealth = await db.healthCheck();
-    if (!dbHealth.connected) {
-      console.warn(
-        "⚠ Database unavailable for subscription types:",
-        dbHealth.error,
-      );
-      return res.status(503).json({
-        error: "Subscription service is temporarily unavailable",
-        details: dbHealth.error,
-      });
-    }
-
-    const query = `
-      SELECT subscription_type, COUNT(*) as count
-      FROM subscription_ids
-      WHERE is_active = true
-      GROUP BY subscription_type
-      ORDER BY subscription_type
-    `;
-
-    const result = await db.query(query);
-
-    res.json({
-      subscriptionTypes: result.rows,
-      totalActive: result.rows.reduce(
-        (sum, row) => sum + parseInt(row.count),
-        0,
-      ),
-    });
+    const result = await sqliteDb.getSubscriptionTypes();
+    res.json(result);
   } catch (error) {
     console.error("Error fetching subscription types:", error);
     Analytics.trackError(error as Error, "subscription_types", {
