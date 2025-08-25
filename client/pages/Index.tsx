@@ -946,10 +946,10 @@ export default function Index() {
                           )}
 
                           {/* Hover glow effect */}
-                          <div className={`absolute inset-0 rounded-md transition-all duration-300 ${
+                          <div className={`absolute inset-0 rounded-md transition-all duration-500 ${
                             !isRedirecting
-                              ? "group-hover:bg-purple-50 group-hover:scale-105"
-                              : "bg-purple-50 scale-105"
+                              ? "group-hover:bg-gradient-to-r group-hover:from-purple-50 group-hover:to-pink-50 group-hover:scale-105 group-hover:shadow-sm"
+                              : "bg-gradient-to-r from-purple-100 to-pink-100 scale-110 shadow-md"
                           }`}></div>
                         </a>
                       </div>
