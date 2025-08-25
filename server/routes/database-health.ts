@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 import { db } from "../utils/postgres";
 import { Analytics } from "../utils/logger";
+import { checkDatabaseSchema, initializeDatabase } from "../utils/db-init";
 
 export const getDatabaseHealth: RequestHandler = async (req, res) => {
   const startTime = Date.now();
@@ -144,6 +145,63 @@ export const testDatabaseConnection: RequestHandler = async (req, res) => {
     console.error("❌ Database connection test failed:", error);
     
     Analytics.trackError(error as Error, "database_connection_test", {
+      ip: req.ip
+    });
+
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+      responseTime: Date.now() - startTime,
+      timestamp: new Date().toISOString()
+    });
+  }
+};
+
+export const getDatabaseSchema: RequestHandler = async (req, res) => {
+  try {
+    const schema = await checkDatabaseSchema();
+
+    res.json({
+      timestamp: new Date().toISOString(),
+      schema
+    });
+  } catch (error) {
+    console.error("Database schema check error:", error);
+    res.status(500).json({
+      error: "Failed to check database schema",
+      timestamp: new Date().toISOString()
+    });
+  }
+};
+
+export const initializeDatabaseSchema: RequestHandler = async (req, res) => {
+  const startTime = Date.now();
+
+  try {
+    console.info("🔄 Initializing database schema...");
+
+    const result = await initializeDatabase();
+
+    if (result) {
+      console.info("✅ Database schema initialization successful");
+      res.json({
+        success: true,
+        message: "Database schema initialized successfully",
+        responseTime: Date.now() - startTime,
+        timestamp: new Date().toISOString()
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: "Database schema initialization failed",
+        responseTime: Date.now() - startTime,
+        timestamp: new Date().toISOString()
+      });
+    }
+  } catch (error) {
+    console.error("❌ Database schema initialization failed:", error);
+
+    Analytics.trackError(error as Error, "database_schema_init", {
       ip: req.ip
     });
 
