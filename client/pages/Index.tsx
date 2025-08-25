@@ -572,10 +572,10 @@ export default function Index() {
             <div className="bg-white rounded-lg border border-gray-200 shadow-lg hover:shadow-xl transition-shadow duration-300">
               <Card className="border-0 shadow-none">
                 <CardHeader className="text-center">
-                  <CardTitle className="text-3xl font-bold text-gray-900">
+                  <CardTitle className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
                     Book Your Experience
                   </CardTitle>
-                  <CardDescription className="text-lg">
+                  <CardDescription className="text-sm sm:text-base lg:text-lg">
                     Fill out the form below to request a custom booking with
                     your chosen artist
                   </CardDescription>
@@ -1313,7 +1313,7 @@ export default function Index() {
                       <li>• Fast-track booking process</li>
                       <li>• 10% discount on bookings</li>
                       <li>• Early access to new artists</li>
-                      <li>�� Priority customer support</li>
+                      <li>• Priority customer support</li>
                     </ul>
                   </div>
 
