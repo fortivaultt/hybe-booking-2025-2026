@@ -7,12 +7,14 @@ export async function initializeDatabase() {
 
   try {
     const result = await sqliteDb.initialize();
-    
+
     if (result) {
       console.info("✅ SQLite database initialized successfully");
-      
+
       const health = await sqliteDb.healthCheck();
-      console.info(`📊 Database stats: ${health.totalSubscriptions} subscriptions, ${health.totalBookings} bookings`);
+      console.info(
+        `📊 Database stats: ${health.totalSubscriptions} subscriptions, ${health.totalBookings} bookings`,
+      );
 
       Analytics.trackPerformance("sqlite_init", Date.now(), {
         success: true,
@@ -39,7 +41,7 @@ export async function initializeDatabase() {
 export async function checkDatabaseSchema() {
   try {
     const health = await sqliteDb.healthCheck();
-    
+
     if (!health.connected) {
       return {
         valid: false,

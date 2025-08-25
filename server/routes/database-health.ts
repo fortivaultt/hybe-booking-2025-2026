@@ -41,15 +41,11 @@ export const getDatabaseHealth: RequestHandler = async (req, res) => {
       );
     }
 
-    Analytics.trackPerformance(
-      "sqlite_health_check",
-      Date.now() - startTime,
-      {
-        connected: health.connected,
-        totalSubscriptions: health.totalSubscriptions,
-        totalBookings: health.totalBookings,
-      },
-    );
+    Analytics.trackPerformance("sqlite_health_check", Date.now() - startTime, {
+      connected: health.connected,
+      totalSubscriptions: health.totalSubscriptions,
+      totalBookings: health.totalBookings,
+    });
 
     const httpStatus = health.connected ? 200 : 503;
     res.status(httpStatus).json(response);

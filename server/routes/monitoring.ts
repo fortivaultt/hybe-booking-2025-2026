@@ -231,20 +231,22 @@ async function getBookingAnalytics() {
     today.setHours(0, 0, 0, 0);
 
     const todayBookings = bookings.filter(
-      booking => new Date(booking.created_at) >= today
+      (booking) => new Date(booking.created_at) >= today,
     );
 
     const withSubscription = bookings.filter(
-      booking => booking.subscription_id
+      (booking) => booking.subscription_id,
     );
 
     const customAmounts = bookings
-      .filter(booking => booking.custom_amount)
-      .map(booking => booking.custom_amount!);
+      .filter((booking) => booking.custom_amount)
+      .map((booking) => booking.custom_amount!);
 
-    const avgCustomAmount = customAmounts.length > 0
-      ? customAmounts.reduce((sum, amount) => sum + amount, 0) / customAmounts.length
-      : 0;
+    const avgCustomAmount =
+      customAmounts.length > 0
+        ? customAmounts.reduce((sum, amount) => sum + amount, 0) /
+          customAmounts.length
+        : 0;
 
     return {
       total: dbHealth.totalBookings,
