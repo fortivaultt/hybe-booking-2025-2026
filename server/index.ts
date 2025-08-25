@@ -52,12 +52,16 @@ export async function createServer() {
   try {
     const schemaCheck = await checkDatabaseSchema();
     if (!schemaCheck.valid && schemaCheck.missingTables?.length) {
-      console.info(`🔄 Missing tables detected: ${schemaCheck.missingTables.join(', ')}`);
+      console.info(
+        `🔄 Missing tables detected: ${schemaCheck.missingTables.join(", ")}`,
+      );
       const initialized = await initializeDatabase();
       if (initialized) {
         console.info("✓ Database schema initialized successfully");
       } else {
-        console.warn("⚠ Database schema initialization failed, but continuing...");
+        console.warn(
+          "⚠ Database schema initialization failed, but continuing...",
+        );
       }
     } else if (schemaCheck.valid) {
       console.info("✓ Database schema is up to date");
@@ -67,7 +71,7 @@ export async function createServer() {
   } catch (error) {
     console.warn(
       "⚠ Database initialization skipped (database may be unavailable):",
-      error
+      error,
     );
   }
 

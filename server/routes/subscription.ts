@@ -78,17 +78,21 @@ export const validateSubscriptionId: RequestHandler = async (req, res) => {
     // Check database connection and gracefully fallback if unavailable
     const dbHealth = await db.healthCheck();
     if (!dbHealth.connected) {
-      console.warn("⚠ Database unavailable for subscription validation:", dbHealth.error);
+      console.warn(
+        "⚠ Database unavailable for subscription validation:",
+        dbHealth.error,
+      );
       Analytics.trackError(
         new Error(`Database unavailable: ${dbHealth.error}`),
         "subscription_validation",
-        { subscriptionId: normalizedId, dbHealth }
+        { subscriptionId: normalizedId, dbHealth },
       );
 
       // Graceful fallback - return a maintenance message
       const response = {
         isValid: false,
-        message: "Subscription service is temporarily unavailable. Please try again in a few minutes.",
+        message:
+          "Subscription service is temporarily unavailable. Please try again in a few minutes.",
       } as SubscriptionValidationResponse;
 
       // Don't cache failed attempts due to infrastructure issues
@@ -178,7 +182,10 @@ export const listSubscriptionTypes: RequestHandler = async (req, res) => {
     // Check database connection
     const dbHealth = await db.healthCheck();
     if (!dbHealth.connected) {
-      console.warn("⚠ Database unavailable for subscription types:", dbHealth.error);
+      console.warn(
+        "⚠ Database unavailable for subscription types:",
+        dbHealth.error,
+      );
       return res.status(503).json({
         error: "Subscription service is temporarily unavailable",
         details: dbHealth.error,
@@ -205,7 +212,7 @@ export const listSubscriptionTypes: RequestHandler = async (req, res) => {
   } catch (error) {
     console.error("Error fetching subscription types:", error);
     Analytics.trackError(error as Error, "subscription_types", {
-      context: "list_subscription_types"
+      context: "list_subscription_types",
     });
     res.status(500).json({
       error: "Failed to fetch subscription types",

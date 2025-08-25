@@ -4,11 +4,14 @@ import { Analytics } from "./logger";
 // Database schema initialization for production
 export async function initializeDatabase() {
   console.info("🔄 Initializing database schema...");
-  
+
   try {
     const health = await db.healthCheck();
     if (!health.connected) {
-      console.error("❌ Cannot initialize database: connection failed", health.error);
+      console.error(
+        "❌ Cannot initialize database: connection failed",
+        health.error,
+      );
       return false;
     }
 
@@ -74,7 +77,9 @@ export async function initializeDatabase() {
     `);
 
     // Insert sample data if tables are empty (for testing)
-    const subscriptionCount = await db.query("SELECT COUNT(*) FROM subscription_ids");
+    const subscriptionCount = await db.query(
+      "SELECT COUNT(*) FROM subscription_ids",
+    );
     if (parseInt(subscriptionCount.rows[0].count) === 0) {
       console.info("📊 Inserting sample subscription data...");
       await db.query(`
@@ -86,18 +91,18 @@ export async function initializeDatabase() {
     }
 
     console.info("✅ Database schema initialized successfully");
-    
+
     Analytics.trackPerformance("database_init", Date.now(), {
       success: true,
-      tablesCreated: true
+      tablesCreated: true,
     });
 
     return true;
   } catch (error) {
     console.error("❌ Database initialization failed:", error);
-    
+
     Analytics.trackError(error as Error, "database_initialization", {
-      context: "schema_creation"
+      context: "schema_creation",
     });
 
     return false;
@@ -111,7 +116,7 @@ export async function checkDatabaseSchema() {
       return {
         valid: false,
         error: "Database not connected",
-        tables: []
+        tables: [],
       };
     }
 
@@ -123,21 +128,23 @@ export async function checkDatabaseSchema() {
       AND table_name IN ('subscription_ids', 'booking_requests')
     `);
 
-    const tableNames = tables.rows.map(row => row.table_name);
-    const requiredTables = ['subscription_ids', 'booking_requests'];
-    const missingTables = requiredTables.filter(table => !tableNames.includes(table));
+    const tableNames = tables.rows.map((row) => row.table_name);
+    const requiredTables = ["subscription_ids", "booking_requests"];
+    const missingTables = requiredTables.filter(
+      (table) => !tableNames.includes(table),
+    );
 
     return {
       valid: missingTables.length === 0,
       tables: tableNames,
       missingTables,
-      health
+      health,
     };
   } catch (error) {
     return {
       valid: false,
       error: error instanceof Error ? error.message : "Unknown error",
-      tables: []
+      tables: [],
     };
   }
 }
