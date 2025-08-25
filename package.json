@@ -12,15 +12,16 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "pnpm run build:client && pnpm run build:server && pnpm run copy:templates",
+    "build": "npm run build:client && npm run build:server && npm run copy:templates",
     "build:client": "vite build",
-    "copy:templates": "mkdir -p dist/email-templates && cp -r src/email-templates/* dist/email-templates/",
+    "copy:templates": "mkdir -p dist/email-templates && cp -r src/email-templates/* dist/email-templates/ || true",
     "build:server": "vite build --config vite.config.server.ts",
     "start": "node dist/server/node-build.mjs",
     "test": "vitest --run",
     "test:debug": "vitest --run --logHeapUsage",
     "format.fix": "prettier --write .",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "postinstall": "npm run build"
   },
   "dependencies": {
     "@types/handlebars": "^4.0.40",
