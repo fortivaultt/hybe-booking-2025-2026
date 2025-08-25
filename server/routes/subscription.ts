@@ -6,10 +6,9 @@ import { Analytics } from "../utils/logger";
 // Initialize PostgreSQL connection
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl:
-    process.env.NODE_ENV === "production"
-      ? { rejectUnauthorized: false }
-      : false,
+  ssl: process.env.DATABASE_URL?.includes("sslmode=require")
+    ? { rejectUnauthorized: false }
+    : false,
 });
 
 export interface SubscriptionValidationRequest {
