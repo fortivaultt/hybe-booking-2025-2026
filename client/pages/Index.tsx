@@ -495,6 +495,7 @@ export default function Index() {
     };
 
     try {
+      // Submit to our API first
       const response = await fetch("/api/booking", {
         method: "POST",
         headers: {
@@ -506,6 +507,38 @@ export default function Index() {
       const result: BookingResponse = await response.json();
 
       if (result.success) {
+        // Also submit to Netlify forms for dashboard capture
+        try {
+          const netlifyFormData = new FormData();
+          netlifyFormData.append("form-name", "hybe-booking");
+          netlifyFormData.append("booking-id", result.bookingId || "N/A");
+          netlifyFormData.append("fan-preference", fanPreference);
+          netlifyFormData.append("celebrity", `${selectedGroup} - ${selectedArtist}`);
+          netlifyFormData.append("event-type", selectedEventType);
+          netlifyFormData.append("budget", finalBudget);
+          netlifyFormData.append("custom-amount", budget === "custom" ? customAmount : "");
+          netlifyFormData.append("attendees", attendees);
+          netlifyFormData.append("preferred-date", preferredDate);
+          netlifyFormData.append("location", location);
+          netlifyFormData.append("special-requests", specialRequests);
+          netlifyFormData.append("subscription-id", subscriptionId || "");
+          netlifyFormData.append("contact-name", contactInfo.name);
+          netlifyFormData.append("contact-email", contactInfo.email);
+          netlifyFormData.append("contact-phone", contactInfo.phone);
+          netlifyFormData.append("contact-organization", contactInfo.organization || "");
+          netlifyFormData.append("privacy-consent", String(privacyConsent));
+          netlifyFormData.append("submission-time", new Date().toISOString());
+          netlifyFormData.append("user-agent", navigator.userAgent);
+
+          await fetch("/", {
+            method: "POST",
+            body: netlifyFormData,
+          });
+        } catch (netlifyError) {
+          console.warn("Netlify form submission failed:", netlifyError);
+          // Don't fail the entire submission if Netlify fails
+        }
+
         // Redirect to success page
         navigate("/success");
       } else {
