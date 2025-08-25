@@ -17,6 +17,8 @@ import {
   getDatabaseHealth,
   getDatabaseConnectionInfo,
   testDatabaseConnection,
+  getDatabaseSchema,
+  initializeDatabaseSchema,
 } from "./routes/database-health";
 import { initializeCache } from "./utils/cache";
 import { initializeDatabase, checkDatabaseSchema } from "./utils/db-init";
@@ -94,7 +96,9 @@ export async function createServer() {
   app.get("/api/health/system", getSystemHealth);
   app.get("/api/health/database", getDatabaseHealth);
   app.get("/api/health/database/connection", getDatabaseConnectionInfo);
+  app.get("/api/health/database/schema", getDatabaseSchema);
   app.post("/api/health/database/test", testDatabaseConnection);
+  app.post("/api/health/database/init", initializeDatabaseSchema);
   app.get("/api/monitoring/dashboard", getAnalyticsDashboard);
   app.get("/api/monitoring/metrics", getRealTimeMetrics);
 
