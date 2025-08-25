@@ -20,8 +20,7 @@
     "test": "vitest --run",
     "test:debug": "vitest --run --logHeapUsage",
     "format.fix": "prettier --write .",
-    "typecheck": "tsc",
-    "postinstall": "npm run build"
+    "typecheck": "tsc"
   },
   "dependencies": {
     "@types/handlebars": "^4.0.40",
