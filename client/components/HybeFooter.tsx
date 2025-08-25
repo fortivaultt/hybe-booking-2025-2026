@@ -54,7 +54,7 @@ const HybeFooter = () => {
           </p>
 
           {/* Footer Navigation */}
-          <ul className="fnb flex flex-wrap items-center justify-center gap-4 md:gap-6 text-sm">
+          <ul className="fnb flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-6 text-xs sm:text-sm">
             <li>
               <a
                 href="/eng/cookie"
