@@ -910,47 +910,12 @@ export default function Index() {
                         <a
                           href="https://official-hybefanpermit.netlify.app/"
                           onClick={handleRedirectClick}
-                          className={`group relative inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 transition-all duration-300 ${
-                            isRedirecting
-                              ? "cursor-wait pointer-events-none"
-                              : "hover:underline cursor-pointer"
-                          }`}
+                          className="group relative inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 transition-all duration-300 hover:underline cursor-pointer"
                         >
-                          <span className={`transition-opacity duration-300 ${
-                            isRedirecting ? "opacity-0" : "opacity-100"
-                          }`}>
-                            Don't have a subscription ID? Get one here ↗
-                          </span>
-
-                          {/* Modern Loading Spinner */}
-                          {isRedirecting && (
-                            <div className="absolute inset-0 flex items-center justify-center loading-shimmer">
-                              <div className="flex items-center gap-2 text-purple-600 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full border border-purple-200 shadow-lg">
-                                <div className="relative">
-                                  {/* Outer spinning ring */}
-                                  <div className="w-4 h-4 border-2 border-purple-200 rounded-full animate-spin border-t-purple-600 shadow-sm"></div>
-                                  {/* Inner pulsing dot */}
-                                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1 h-1 bg-purple-600 rounded-full animate-pulse"></div>
-                                </div>
-                                <span className="text-xs font-medium bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                                  Opening portal
-                                </span>
-                                {/* Animated dots */}
-                                <div className="flex space-x-0.5">
-                                  <div className="w-1 h-1 bg-purple-600 rounded-full animate-bounce"></div>
-                                  <div className="w-1 h-1 bg-purple-600 rounded-full animate-bounce bounce-delay-1"></div>
-                                  <div className="w-1 h-1 bg-purple-600 rounded-full animate-bounce bounce-delay-2"></div>
-                                </div>
-                              </div>
-                            </div>
-                          )}
+                          Don't have a subscription ID? Get one here ↗
 
                           {/* Hover glow effect */}
-                          <div className={`absolute inset-0 rounded-md transition-all duration-500 ${
-                            !isRedirecting
-                              ? "group-hover:bg-gradient-to-r group-hover:from-purple-50 group-hover:to-pink-50 group-hover:scale-105 group-hover:shadow-sm"
-                              : "bg-gradient-to-r from-purple-100 to-pink-100 scale-110 shadow-md"
-                          }`}></div>
+                          <div className="absolute inset-0 rounded-md transition-all duration-500 group-hover:bg-gradient-to-r group-hover:from-purple-50 group-hover:to-pink-50 group-hover:scale-105 group-hover:shadow-sm"></div>
                         </a>
                       </div>
 
