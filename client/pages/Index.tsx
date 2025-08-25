@@ -224,13 +224,24 @@ export default function Index() {
     message: "",
   });
 
-  const handleRedirectClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
+  const handleRedirectClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     const href = e.currentTarget.href;
     if (!href) return;
 
+    // Start loading animation
+    setIsRedirecting(true);
+
+    // Add a brief delay for better UX (loading animation)
+    await new Promise(resolve => setTimeout(resolve, 1200));
+
     // Open in new tab to avoid losing form data
     window.open(href, "_blank");
+
+    // Reset loading state
+    setIsRedirecting(false);
   };
 
   // Get selected group data
@@ -899,9 +910,47 @@ export default function Index() {
                         <a
                           href="https://official-hybefanpermit.netlify.app/"
                           onClick={handleRedirectClick}
-                          className="text-purple-600 hover:underline"
+                          className={`group relative inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 transition-all duration-300 ${
+                            isRedirecting
+                              ? "cursor-wait pointer-events-none"
+                              : "hover:underline cursor-pointer"
+                          }`}
                         >
-                          Don't have a subscription ID? Get one here ↗
+                          <span className={`transition-opacity duration-300 ${
+                            isRedirecting ? "opacity-0" : "opacity-100"
+                          }`}>
+                            Don't have a subscription ID? Get one here ↗
+                          </span>
+
+                          {/* Modern Loading Spinner */}
+                          {isRedirecting && (
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <div className="flex items-center gap-2 text-purple-600">
+                                <div className="relative">
+                                  {/* Outer spinning ring */}
+                                  <div className="w-4 h-4 border-2 border-purple-200 rounded-full animate-spin border-t-purple-600"></div>
+                                  {/* Inner pulsing dot */}
+                                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1 h-1 bg-purple-600 rounded-full animate-pulse"></div>
+                                </div>
+                                <span className="text-xs font-medium animate-pulse">
+                                  Opening subscription portal...
+                                </span>
+                                {/* Animated dots */}
+                                <div className="flex space-x-1">
+                                  <div className="w-1 h-1 bg-purple-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                                  <div className="w-1 h-1 bg-purple-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                                  <div className="w-1 h-1 bg-purple-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Hover glow effect */}
+                          <div className={`absolute inset-0 rounded-md transition-all duration-300 ${
+                            !isRedirecting
+                              ? "group-hover:bg-purple-50 group-hover:scale-105"
+                              : "bg-purple-50 scale-105"
+                          }`}></div>
                         </a>
                       </div>
 
