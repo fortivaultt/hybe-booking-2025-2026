@@ -1385,18 +1385,21 @@ export default function Index() {
           <div className="absolute inset-0 bg-black/40 backdrop-blur-md animate-fade-in"></div>
 
           {/* Modal Container */}
-          <div className="relative z-10 transform transition-all duration-500 animate-slide-up">
-            <div className="bg-white/95 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20 p-8 mx-4 max-w-sm w-full">
+          <div className="relative z-10 modal-pop-in">
+            <div className="bg-white/95 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20 p-8 mx-4 max-w-sm w-full hybe-pulse-glow">
               {/* Portal Ring Effect */}
               <div className="relative flex items-center justify-center mb-6">
                 {/* Outer rotating ring */}
-                <div className="absolute w-20 h-20 border-4 border-purple-200 rounded-full animate-spin border-t-purple-600 border-r-pink-500"></div>
+                <div className="absolute w-20 h-20 border-4 border-purple-200 rounded-full portal-spin border-t-purple-600 border-r-pink-500 shadow-lg"></div>
                 {/* Middle pulsing ring */}
-                <div className="absolute w-14 h-14 border-2 border-purple-300 rounded-full animate-pulse border-t-transparent"></div>
+                <div className="absolute w-14 h-14 border-2 border-purple-300 rounded-full animate-pulse border-t-transparent shadow-md"></div>
                 {/* Inner spinning ring */}
-                <div className="absolute w-8 h-8 border-2 border-pink-400 rounded-full animate-spin border-t-transparent border-b-purple-500" style={{ animationDirection: 'reverse' }}></div>
+                <div className="absolute w-8 h-8 border-2 border-pink-400 rounded-full portal-reverse-spin border-t-transparent border-b-purple-500 shadow-sm"></div>
                 {/* Center glow */}
                 <div className="w-4 h-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full animate-pulse shadow-lg"></div>
+                {/* Portal energy effect */}
+                <div className="absolute w-24 h-24 border border-purple-100 rounded-full animate-ping opacity-30"></div>
+                <div className="absolute w-28 h-28 border border-pink-100 rounded-full animate-ping opacity-20" style={{ animationDelay: '0.5s' }}></div>
               </div>
 
               {/* Loading Text */}
