@@ -1,11 +1,13 @@
 [build]
   # Build configuration
-  command = "npm run build"
+  command = "pnpm install && pnpm run build"
   publish = "dist/spa"
 
   # Environment variables for build
   [build.environment]
     NODE_VERSION = "20"
+    NPM_FLAGS = "--version"
+    PNPM_VERSION = "latest"
 
 # Form settings (correct syntax)
 [forms.settings]
