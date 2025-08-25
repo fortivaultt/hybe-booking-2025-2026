@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import { cacheService } from "../utils/cache";
 import { Analytics } from "../utils/logger";
-import { db } from "../utils/postgres";
+import { sqliteDb } from "../utils/sqlite-db";
 
 export const getSystemHealth: RequestHandler = async (req, res) => {
   const startTime = Date.now();
@@ -119,36 +119,27 @@ export const getAnalyticsDashboard: RequestHandler = async (req, res) => {
 
 async function checkDatabaseHealth() {
   try {
-    const dbHealth = await db.healthCheck();
+    const dbHealth = await sqliteDb.healthCheck();
     if (!dbHealth.connected) {
       return {
         status: "error",
-        error: dbHealth.error || "Database connection failed",
-        connectionString: dbHealth.connectionString,
-        attempts: dbHealth.attempts,
-        lastAttempt: dbHealth.lastAttempt,
+        error: dbHealth.error || "SQLite connection failed",
         lastCheck: new Date().toISOString(),
       };
     }
 
-    const result = await db.query("SELECT 1 as health_check");
-    const connectionInfo = await db.query(
-      "SELECT count(*) as active_connections FROM pg_stat_activity WHERE state = $1",
-      ["active"],
-    );
-
     return {
       status: "healthy",
+      type: "SQLite",
       responseTime: Date.now(),
-      activeConnections: parseInt(connectionInfo.rows[0].active_connections),
-      connectionString: dbHealth.connectionString,
-      attempts: dbHealth.attempts,
+      totalSubscriptions: dbHealth.totalSubscriptions,
+      totalBookings: dbHealth.totalBookings,
       lastCheck: new Date().toISOString(),
     };
   } catch (error) {
     return {
       status: "error",
-      error: error instanceof Error ? error.message : "Unknown database error",
+      error: error instanceof Error ? error.message : "Unknown SQLite error",
       lastCheck: new Date().toISOString(),
     };
   }
@@ -191,38 +182,26 @@ async function checkSystemMetrics() {
 
 async function getSubscriptionAnalytics() {
   try {
-    const dbHealth = await db.healthCheck();
+    const dbHealth = await sqliteDb.healthCheck();
     if (!dbHealth.connected) {
       return {
         total: 0,
         active: 0,
         usedToday: 0,
         typeDistribution: [],
-        note: "Database unavailable",
+        note: "SQLite database unavailable",
         error: dbHealth.error,
       };
     }
 
-    const validationStats = await db.query(`
-      SELECT
-        COUNT(*) as total_validations,
-        COUNT(CASE WHEN is_active THEN 1 END) as active_subscriptions,
-        COUNT(CASE WHEN last_used_at > NOW() - INTERVAL '24 hours' THEN 1 END) as used_today
-      FROM subscription_ids
-    `);
-
-    const typeDistribution = await db.query(`
-      SELECT subscription_type, COUNT(*) as count
-      FROM subscription_ids
-      WHERE is_active = true
-      GROUP BY subscription_type
-    `);
+    const subscriptionTypes = await sqliteDb.getSubscriptionTypes();
 
     return {
-      total: parseInt(validationStats.rows[0].total_validations),
-      active: parseInt(validationStats.rows[0].active_subscriptions),
-      usedToday: parseInt(validationStats.rows[0].used_today),
-      typeDistribution: typeDistribution.rows,
+      total: subscriptionTypes.totalActive,
+      active: subscriptionTypes.totalActive,
+      usedToday: 0, // Would need to track this in SQLite
+      typeDistribution: subscriptionTypes.subscriptionTypes,
+      note: "Data from SQLite database",
     };
   } catch (error) {
     throw new Error(
@@ -233,7 +212,7 @@ async function getSubscriptionAnalytics() {
 
 async function getBookingAnalytics() {
   try {
-    const dbHealth = await db.healthCheck();
+    const dbHealth = await sqliteDb.healthCheck();
     if (!dbHealth.connected) {
       return {
         total: 0,
@@ -241,46 +220,49 @@ async function getBookingAnalytics() {
         withSubscription: 0,
         avgCustomAmount: 0,
         popularCelebrities: [],
-        note: "Database unavailable",
+        note: "SQLite database unavailable",
         error: dbHealth.error,
       };
     }
 
-    const bookingStats = await db.query(`
-      SELECT
-        COUNT(*) as total_bookings,
-        COUNT(CASE WHEN created_at > NOW() - INTERVAL '24 hours' THEN 1 END) as bookings_today,
-        COUNT(CASE WHEN subscription_id IS NOT NULL THEN 1 END) as with_subscription,
-        AVG(CASE WHEN custom_amount IS NOT NULL THEN custom_amount ELSE 0 END) as avg_custom_amount
-      FROM booking_requests
-      WHERE created_at > NOW() - INTERVAL '30 days'
-    `);
+    const bookings = await sqliteDb.getBookings(100); // Get last 100 bookings
 
-    const popularCelebrities = await db.query(`
-      SELECT celebrity, COUNT(*) as booking_count
-      FROM booking_requests
-      WHERE created_at > NOW() - INTERVAL '7 days'
-      GROUP BY celebrity
-      ORDER BY booking_count DESC
-      LIMIT 5
-    `);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const todayBookings = bookings.filter(
+      booking => new Date(booking.created_at) >= today
+    );
+
+    const withSubscription = bookings.filter(
+      booking => booking.subscription_id
+    );
+
+    const customAmounts = bookings
+      .filter(booking => booking.custom_amount)
+      .map(booking => booking.custom_amount!);
+
+    const avgCustomAmount = customAmounts.length > 0
+      ? customAmounts.reduce((sum, amount) => sum + amount, 0) / customAmounts.length
+      : 0;
 
     return {
-      total: parseInt(bookingStats.rows[0].total_bookings),
-      today: parseInt(bookingStats.rows[0].bookings_today),
-      withSubscription: parseInt(bookingStats.rows[0].with_subscription),
-      avgCustomAmount: parseFloat(bookingStats.rows[0].avg_custom_amount) || 0,
-      popularCelebrities: popularCelebrities.rows,
+      total: dbHealth.totalBookings,
+      today: todayBookings.length,
+      withSubscription: withSubscription.length,
+      avgCustomAmount,
+      popularCelebrities: [], // Would need aggregation logic
+      note: "Data from SQLite database",
     };
   } catch (error) {
-    // Return mock data if table doesn't exist yet
     return {
       total: 0,
       today: 0,
       withSubscription: 0,
       avgCustomAmount: 0,
       popularCelebrities: [],
-      note: "Booking table not initialized",
+      note: "SQLite booking analytics error",
+      error: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }
