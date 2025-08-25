@@ -514,30 +514,30 @@ export default function Index() {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="bg-white border-b border-gray-200 py-12 sm:py-16">
+      <section className="bg-white border-b border-gray-200 py-8 sm:py-12 lg:py-16">
         <div className="container mx-auto px-4 sm:px-6 text-center">
           <div className="flex flex-col items-center justify-center mb-6">
-            <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-4">
               <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600" />
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">
+              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 text-center leading-tight">
                 CELEBRITY BOOKING PLATFORM
               </h1>
               <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600" />
             </div>
           </div>
-          <p className="text-base sm:text-lg text-gray-600 max-w-3xl mx-auto mb-6">
+          <p className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-3xl mx-auto mb-6 px-2">
             Official HYBE celebrity booking platform. Book exclusive experiences
             with the world's biggest K-pop stars. From intimate meet & greets to
             luxury vacation packages.
           </p>
-          <div className="inline-flex items-center px-6 py-3 bg-gray-50 border border-gray-200 rounded-lg">
-            <p className="text-sm text-gray-700">
+          <div className="inline-flex items-center px-4 sm:px-6 py-3 bg-gray-50 border border-gray-200 rounded-lg mx-2">
+            <p className="text-xs sm:text-sm text-gray-700 text-center">
               🎯 Powered by{" "}
               <strong className="text-purple-600">HYBE Corporation</strong> -
               Home to BTS, BLACKPINK, NewJeans & More
             </p>
           </div>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8 mt-8 text-sm text-gray-600">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 lg:gap-8 mt-6 sm:mt-8 text-xs sm:text-sm text-gray-600">
             <div className="flex items-center gap-2">
               <Star className="h-4 w-4 text-purple-600" />
               <span>Premium Artists</span>
@@ -1313,7 +1313,7 @@ export default function Index() {
                       <li>• Fast-track booking process</li>
                       <li>• 10% discount on bookings</li>
                       <li>• Early access to new artists</li>
-                      <li>• Priority customer support</li>
+                      <li>�� Priority customer support</li>
                     </ul>
                   </div>
 
