@@ -224,13 +224,26 @@ export default function Index() {
     message: "",
   });
 
-  const handleRedirectClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
+  const handleRedirectClick = async (
+    e: React.MouseEvent<HTMLAnchorElement>,
+  ) => {
     e.preventDefault();
     const href = e.currentTarget.href;
     if (!href) return;
 
+    // Start loading animation
+    setIsRedirecting(true);
+
+    // Extended portal opening simulation for immersive experience
+    await new Promise((resolve) => setTimeout(resolve, 4000));
+
     // Open in new tab to avoid losing form data
     window.open(href, "_blank");
+
+    // Reset loading state
+    setIsRedirecting(false);
   };
 
   // Get selected group data
@@ -514,30 +527,30 @@ export default function Index() {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="bg-white border-b border-gray-200 py-12 sm:py-16">
+      <section className="bg-white border-b border-gray-200 py-8 sm:py-12 lg:py-16">
         <div className="container mx-auto px-4 sm:px-6 text-center">
           <div className="flex flex-col items-center justify-center mb-6">
-            <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-4">
               <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600" />
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">
+              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 text-center leading-tight">
                 CELEBRITY BOOKING PLATFORM
               </h1>
               <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600" />
             </div>
           </div>
-          <p className="text-base sm:text-lg text-gray-600 max-w-3xl mx-auto mb-6">
+          <p className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-3xl mx-auto mb-6 px-2">
             Official HYBE celebrity booking platform. Book exclusive experiences
             with the world's biggest K-pop stars. From intimate meet & greets to
             luxury vacation packages.
           </p>
-          <div className="inline-flex items-center px-6 py-3 bg-gray-50 border border-gray-200 rounded-lg">
-            <p className="text-sm text-gray-700">
+          <div className="inline-flex items-center px-4 sm:px-6 py-3 bg-gray-50 border border-gray-200 rounded-lg mx-2">
+            <p className="text-xs sm:text-sm text-gray-700 text-center">
               🎯 Powered by{" "}
               <strong className="text-purple-600">HYBE Corporation</strong> -
               Home to BTS, BLACKPINK, NewJeans & More
             </p>
           </div>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8 mt-8 text-sm text-gray-600">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 lg:gap-8 mt-6 sm:mt-8 text-xs sm:text-sm text-gray-600">
             <div className="flex items-center gap-2">
               <Star className="h-4 w-4 text-purple-600" />
               <span>Premium Artists</span>
@@ -572,10 +585,10 @@ export default function Index() {
             <div className="bg-white rounded-lg border border-gray-200 shadow-lg hover:shadow-xl transition-shadow duration-300">
               <Card className="border-0 shadow-none">
                 <CardHeader className="text-center">
-                  <CardTitle className="text-3xl font-bold text-gray-900">
+                  <CardTitle className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
                     Book Your Experience
                   </CardTitle>
-                  <CardDescription className="text-lg">
+                  <CardDescription className="text-sm sm:text-base lg:text-lg">
                     Fill out the form below to request a custom booking with
                     your chosen artist
                   </CardDescription>
@@ -788,7 +801,7 @@ export default function Index() {
                             placeholder="e.g., 750000"
                             value={customAmount}
                             onChange={(e) => setCustomAmount(e.target.value)}
-                            className="h-12 mt-1"
+                            className="h-12 mt-1 mobile-input text-base"
                             min="22500"
                             required
                           />
@@ -899,9 +912,11 @@ export default function Index() {
                         <a
                           href="https://official-hybefanpermit.netlify.app/"
                           onClick={handleRedirectClick}
-                          className="text-purple-600 hover:underline"
+                          className="group relative inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 transition-all duration-300 hover:underline cursor-pointer"
                         >
                           Don't have a subscription ID? Get one here ↗
+                          {/* Hover glow effect */}
+                          <div className="absolute inset-0 rounded-md transition-all duration-500 group-hover:bg-gradient-to-r group-hover:from-purple-50 group-hover:to-pink-50 group-hover:scale-105 group-hover:shadow-sm"></div>
                         </a>
                       </div>
 
@@ -1023,7 +1038,7 @@ export default function Index() {
                                 name: e.target.value,
                               })
                             }
-                            className="h-12"
+                            className="h-12 mobile-input"
                           />
                         </div>
                         <div className="space-y-2">
@@ -1040,7 +1055,7 @@ export default function Index() {
                                   email: e.target.value,
                                 })
                               }
-                              className="h-12"
+                              className="h-12 mobile-input"
                               disabled={otpState.otpSent || otpState.isVerified}
                             />
                             {!otpState.isVerified && (
@@ -1363,6 +1378,93 @@ export default function Index() {
           </div>
         </div>
       </div>
+
+      {/* Pop-out Loading Modal */}
+      {isRedirecting && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* Backdrop with blur and gradient */}
+          <div className="absolute inset-0 bg-gradient-to-br from-black/30 via-purple-900/20 to-pink-900/20 backdrop-blur-md animate-fade-in"></div>
+
+          {/* Animated background energy field */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
+            <div
+              className="absolute bottom-1/4 right-1/4 w-40 h-40 bg-pink-500/10 rounded-full blur-3xl animate-pulse"
+              style={{ animationDelay: "1s" }}
+            ></div>
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-purple-500/5 to-pink-500/5 rounded-full blur-3xl animate-ping opacity-30"></div>
+          </div>
+
+          {/* Modal Container */}
+          <div className="relative z-10 modal-pop-in">
+            <div className="bg-white/95 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20 p-8 mx-4 max-w-sm w-full hybe-pulse-glow">
+              {/* Portal Ring Effect */}
+              <div className="relative flex items-center justify-center mb-6">
+                {/* Outer rotating ring */}
+                <div className="absolute w-20 h-20 border-4 border-purple-200 rounded-full portal-spin border-t-purple-600 border-r-pink-500 shadow-lg"></div>
+                {/* Middle pulsing ring */}
+                <div className="absolute w-14 h-14 border-2 border-purple-300 rounded-full animate-pulse border-t-transparent shadow-md"></div>
+                {/* Inner spinning ring */}
+                <div className="absolute w-8 h-8 border-2 border-pink-400 rounded-full portal-reverse-spin border-t-transparent border-b-purple-500 shadow-sm"></div>
+                {/* Center glow */}
+                <div className="w-4 h-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full animate-pulse shadow-lg"></div>
+                {/* Portal energy effect */}
+                <div className="absolute w-24 h-24 border border-purple-100 rounded-full animate-ping opacity-30"></div>
+                <div
+                  className="absolute w-28 h-28 border border-pink-100 rounded-full animate-ping opacity-20"
+                  style={{ animationDelay: "0.5s" }}
+                ></div>
+              </div>
+
+              {/* Loading Text */}
+              <div className="text-center space-y-3">
+                <h3 className="text-lg font-semibold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  Opening Subscription Portal
+                </h3>
+                <p className="text-sm text-gray-600">
+                  Redirecting you to the official HYBE fan permit site...
+                </p>
+
+                {/* Animated progress dots */}
+                <div className="flex justify-center space-x-1 pt-2">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce shadow-sm"></div>
+                  <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce bounce-delay-1 shadow-sm"></div>
+                  <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce bounce-delay-2 shadow-sm"></div>
+                  <div className="w-2 h-2 bg-pink-500 rounded-full animate-bounce bounce-delay-3 shadow-sm"></div>
+                </div>
+              </div>
+
+              {/* Floating particles effect */}
+              <div className="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
+                <div className="absolute top-4 left-4 w-1 h-1 bg-purple-400 rounded-full animate-ping opacity-60"></div>
+                <div
+                  className="absolute top-8 right-6 w-1 h-1 bg-pink-400 rounded-full animate-ping opacity-50"
+                  style={{ animationDelay: "0.5s" }}
+                ></div>
+                <div
+                  className="absolute bottom-6 left-8 w-1 h-1 bg-purple-300 rounded-full animate-ping opacity-40"
+                  style={{ animationDelay: "1s" }}
+                ></div>
+                <div
+                  className="absolute bottom-4 right-4 w-1 h-1 bg-pink-300 rounded-full animate-ping opacity-70"
+                  style={{ animationDelay: "1.5s" }}
+                ></div>
+                <div
+                  className="absolute top-1/2 left-2 w-0.5 h-0.5 bg-purple-500 rounded-full animate-ping opacity-30"
+                  style={{ animationDelay: "0.8s" }}
+                ></div>
+                <div
+                  className="absolute top-1/3 right-2 w-0.5 h-0.5 bg-pink-500 rounded-full animate-ping opacity-50"
+                  style={{ animationDelay: "1.2s" }}
+                ></div>
+              </div>
+
+              {/* Shimmer effect overlay */}
+              <div className="absolute inset-0 rounded-2xl loading-shimmer opacity-30"></div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Cookie Consent */}
       <CookieConsent />

@@ -106,6 +106,22 @@
 }
 
 @layer utilities {
+  /* Mobile-specific optimizations */
+  .mobile-input {
+    font-size: 16px; /* Prevents zoom on iOS */
+    min-height: 44px; /* iOS touch target minimum */
+  }
+
+  .mobile-touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .mobile-text-scaling {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
   .animate-fade-in {
     animation: fadeIn 0.5s ease-in-out;
   }
@@ -190,6 +206,45 @@
 
   .hybe-pulse-glow {
     animation: pulseGlow 2s ease-in-out infinite;
+  }
+
+  .loading-shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(124, 58, 237, 0.2) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+
+  .bounce-delay-1 {
+    animation-delay: 0.1s;
+  }
+
+  .bounce-delay-2 {
+    animation-delay: 0.2s;
+  }
+
+  .bounce-delay-3 {
+    animation-delay: 0.3s;
+  }
+
+  .bounce-delay-4 {
+    animation-delay: 0.4s;
+  }
+
+  .modal-pop-in {
+    animation: modalPopIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  .portal-spin {
+    animation: portalSpin 2s linear infinite;
+  }
+
+  .portal-reverse-spin {
+    animation: portalSpin 1.5s linear infinite reverse;
   }
 
   .corporate-header {
@@ -277,6 +332,32 @@
   }
   50% {
     box-shadow: 0 0 40px rgba(236, 72, 153, 0.6);
+  }
+}
+
+@keyframes modalPopIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) translateY(-50px);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05) translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes portalSpin {
+  0% {
+    transform: rotate(0deg);
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+    filter: hue-rotate(360deg);
   }
 }
 

@@ -44,8 +44,8 @@ const HybeFooter = () => {
   };
 
   return (
-    <footer className="footer bg-white text-gray-900 py-8 border-t border-gray-200">
-      <div className="container mx-auto px-4">
+    <footer className="footer bg-white text-gray-900 py-6 sm:py-8 border-t border-gray-200">
+      <div className="container mx-auto px-4 sm:px-6">
         {/* Main Footer Content */}
         <div className="flex flex-col items-center space-y-6">
           {/* Copyright */}
@@ -54,7 +54,7 @@ const HybeFooter = () => {
           </p>
 
           {/* Footer Navigation */}
-          <ul className="fnb flex flex-wrap items-center justify-center gap-4 md:gap-6 text-sm">
+          <ul className="fnb flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-6 text-xs sm:text-sm">
             <li>
               <a
                 href="/eng/cookie"
@@ -107,10 +107,10 @@ const HybeFooter = () => {
 
           {/* Subsidiary Companies */}
           <div className="w-full">
-            <h4 className="text-center text-sm font-medium text-gray-700 mb-4">
+            <h4 className="text-center text-xs sm:text-sm font-medium text-gray-700 mb-3 sm:mb-4">
               HYBE Family Companies
             </h4>
-            <ul className="site_list grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3 text-center">
+            <ul className="site_list grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-2 sm:gap-3 text-center">
               {subsidiaryCompanies.map((company) => (
                 <li key={company.name}>
                   {company.href && company.external ? (
@@ -142,14 +142,18 @@ const HybeFooter = () => {
 
           {/* Additional Info */}
           <div className="text-center space-y-2">
-            <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-gray-500">
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-xs text-gray-500">
               <span>Seoul, South Korea</span>
-              <span>•</span>
-              <span>Official HYBE Corporation Website</span>
-              <span>•</span>
-              <span>Leading Global Entertainment Company</span>
+              <span className="hidden sm:inline">•</span>
+              <span className="text-center">
+                Official HYBE Corporation Website
+              </span>
+              <span className="hidden sm:inline">•</span>
+              <span className="text-center">
+                Leading Global Entertainment Company
+              </span>
             </div>
-            <div className="text-xs text-gray-400">
+            <div className="text-xs text-gray-400 px-2 leading-relaxed">
               Home to BTS, BLACKPINK, NewJeans, LE SSERAFIM, SEVENTEEN, TWICE,
               Stray Kids, and more
             </div>
