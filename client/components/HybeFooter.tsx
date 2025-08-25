@@ -107,10 +107,10 @@ const HybeFooter = () => {
 
           {/* Subsidiary Companies */}
           <div className="w-full">
-            <h4 className="text-center text-sm font-medium text-gray-700 mb-4">
+            <h4 className="text-center text-xs sm:text-sm font-medium text-gray-700 mb-3 sm:mb-4">
               HYBE Family Companies
             </h4>
-            <ul className="site_list grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3 text-center">
+            <ul className="site_list grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-2 sm:gap-3 text-center">
               {subsidiaryCompanies.map((company) => (
                 <li key={company.name}>
                   {company.href && company.external ? (
