@@ -142,14 +142,14 @@ const HybeFooter = () => {
 
           {/* Additional Info */}
           <div className="text-center space-y-2">
-            <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-gray-500">
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-xs text-gray-500">
               <span>Seoul, South Korea</span>
-              <span>•</span>
-              <span>Official HYBE Corporation Website</span>
-              <span>•</span>
-              <span>Leading Global Entertainment Company</span>
+              <span className="hidden sm:inline">•</span>
+              <span className="text-center">Official HYBE Corporation Website</span>
+              <span className="hidden sm:inline">•</span>
+              <span className="text-center">Leading Global Entertainment Company</span>
             </div>
-            <div className="text-xs text-gray-400">
+            <div className="text-xs text-gray-400 px-2 leading-relaxed">
               Home to BTS, BLACKPINK, NewJeans, LE SSERAFIM, SEVENTEEN, TWICE,
               Stray Kids, and more
             </div>
