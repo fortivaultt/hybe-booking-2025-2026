@@ -24,14 +24,12 @@
   },
   "dependencies": {
     "@types/handlebars": "^4.0.40",
-    "@types/pg": "^8.15.5",
     "@types/sql.js": "^1.4.9",
     "body-parser": "^2.2.0",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "handlebars": "^4.7.8",
     "nodemailer": "^7.0.5",
-    "pg": "^8.16.3",
     "sql.js": "^1.13.0",
     "winston": "^3.17.0",
     "zod": "^3.25.76"
