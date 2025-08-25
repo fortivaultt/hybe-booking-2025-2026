@@ -1378,6 +1378,52 @@ export default function Index() {
         </div>
       </div>
 
+      {/* Pop-out Loading Modal */}
+      {isRedirecting && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* Backdrop with blur */}
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-md animate-fade-in"></div>
+
+          {/* Modal Container */}
+          <div className="relative z-10 transform transition-all duration-500 animate-slide-up">
+            <div className="bg-white/95 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20 p-8 mx-4 max-w-sm w-full">
+              {/* Portal Ring Effect */}
+              <div className="relative flex items-center justify-center mb-6">
+                {/* Outer rotating ring */}
+                <div className="absolute w-20 h-20 border-4 border-purple-200 rounded-full animate-spin border-t-purple-600 border-r-pink-500"></div>
+                {/* Middle pulsing ring */}
+                <div className="absolute w-14 h-14 border-2 border-purple-300 rounded-full animate-pulse border-t-transparent"></div>
+                {/* Inner spinning ring */}
+                <div className="absolute w-8 h-8 border-2 border-pink-400 rounded-full animate-spin border-t-transparent border-b-purple-500" style={{ animationDirection: 'reverse' }}></div>
+                {/* Center glow */}
+                <div className="w-4 h-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full animate-pulse shadow-lg"></div>
+              </div>
+
+              {/* Loading Text */}
+              <div className="text-center space-y-3">
+                <h3 className="text-lg font-semibold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  Opening Subscription Portal
+                </h3>
+                <p className="text-sm text-gray-600">
+                  Redirecting you to the official HYBE fan permit site...
+                </p>
+
+                {/* Animated progress dots */}
+                <div className="flex justify-center space-x-1 pt-2">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce bounce-delay-1"></div>
+                  <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce bounce-delay-2"></div>
+                  <div className="w-2 h-2 bg-pink-500 rounded-full animate-bounce bounce-delay-3"></div>
+                </div>
+              </div>
+
+              {/* Shimmer effect overlay */}
+              <div className="absolute inset-0 rounded-2xl loading-shimmer opacity-30"></div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Cookie Consent */}
       <CookieConsent />
     </Layout>
