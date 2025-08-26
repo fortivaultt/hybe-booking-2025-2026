@@ -254,7 +254,7 @@ export default function Index() {
   // Validate subscription ID format (HYB + 10 alphanumeric)
   const isValidSubscriptionId = (id: string) => {
     // Basic format validation - detailed validation happens server-side
-    const regex = /^[A-Z0-9]{10,13}$/i;
+    const regex = /^[A-Z0-9]{10,14}$/i;
     return regex.test(id) && id.length >= 10;
   };
 
