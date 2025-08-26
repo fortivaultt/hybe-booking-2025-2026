@@ -42,7 +42,7 @@ export const validateSubscriptionId: RequestHandler = async (req, res) => {
     const normalizedId = subscriptionId.trim().toUpperCase();
 
     // Basic length and character validation
-    if (normalizedId.length < 10 || normalizedId.length > 13) {
+    if (normalizedId.length < 10 || normalizedId.length > 14) {
       const response = {
         isValid: false,
         message: "Invalid subscription ID format.",
