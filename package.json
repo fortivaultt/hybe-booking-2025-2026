@@ -12,7 +12,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "pnpm build:client && pnpm build:server && pnpm copy:templates",
     "build:client": "vite build",
     "copy:templates": "mkdir -p dist/email-templates && cp -r src/email-templates/* dist/email-templates/ || true",
     "build:server": "vite build --config vite.config.server.ts",
