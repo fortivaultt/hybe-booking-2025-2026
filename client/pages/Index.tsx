@@ -836,6 +836,7 @@ export default function Index() {
                           </Label>
                           <Input
                             id="customAmount"
+                            name="customAmount"
                             type="number"
                             placeholder="e.g., 750000"
                             value={customAmount}
