@@ -10,8 +10,8 @@ export default function Success() {
   useEffect(() => {
     // Redirect to home after 30 seconds if user doesn't interact
     const timer = setTimeout(() => {
-      navigate("/");
-    }, 30000);
+  window.location.href = "https://hybecorp.com"; // same tab
+}, 30000);
 
     return () => clearTimeout(timer);
   }, [navigate]);
@@ -83,7 +83,7 @@ export default function Success() {
             </p>
             <div className="space-y-1 text-sm text-yellow-700">
               <p>
-                <strong>Email:</strong> hybe.corp@zohomail.com
+                <strong>Email:</strong> <a href="mailto:hybe.corp@zohomail.com">support@hybecorp</a>
               </p>
             </div>
           </div>
@@ -95,7 +95,7 @@ export default function Success() {
             </p>
 
             <Button
-              onClick={() => navigate("/")}
+              onClick={() => (window.location.href = "https://hybecorp.com")}
               className="bg-gradient-to-r from-hybe-purple to-hybe-pink hover:from-purple-700 hover:to-pink-600 text-white px-8 py-2"
             >
               <Home className="w-4 h-4 mr-2" />
