@@ -175,7 +175,7 @@ export default function Index() {
   const [selectedArtist, setSelectedArtist] = useState("");
   const [selectedEventType, setSelectedEventType] = useState("");
   const [budget, setBudget] = useState("");
-  const [customAmount, setCustomAmount] = useState("");
+  const [exactBudget, setExactBudget] = useState("");
   const [attendees, setAttendees] = useState("");
   const [preferredDate, setPreferredDate] = useState("");
   const [location, setLocation] = useState("");
@@ -207,6 +207,7 @@ export default function Index() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [budgetError, setBudgetError] = useState("");
   const [loadingStep, setLoadingStep] = useState("");
   const [otpState, setOtpState] = useState<{
     otpSent: boolean;
@@ -455,6 +456,28 @@ export default function Index() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Budget validation
+    if (budget && exactBudget) {
+      const exact = parseInt(exactBudget, 10);
+      let min, max;
+
+      if (budget.includes('+')) {
+        min = parseInt(budget.replace('+', ''), 10);
+        max = Infinity;
+      } else {
+        const parts = budget.split('-').map(p => parseInt(p, 10));
+        min = parts[0];
+        max = parts[1];
+      }
+
+      if (exact < min || exact > max) {
+        setBudgetError(`Exact budget must be within the selected range.`);
+        return; // Stop submission
+      }
+    }
+    setBudgetError(""); // Clear error if validation passes
+
+
     if (!otpState.isVerified) {
       setSubmitMessage(
         "Please verify your email with an OTP before submitting.",
@@ -478,13 +501,11 @@ export default function Index() {
       await new Promise((resolve) => setTimeout(resolve, 1000)); // 1 second delay per step
     }
 
-    const finalBudget = budget === "custom" ? customAmount : budget;
-
     const bookingData: BookingRequest = {
       fanPreference,
       selectedCelebrity: `${selectedGroup} - ${selectedArtist}`,
       selectedEventType,
-      budget: finalBudget,
+      budget: exactBudget,
       attendees,
       preferredDate,
       location,
@@ -518,8 +539,8 @@ export default function Index() {
             "fan-preference": fanPreference,
             celebrity: `${selectedGroup} - ${selectedArtist}`,
             "event-type": selectedEventType,
-            budget: finalBudget,
-            "custom-amount": customAmount || "",
+            "budget-range": budget,
+            "exact-budget": exactBudget || "",
             attendees,
             "preferred-date": preferredDate,
             location,
@@ -821,9 +842,31 @@ export default function Index() {
                             $750,000 - $1,000,000
                           </SelectItem>
                           <SelectItem value="1000000+">$1,000,000+</SelectItem>
-                          <SelectItem value="custom">Custom Amount</SelectItem>
                         </SelectContent>
                       </Select>
+                      {/* Exact Budget input (required once a range is chosen) */}
+                      {budget && (
+                        <div className="mt-3">
+                          <Label htmlFor="exactBudget" className="text-sm font-medium">
+                            Enter Your Exact Budget (USD) <span className="text-red-500">*</span>
+                          </Label>
+                          <Input
+                            id="exactBudget"
+                            name="exactBudget"
+                            type="number"
+                            placeholder="e.g., 400000"
+                            value={exactBudget}
+                            onChange={(e) => setExactBudget(e.target.value)}
+                            className="h-12 mt-1 mobile-input text-base"
+                            min="22500"
+                            required
+                          />
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Minimum amount: $22,500
+                          </p>
+                          {budgetError && <p className="text-sm text-red-600 mt-1">{budgetError}</p>}
+                        </div>
+                      )}
                     </div>
 
                     {/* Additional Details */}
@@ -1205,7 +1248,7 @@ export default function Index() {
                         isSubmitting ||
                         !otpState.isVerified ||
                         !budget ||
-                        !customAmount
+                        !exactBudget
                       }
                     >
                       {isSubmitting ? (
