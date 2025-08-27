@@ -519,7 +519,7 @@ export default function Index() {
             celebrity: `${selectedGroup} - ${selectedArtist}`,
             "event-type": selectedEventType,
             budget: finalBudget,
-            "Custom Amount": budget === "custom" ? customAmount : "",
+            "custom-amount": customAmount || "",
             attendees,
             "preferred-date": preferredDate,
             location,
