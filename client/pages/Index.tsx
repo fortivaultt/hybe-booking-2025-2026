@@ -824,56 +824,7 @@ export default function Index() {
                           <SelectItem value="custom">Custom Amount</SelectItem>
                         </SelectContent>
                       </Select>
-
-                      {/* Budget Range */}
-<div className="space-y-2">
-  <Label htmlFor="budget" className="text-base font-semibold">
-    Total Budget Range (USD)
-    <span className="block text-xs font-normal text-muted-foreground mt-1">
-      Covers accommodation, HYBE fees, artist fees, travel, and all associated costs
-    </span>
-  </Label>
-  <Select
-    value={budget}
-    onValueChange={(value) => setBudget(value)}
-  >
-    <SelectTrigger className="h-12">
-      <SelectValue placeholder="Select your complete budget range" />
-    </SelectTrigger>
-    <SelectContent>
-      <SelectItem value="22500-50000">$22,500 - $50,000</SelectItem>
-      <SelectItem value="50000-100000">$50,000 - $100,000</SelectItem>
-      <SelectItem value="100000-250000">$100,000 - $250,000</SelectItem>
-      <SelectItem value="250000-500000">$250,000 - $500,000</SelectItem>
-      <SelectItem value="500000-750000">$500,000 - $750,000</SelectItem>
-      <SelectItem value="750000-1000000">$750,000 - $1,000,000</SelectItem>
-      <SelectItem value="1000000+">$1,000,000+</SelectItem>
-    </SelectContent>
-  </Select>
-
-  {/* Custom Amount input (required once a range is chosen) */}
-  {budget && (
-    <div className="mt-3">
-      <Label htmlFor="customAmount" className="text-sm font-medium">
-        Enter Your Exact Budget (USD) <span className="text-red-500">*</span>
-      </Label>
-      <Input
-        id="customAmount"
-        name="customAmount"
-        type="number"
-        placeholder="e.g., 400000"
-        value={customAmount}
-        onChange={(e) => setCustomAmount(e.target.value)}
-        className="h-12 mt-1 mobile-input text-base"
-        min="22500"
-        required
-      />
-      <p className="text-xs text-muted-foreground mt-1">
-        Minimum amount: $22,500
-      </p>
-    </div>
-  )}
-</div>
+                    </div>
 
                     {/* Additional Details */}
                     <div className="grid md:grid-cols-2 gap-4">
