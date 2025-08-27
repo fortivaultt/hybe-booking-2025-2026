@@ -1253,7 +1253,8 @@ export default function Index() {
                         !privacyConsent ||
                         isSubmitting ||
                         !otpState.isVerified ||
-                        (budget === "custom" && !customAmount)
+                        !budget ||
+                        !customAmount
                       }
                     >
                       {isSubmitting ? (
