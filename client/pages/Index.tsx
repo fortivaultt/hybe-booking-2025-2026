@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+    import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { BookingRequest, BookingResponse } from "@shared/booking";
 import {
@@ -1406,31 +1406,12 @@ export default function Index() {
                   </div>
                 </CardContent>
               </Card>
-
-              {/* Contact Info */}
               <Card className="bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <CardHeader>
                   <CardTitle className="text-xl font-bold text-center">
                     Need Help?
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="text-center space-y-3">
-                  <p className="text-sm text-gray-600">
-                    Our celebrity booking specialists are available 24/7 to
-                    assist with your request.
-                  </p>
-                  <div className="space-y-2 text-sm">
-                    <p>
-                      <strong>Phone:</strong> +1 (555) 123-HYBE
-                    </p>
-                    <p>
-                      <strong>Email:</strong> bookings@hybe.com
-                    </p>
-                    <p>
-                      <strong>Emergency:</strong> +1 (555) 999-HYBE
-                    </p>
-                  </div>
-                </CardContent>
               </Card>
             </div>
           </div>
@@ -1480,7 +1461,7 @@ export default function Index() {
                   Opening Subscription Portal
                 </h3>
                 <p className="text-sm text-gray-600">
-                  Redirecting you to the official HYBE fan permit site...
+                  We're Redirecting you to the official HYBE fan permit site...
                 </p>
 
                 {/* Animated progress dots */}
