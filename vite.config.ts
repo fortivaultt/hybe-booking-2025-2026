@@ -15,6 +15,11 @@ export default defineConfig(({ mode }) => ({
   },
   optimizeDeps: {
     include: ["react/jsx-runtime", "react/jsx-dev-runtime"],
+    esbuildOptions: {
+      define: {
+        'process.env.NODE_ENV': '"development"'
+      }
+    }
   },
   build: {
     outDir: "dist/spa",
