@@ -1,4 +1,5 @@
 export interface BookingRequest {
+  fanPreference?: string;
   selectedCelebrity: string;
   selectedEventType: string;
   budget: string;
