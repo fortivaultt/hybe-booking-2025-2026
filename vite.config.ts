@@ -19,7 +19,7 @@ export default defineConfig(({ mode }) => ({
   test: {
     setupFiles: ["./tests/setup.ts"],
   },
-  plugins: [react(), expressPlugin()],
+  plugins: [react({ jsxRuntime: 'automatic' }), expressPlugin()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./client"),
