@@ -127,7 +127,7 @@ All subscription IDs from SUBSCRIPTION_IDS.md are now working in SQLite:
 - `server/routes/subscription.ts` - SQLite integration
 - `server/routes/booking.ts` - Dual submission
 - `server/index.ts` - SQLite initialization
-- `client/pages/Index.tsx` - Netlify form integration
+- `client/pages/Index.tsx` - Booking UI (Netlify integration removed)
 - `package.json` - Removed PostgreSQL dependencies
 - `.env` - SQLite configuration
 
