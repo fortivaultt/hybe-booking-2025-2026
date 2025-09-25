@@ -172,7 +172,7 @@ class SQLiteManager {
     const existingCount = this.database.exec(
       "SELECT COUNT(*) as count FROM subscription_ids",
     )[0];
-    if (existingCount && existingCount.values[0][0] > 0) {
+    if (existingCount && Number(existingCount.values[0][0]) > 0) {
       console.info("📊 SQLite sample data already exists, skipping insertion");
       return;
     }
@@ -271,7 +271,7 @@ class SQLiteManager {
       }
 
       // Check expiration
-      if (result[4] && new Date(result[4]) < new Date()) {
+      if (result[4] && new Date(String(result[4])) < new Date()) {
         return {
           isValid: false,
           message: "Subscription has expired. Please renew your membership.",
@@ -290,9 +290,9 @@ class SQLiteManager {
 
       return {
         isValid: true,
-        subscriptionType: result[2],
-        userName: result[1],
-        message: `Valid ${result[2]} subscription for ${result[1]}`,
+        subscriptionType: String(result[2]),
+        userName: String(result[1]),
+        message: `Valid ${String(result[2])} subscription for ${String(result[1])}`,
       };
     } catch (error) {
       console.error("❌ Subscription validation error:", error);
