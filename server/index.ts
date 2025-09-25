@@ -77,6 +77,41 @@ export async function createServer() {
   // Trust proxy for accurate IP addresses
   app.set("trust proxy", 1);
 
+  // Enforce HTTPS in production when FORCE_HTTPS=true
+  const shouldForceHttps =
+    process.env.NODE_ENV === "production" &&
+    String(process.env.FORCE_HTTPS).toLowerCase() === "true";
+
+  if (shouldForceHttps) {
+    // HSTS for 1 year incl. subdomains
+    app.use((_, res, next) => {
+      res.setHeader(
+        "Strict-Transport-Security",
+        "max-age=31536000; includeSubDomains; preload",
+      );
+      next();
+    });
+
+    app.use((req, res, next) => {
+      const forwardedProto = String(
+        (req.headers["x-forwarded-proto"] as string) || "",
+      )
+        .split(",")[0]
+        .trim();
+
+      if (forwardedProto && forwardedProto !== "https") {
+        const host =
+          (req.headers["x-forwarded-host"] as string) || req.headers.host;
+        const target = `https://${host}${req.originalUrl}`;
+        if (req.method === "GET" || req.method === "HEAD") {
+          return res.redirect(308, target);
+        }
+        return res.status(400).send("Please use HTTPS.");
+      }
+      next();
+    });
+  }
+
   // Core middleware
   app.use(cors());
   app.use(express.json({ limit: "10mb" }));
