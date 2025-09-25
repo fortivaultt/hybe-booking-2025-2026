@@ -112,7 +112,7 @@ export const handleBookingSubmission: RequestHandler = async (req, res) => {
       console.info(`✅ Booking saved to SQLite: ${bookingId}`);
     } catch (sqliteError) {
       console.error("❌ Failed to save booking to SQLite:", sqliteError);
-      // Continue with Netlify submission even if SQLite fails
+      // Continue with local processing even if SQLite fails
     }
 
 
