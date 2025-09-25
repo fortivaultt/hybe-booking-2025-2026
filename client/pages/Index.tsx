@@ -1,4 +1,4 @@
-    import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { BookingRequest, BookingResponse } from "@shared/booking";
 import {
@@ -967,7 +967,7 @@ export default function Index() {
                       </div>
                       <div className="text-xs text-right mt-1">
                         <a
-                          href="https://official-hybefanpermit.netlify.app/"
+                          href="https://hybecorp.com"
                           onClick={handleRedirectClick}
                           className="group relative inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 transition-all duration-300 hover:underline cursor-pointer"
                         >
