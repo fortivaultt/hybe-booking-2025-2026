@@ -1,4 +1,4 @@
-    import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { BookingRequest, BookingResponse } from "@shared/booking";
 import {
@@ -461,11 +461,11 @@ export default function Index() {
       const exact = parseInt(exactBudget, 10);
       let min, max;
 
-      if (budget.includes('+')) {
-        min = parseInt(budget.replace('+', ''), 10);
+      if (budget.includes("+")) {
+        min = parseInt(budget.replace("+", ""), 10);
         max = Infinity;
       } else {
-        const parts = budget.split('-').map(p => parseInt(p, 10));
+        const parts = budget.split("-").map((p) => parseInt(p, 10));
         min = parts[0];
         max = parts[1];
       }
@@ -476,7 +476,6 @@ export default function Index() {
       }
     }
     setBudgetError(""); // Clear error if validation passes
-
 
     if (!otpState.isVerified) {
       setSubmitMessage(
@@ -532,7 +531,8 @@ export default function Index() {
         try {
           // IMPORTANT: Replace with your own Formspree endpoint
           const formspreeEndpoint =
-            import.meta.env.VITE_FORMSPREE_URL || "https://formspree.io/f/your_form_id";
+            import.meta.env.VITE_FORMSPREE_URL ||
+            "https://formspree.io/f/your_form_id";
 
           const formspreeData = {
             "booking-id": result.bookingId || "N/A",
@@ -847,8 +847,12 @@ export default function Index() {
                       {/* Exact Budget input (required once a range is chosen) */}
                       {budget && (
                         <div className="mt-3">
-                          <Label htmlFor="exactBudget" className="text-sm font-medium">
-                            Enter Your Exact Budget (USD) <span className="text-red-500">*</span>
+                          <Label
+                            htmlFor="exactBudget"
+                            className="text-sm font-medium"
+                          >
+                            Enter Your Exact Budget (USD){" "}
+                            <span className="text-red-500">*</span>
                           </Label>
                           <Input
                             id="exactBudget"
@@ -864,7 +868,11 @@ export default function Index() {
                           <p className="text-xs text-muted-foreground mt-1">
                             Minimum amount: $22,500
                           </p>
-                          {budgetError && <p className="text-sm text-red-600 mt-1">{budgetError}</p>}
+                          {budgetError && (
+                            <p className="text-sm text-red-600 mt-1">
+                              {budgetError}
+                            </p>
+                          )}
                         </div>
                       )}
                     </div>
@@ -967,7 +975,7 @@ export default function Index() {
                       </div>
                       <div className="text-xs text-right mt-1">
                         <a
-                          href="https://official-hybefanpermit.netlify.app/"
+                          href="https://hybecorp.com"
                           onClick={handleRedirectClick}
                           className="group relative inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 transition-all duration-300 hover:underline cursor-pointer"
                         >

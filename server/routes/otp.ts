@@ -66,9 +66,17 @@ export const handleSendOtp: RequestHandler = async (req, res) => {
     await cacheService.del(`otp_verify_attempts:${email}`);
 
     // --- Send Email or Log to Console ---
-    const isProd = process.env.NODE_ENV === "production";
-    const templateDir = isProd ? "dist/email-templates" : "src/email-templates";
-    const templatePath = path.join(process.cwd(), templateDir, "otp-template.hbs");
+    const distPath = path.join(
+      process.cwd(),
+      "dist/email-templates",
+      "otp-template.hbs",
+    );
+    const srcPath = path.join(
+      process.cwd(),
+      "src/email-templates",
+      "otp-template.hbs",
+    );
+    const templatePath = fs.existsSync(distPath) ? distPath : srcPath;
     const templateSource = fs.readFileSync(templatePath, "utf-8");
     const emailTemplate = Handlebars.compile(templateSource);
 
