@@ -13,6 +13,9 @@ export default defineConfig(({ mode }) => ({
       deny: [".env", ".env.*", "*.{crt,pem}", "**/.git/**", "server/**"],
     },
   },
+  optimizeDeps: {
+    include: ["react/jsx-runtime", "react/jsx-dev-runtime"],
+  },
   build: {
     outDir: "dist/spa",
   },
