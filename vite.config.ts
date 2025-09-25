@@ -17,9 +17,9 @@ export default defineConfig(({ mode }) => ({
     include: ["react/jsx-runtime", "react/jsx-dev-runtime"],
     esbuildOptions: {
       define: {
-        'process.env.NODE_ENV': '"development"'
-      }
-    }
+        "process.env.NODE_ENV": '"development"',
+      },
+    },
   },
   build: {
     outDir: "dist/spa",
@@ -27,7 +27,7 @@ export default defineConfig(({ mode }) => ({
   test: {
     setupFiles: ["./tests/setup.ts"],
   },
-  plugins: [react({ jsxRuntime: 'automatic' }), expressPlugin()],
+  plugins: [react({ jsxRuntime: "automatic" }), expressPlugin()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./client"),

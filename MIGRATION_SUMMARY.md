@@ -28,7 +28,6 @@
 - **Added**: Submission to SQLite for booking requests (Netlify form submission removed)
 - **Enhanced**: Form data capture with additional metadata
 
-
 #### 5. Server Infrastructure Updates
 
 - **Updated**: `server/index.ts` to use SQLite initialization

@@ -115,7 +115,6 @@ export const handleBookingSubmission: RequestHandler = async (req, res) => {
       // Continue with local processing even if SQLite fails
     }
 
-
     // Track successful booking analytics
     Analytics.trackBookingSubmission({
       artist: bookingData.selectedCelebrity,
