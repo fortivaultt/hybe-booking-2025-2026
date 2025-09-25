@@ -1,13 +1,13 @@
-import { afterAll } from 'vitest';
-import { disconnectCache } from '../server/utils/cache';
+import { afterAll } from "vitest";
+import { disconnectCache } from "../server/utils/cache";
 
 // Disable real SMTP in tests to avoid slow network calls
-process.env.SMTP_HOST = '';
-process.env.SMTP_USER = '';
-process.env.SMTP_PASS = '';
-process.env.SMTP_SECURE = 'false';
-process.env.SMTP_PORT = '587';
-process.env.NODE_ENV = 'test';
+process.env.SMTP_HOST = "";
+process.env.SMTP_USER = "";
+process.env.SMTP_PASS = "";
+process.env.SMTP_SECURE = "false";
+process.env.SMTP_PORT = "587";
+process.env.NODE_ENV = "test";
 
 afterAll(() => {
   disconnectCache();
