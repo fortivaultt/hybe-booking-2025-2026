@@ -66,9 +66,13 @@ export async function createServer() {
   try {
     const initialized = await db.initialize();
     if (initialized) {
-      console.info(`✓ ${dbType === "supabase" ? "Supabase" : "SQLite"} database initialized successfully`);
+      console.info(
+        `✓ ${dbType === "supabase" ? "Supabase" : "SQLite"} database initialized successfully`,
+      );
     } else {
-      console.warn(`⚠ ${dbType === "supabase" ? "Supabase" : "SQLite"} database initialization failed (or tables missing)`);
+      console.warn(
+        `⚠ ${dbType === "supabase" ? "Supabase" : "SQLite"} database initialization failed (or tables missing)`,
+      );
     }
   } catch (error) {
     console.warn("⚠ Database initialization error:", error);

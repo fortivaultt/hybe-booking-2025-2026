@@ -24,7 +24,8 @@ class SupabaseManager {
   private getClient(): SupabaseClient | null {
     if (this.client) return this.client;
     const url = process.env.SUPABASE_DATABASE_URL;
-    const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
+    const key =
+      process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
     if (!url || !key) return null;
     this.client = createClient(url, key, {
       auth: { persistSession: false, autoRefreshToken: false },
@@ -42,12 +43,22 @@ class SupabaseManager {
       }
 
       // Ping tables to ensure they exist. If they don't, we report not initialized.
-      const [{ count: subCount, error: subErr }, { count: bookCount, error: bookErr }] = await Promise.all([
-        client.from("subscription_ids").select("*", { count: "exact", head: true }),
-        client.from("booking_requests").select("*", { count: "exact", head: true }),
+      const [
+        { count: subCount, error: subErr },
+        { count: bookCount, error: bookErr },
+      ] = await Promise.all([
+        client
+          .from("subscription_ids")
+          .select("*", { count: "exact", head: true }),
+        client
+          .from("booking_requests")
+          .select("*", { count: "exact", head: true }),
       ]);
 
-      if (subErr?.message?.includes("relation") || bookErr?.message?.includes("relation")) {
+      if (
+        subErr?.message?.includes("relation") ||
+        bookErr?.message?.includes("relation")
+      ) {
         // Tables likely don't exist yet
         this.initialized = false;
         return false;
@@ -71,7 +82,11 @@ class SupabaseManager {
     const client = this.getClient();
     if (!client) return;
 
-    const subscriptions: Array<{ id: string; name: string; type: SubscriptionRecord["subscription_type"] }> = [
+    const subscriptions: Array<{
+      id: string;
+      name: string;
+      type: SubscriptionRecord["subscription_type"];
+    }> = [
       { id: "HYBABC1234567", name: "Kim Taehyung", type: "premium" },
       { id: "HYBGHI5555555", name: "Jeon Jungkook", type: "premium" },
       { id: "HYBPQR8888888", name: "Jung Hoseok", type: "premium" },
@@ -107,7 +122,11 @@ class SupabaseManager {
       .upsert(rows, { onConflict: "subscription_id" });
 
     if (error) {
-      Analytics.trackError(error as unknown as Error, "supabase_seed_subscriptions", { message: error.message });
+      Analytics.trackError(
+        error as unknown as Error,
+        "supabase_seed_subscriptions",
+        { message: error.message },
+      );
     }
   }
 
@@ -124,7 +143,9 @@ class SupabaseManager {
       const normalizedId = subscriptionId.trim().toUpperCase();
       const { data, error } = await client
         .from("subscription_ids")
-        .select("subscription_id, user_name, subscription_type, is_active, expires_at, usage_count")
+        .select(
+          "subscription_id, user_name, subscription_type, is_active, expires_at, usage_count",
+        )
         .eq("subscription_id", normalizedId)
         .eq("is_active", true)
         .maybeSingle();
@@ -133,7 +154,8 @@ class SupabaseManager {
       if (!data) {
         return {
           isValid: false,
-          message: "Subscription ID not found, inactive, or expired. Please check your ID and try again.",
+          message:
+            "Subscription ID not found, inactive, or expired. Please check your ID and try again.",
         };
       }
 
@@ -147,9 +169,17 @@ class SupabaseManager {
       // Update usage count and last used timestamp (best effort)
       const { error: upErr } = await client
         .from("subscription_ids")
-        .update({ usage_count: (data.usage_count || 0) + 1, last_used_at: new Date().toISOString() })
+        .update({
+          usage_count: (data.usage_count || 0) + 1,
+          last_used_at: new Date().toISOString(),
+        })
         .eq("subscription_id", normalizedId);
-      if (upErr) Analytics.trackError(upErr as unknown as Error, "supabase_usage_update", { id: normalizedId });
+      if (upErr)
+        Analytics.trackError(
+          upErr as unknown as Error,
+          "supabase_usage_update",
+          { id: normalizedId },
+        );
 
       return {
         isValid: true,
@@ -158,8 +188,13 @@ class SupabaseManager {
         message: `Valid ${data.subscription_type} subscription for ${data.user_name}`,
       };
     } catch (error) {
-      Analytics.trackError(error as Error, "supabase_subscription_validation", { subscriptionId });
-      return { isValid: false, message: "Service temporarily unavailable. Please try again later." };
+      Analytics.trackError(error as Error, "supabase_subscription_validation", {
+        subscriptionId,
+      });
+      return {
+        isValid: false,
+        message: "Service temporarily unavailable. Please try again later.",
+      };
     }
   }
 
@@ -180,16 +215,28 @@ class SupabaseManager {
         const t = row.subscription_type as string;
         counts.set(t, (counts.get(t) || 0) + 1);
       }
-      const subscriptionTypes = Array.from(counts.entries()).map(([k, v]) => ({ subscription_type: k, count: String(v) }));
-      const totalActive = Array.from(counts.values()).reduce((a, b) => a + b, 0);
+      const subscriptionTypes = Array.from(counts.entries()).map(([k, v]) => ({
+        subscription_type: k,
+        count: String(v),
+      }));
+      const totalActive = Array.from(counts.values()).reduce(
+        (a, b) => a + b,
+        0,
+      );
       return { subscriptionTypes, totalActive };
     } catch (error) {
-      Analytics.trackError(error as Error, "supabase_get_subscription_types", {});
+      Analytics.trackError(
+        error as Error,
+        "supabase_get_subscription_types",
+        {},
+      );
       return { subscriptionTypes: [], totalActive: 0 };
     }
   }
 
-  async saveBooking(booking: Omit<BookingRecord, "id" | "created_at">): Promise<string> {
+  async saveBooking(
+    booking: Omit<BookingRecord, "id" | "created_at">,
+  ): Promise<string> {
     const client = this.getClient();
     if (!client) throw new Error("Supabase not configured");
     try {
@@ -215,7 +262,9 @@ class SupabaseManager {
       if (error) throw error;
       return booking.booking_id;
     } catch (error) {
-      Analytics.trackError(error as Error, "supabase_save_booking", { bookingId: booking.booking_id });
+      Analytics.trackError(error as Error, "supabase_save_booking", {
+        bookingId: booking.booking_id,
+      });
       throw error;
     }
   }
@@ -240,18 +289,36 @@ class SupabaseManager {
   async healthCheck(): Promise<DbHealth> {
     const client = this.getClient();
     if (!client) {
-      return { connected: false, totalSubscriptions: 0, totalBookings: 0, error: "Supabase not configured" };
+      return {
+        connected: false,
+        totalSubscriptions: 0,
+        totalBookings: 0,
+        error: "Supabase not configured",
+      };
     }
     try {
       const [subs, books] = await Promise.all([
-        client.from("subscription_ids").select("*", { count: "exact", head: true }),
-        client.from("booking_requests").select("*", { count: "exact", head: true }),
+        client
+          .from("subscription_ids")
+          .select("*", { count: "exact", head: true }),
+        client
+          .from("booking_requests")
+          .select("*", { count: "exact", head: true }),
       ]);
       const subCount = subs.count ?? 0;
       const bookCount = books.count ?? 0;
-      return { connected: true, totalSubscriptions: subCount, totalBookings: bookCount };
+      return {
+        connected: true,
+        totalSubscriptions: subCount,
+        totalBookings: bookCount,
+      };
     } catch (error) {
-      return { connected: false, totalSubscriptions: 0, totalBookings: 0, error: (error as Error).message };
+      return {
+        connected: false,
+        totalSubscriptions: 0,
+        totalBookings: 0,
+        error: (error as Error).message,
+      };
     }
   }
 }

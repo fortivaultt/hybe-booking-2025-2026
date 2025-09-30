@@ -12,7 +12,10 @@ async function getHandler() {
   return cachedHandler;
 }
 
-export const handler: Handler = async (event: HandlerEvent, context: HandlerContext) => {
+export const handler: Handler = async (
+  event: HandlerEvent,
+  context: HandlerContext,
+) => {
   const h = await getHandler();
   return h(event as any, context as any);
 };
