@@ -6,19 +6,20 @@ export const getDatabaseHealth: RequestHandler = async (req, res) => {
   const startTime = Date.now();
 
   try {
-    const health = await sqliteDb.healthCheck();
+    const health = await db.healthCheck();
 
     const response = {
       timestamp: new Date().toISOString(),
       responseTime: Date.now() - startTime,
       database: {
-        type: "SQLite",
+        type: dbType === "supabase" ? "Supabase" : "SQLite",
         connected: health.connected,
         totalSubscriptions: health.totalSubscriptions,
         totalBookings: health.totalBookings,
         error: health.error,
       },
       environment: {
+        DB_PROVIDER: dbType,
         SQLITE_DB_PATH: process.env.SQLITE_DB_PATH || "default",
         NODE_ENV: process.env.NODE_ENV || "unknown",
       },
