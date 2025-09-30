@@ -142,12 +142,12 @@ export const testDatabaseConnection: RequestHandler = async (req, res) => {
 
 export const getDatabaseSchema: RequestHandler = async (req, res) => {
   try {
-    const health = await sqliteDb.healthCheck();
+    const health = await db.healthCheck();
 
     res.json({
       timestamp: new Date().toISOString(),
       schema: {
-        type: "SQLite",
+        type: dbType === "supabase" ? "Supabase" : "SQLite",
         connected: health.connected,
         tables: ["subscription_ids", "booking_requests"],
         totalSubscriptions: health.totalSubscriptions,
