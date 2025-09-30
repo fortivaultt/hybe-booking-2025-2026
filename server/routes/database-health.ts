@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import { Analytics } from "../utils/logger";
-import { sqliteDb } from "../utils/sqlite-db";
+import { db, dbType } from "../utils/db-provider";
 
 export const getDatabaseHealth: RequestHandler = async (req, res) => {
   const startTime = Date.now();
