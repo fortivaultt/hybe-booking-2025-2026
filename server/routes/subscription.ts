@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import { cacheService } from "../utils/cache";
 import { Analytics } from "../utils/logger";
-import { sqliteDb } from "../utils/sqlite-db";
+import { db } from "../utils/db-provider";
 
 export interface SubscriptionValidationRequest {
   subscriptionId: string;
