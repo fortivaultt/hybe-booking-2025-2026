@@ -13,12 +13,12 @@ import {
   getAnalyticsDashboard,
   getRealTimeMetrics,
 } from "./routes/monitoring";
-// Database health endpoints (now using SQLite)
-const getSQLiteDatabaseHealth: any = async (req: any, res: any) => {
+// Database health endpoints (dynamic)
+const getDatabaseHealth: any = async (req: any, res: any) => {
   try {
-    const health = await sqliteDb.healthCheck();
+    const health = await db.healthCheck();
     res.json({
-      database: "SQLite",
+      database: dbType === "supabase" ? "Supabase" : "SQLite",
       status: health.connected ? "connected" : "disconnected",
       totalSubscriptions: health.totalSubscriptions,
       totalBookings: health.totalBookings,
@@ -27,7 +27,7 @@ const getSQLiteDatabaseHealth: any = async (req: any, res: any) => {
     });
   } catch (error) {
     res.status(500).json({
-      database: "SQLite",
+      database: dbType === "supabase" ? "Supabase" : "SQLite",
       status: "error",
       error: (error as Error).message,
       timestamp: new Date().toISOString(),
@@ -35,7 +35,7 @@ const getSQLiteDatabaseHealth: any = async (req: any, res: any) => {
   }
 };
 import { initializeCache } from "./utils/cache";
-import { sqliteDb } from "./utils/sqlite-db";
+import { db, dbType } from "./utils/db-provider";
 import { requestLogger, Analytics } from "./utils/logger";
 import {
   generalRateLimit,
