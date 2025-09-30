@@ -138,7 +138,7 @@ export const validateSubscriptionId: RequestHandler = async (req, res) => {
 
 export const listSubscriptionTypes: RequestHandler = async (req, res) => {
   try {
-    const result = await sqliteDb.getSubscriptionTypes();
+    const result = await db.getSubscriptionTypes();
     res.json(result);
   } catch (error) {
     console.error("Error fetching subscription types:", error);
