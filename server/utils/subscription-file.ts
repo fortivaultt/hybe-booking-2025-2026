@@ -76,7 +76,8 @@ export async function validateSubscriptionFromFile(subscriptionId: string) {
   if (!row) {
     return {
       isValid: false,
-      message: "Subscription ID not found, inactive, or expired. Please check your ID and try again.",
+      message:
+        "Subscription ID not found, inactive, or expired. Please check your ID and try again.",
     };
   }
   if (row.expires_at && new Date(row.expires_at) < new Date()) {
@@ -100,9 +101,15 @@ export async function getSubscriptionTypesFromFile() {
   const counts = new Map<string, number>();
   for (const row of map.values()) {
     if (!row.is_active) continue;
-    counts.set(row.subscription_type, (counts.get(row.subscription_type) || 0) + 1);
+    counts.set(
+      row.subscription_type,
+      (counts.get(row.subscription_type) || 0) + 1,
+    );
   }
-  const subscriptionTypes = Array.from(counts.entries()).map(([k, v]) => ({ subscription_type: k, count: String(v) }));
+  const subscriptionTypes = Array.from(counts.entries()).map(([k, v]) => ({
+    subscription_type: k,
+    count: String(v),
+  }));
   const totalActive = Array.from(counts.values()).reduce((a, b) => a + b, 0);
   return { subscriptionTypes, totalActive };
 }
