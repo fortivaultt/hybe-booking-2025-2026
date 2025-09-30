@@ -1,0 +1,16 @@
+[build]
+  command = "pnpm build"
+  publish = "dist/spa"
+  functions = "netlify/functions"
+
+# Proxy API requests to the serverless function
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/server"
+  status = 200
+
+# SPA fallback
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
