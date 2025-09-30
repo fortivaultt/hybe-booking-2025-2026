@@ -132,7 +132,7 @@ export async function createServer() {
   // Health check and monitoring endpoints
   app.get("/api/health/error-tracking", errorTrackingHealthCheck);
   app.get("/api/health/system", getSystemHealth);
-  app.get("/api/health/database", getSQLiteDatabaseHealth);
+  app.get("/api/health/database", getDatabaseHealth);
   app.get("/api/monitoring/dashboard", getAnalyticsDashboard);
   app.get("/api/monitoring/metrics", getRealTimeMetrics);
 
