@@ -114,11 +114,11 @@ export const testDatabaseConnection: RequestHandler = async (req, res) => {
       });
     }
 
-    console.info("✅ SQLite database connection test successful");
+    console.info("✅ Database connection test successful");
 
     res.json({
       success: true,
-      type: "SQLite",
+      type: dbType === "supabase" ? "Supabase" : "SQLite",
       responseTime: Date.now() - startTime,
       timestamp: new Date().toISOString(),
       totalSubscriptions: health.totalSubscriptions,
