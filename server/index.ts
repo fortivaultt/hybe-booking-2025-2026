@@ -62,16 +62,16 @@ export async function createServer() {
     );
   }
 
-  // Initialize SQLite database
+  // Initialize database (Supabase preferred when configured)
   try {
-    const initialized = await sqliteDb.initialize();
+    const initialized = await db.initialize();
     if (initialized) {
-      console.info("✓ SQLite database initialized successfully");
+      console.info(`✓ ${dbType === "supabase" ? "Supabase" : "SQLite"} database initialized successfully`);
     } else {
-      console.warn("⚠ SQLite database initialization failed");
+      console.warn(`⚠ ${dbType === "supabase" ? "Supabase" : "SQLite"} database initialization failed (or tables missing)`);
     }
   } catch (error) {
-    console.warn("⚠ SQLite database initialization error:", error);
+    console.warn("⚠ Database initialization error:", error);
   }
 
   // Trust proxy for accurate IP addresses
