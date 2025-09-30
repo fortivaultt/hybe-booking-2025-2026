@@ -23,6 +23,7 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.58.0",
     "@types/handlebars": "^4.0.40",
     "@types/pg": "^8.15.5",
     "@types/sql.js": "^1.4.9",
