@@ -1,24 +1,25 @@
 import { RequestHandler } from "express";
 import { Analytics } from "../utils/logger";
-import { sqliteDb } from "../utils/sqlite-db";
+import { db, dbType } from "../utils/db-provider";
 
 export const getDatabaseHealth: RequestHandler = async (req, res) => {
   const startTime = Date.now();
 
   try {
-    const health = await sqliteDb.healthCheck();
+    const health = await db.healthCheck();
 
     const response = {
       timestamp: new Date().toISOString(),
       responseTime: Date.now() - startTime,
       database: {
-        type: "SQLite",
+        type: dbType === "supabase" ? "Supabase" : "SQLite",
         connected: health.connected,
         totalSubscriptions: health.totalSubscriptions,
         totalBookings: health.totalBookings,
         error: health.error,
       },
       environment: {
+        DB_PROVIDER: dbType,
         SQLITE_DB_PATH: process.env.SQLITE_DB_PATH || "default",
         NODE_ENV: process.env.NODE_ENV || "unknown",
       },
@@ -113,11 +114,11 @@ export const testDatabaseConnection: RequestHandler = async (req, res) => {
       });
     }
 
-    console.info("✅ SQLite database connection test successful");
+    console.info("✅ Database connection test successful");
 
     res.json({
       success: true,
-      type: "SQLite",
+      type: dbType === "supabase" ? "Supabase" : "SQLite",
       responseTime: Date.now() - startTime,
       timestamp: new Date().toISOString(),
       totalSubscriptions: health.totalSubscriptions,
@@ -141,12 +142,12 @@ export const testDatabaseConnection: RequestHandler = async (req, res) => {
 
 export const getDatabaseSchema: RequestHandler = async (req, res) => {
   try {
-    const health = await sqliteDb.healthCheck();
+    const health = await db.healthCheck();
 
     res.json({
       timestamp: new Date().toISOString(),
       schema: {
-        type: "SQLite",
+        type: dbType === "supabase" ? "Supabase" : "SQLite",
         connected: health.connected,
         tables: ["subscription_ids", "booking_requests"],
         totalSubscriptions: health.totalSubscriptions,

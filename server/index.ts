@@ -13,12 +13,12 @@ import {
   getAnalyticsDashboard,
   getRealTimeMetrics,
 } from "./routes/monitoring";
-// Database health endpoints (now using SQLite)
-const getSQLiteDatabaseHealth: any = async (req: any, res: any) => {
+// Database health endpoints (dynamic)
+const getDatabaseHealth: any = async (req: any, res: any) => {
   try {
-    const health = await sqliteDb.healthCheck();
+    const health = await db.healthCheck();
     res.json({
-      database: "SQLite",
+      database: dbType === "supabase" ? "Supabase" : "SQLite",
       status: health.connected ? "connected" : "disconnected",
       totalSubscriptions: health.totalSubscriptions,
       totalBookings: health.totalBookings,
@@ -27,7 +27,7 @@ const getSQLiteDatabaseHealth: any = async (req: any, res: any) => {
     });
   } catch (error) {
     res.status(500).json({
-      database: "SQLite",
+      database: dbType === "supabase" ? "Supabase" : "SQLite",
       status: "error",
       error: (error as Error).message,
       timestamp: new Date().toISOString(),
@@ -35,7 +35,7 @@ const getSQLiteDatabaseHealth: any = async (req: any, res: any) => {
   }
 };
 import { initializeCache } from "./utils/cache";
-import { sqliteDb } from "./utils/sqlite-db";
+import { db, dbType } from "./utils/db-provider";
 import { requestLogger, Analytics } from "./utils/logger";
 import {
   generalRateLimit,
@@ -62,16 +62,20 @@ export async function createServer() {
     );
   }
 
-  // Initialize SQLite database
+  // Initialize database (Supabase preferred when configured)
   try {
-    const initialized = await sqliteDb.initialize();
+    const initialized = await db.initialize();
     if (initialized) {
-      console.info("✓ SQLite database initialized successfully");
+      console.info(
+        `✓ ${dbType === "supabase" ? "Supabase" : "SQLite"} database initialized successfully`,
+      );
     } else {
-      console.warn("⚠ SQLite database initialization failed");
+      console.warn(
+        `⚠ ${dbType === "supabase" ? "Supabase" : "SQLite"} database initialization failed (or tables missing)`,
+      );
     }
   } catch (error) {
-    console.warn("⚠ SQLite database initialization error:", error);
+    console.warn("⚠ Database initialization error:", error);
   }
 
   // Trust proxy for accurate IP addresses
@@ -132,7 +136,7 @@ export async function createServer() {
   // Health check and monitoring endpoints
   app.get("/api/health/error-tracking", errorTrackingHealthCheck);
   app.get("/api/health/system", getSystemHealth);
-  app.get("/api/health/database", getSQLiteDatabaseHealth);
+  app.get("/api/health/database", getDatabaseHealth);
   app.get("/api/monitoring/dashboard", getAnalyticsDashboard);
   app.get("/api/monitoring/metrics", getRealTimeMetrics);
 

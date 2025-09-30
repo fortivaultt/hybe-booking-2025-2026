@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import { cacheService } from "../utils/cache";
 import { Analytics } from "../utils/logger";
-import { sqliteDb } from "../utils/sqlite-db";
+import { db } from "../utils/db-provider";
 
 export interface SubscriptionValidationRequest {
   subscriptionId: string;
@@ -75,9 +75,9 @@ export const validateSubscriptionId: RequestHandler = async (req, res) => {
 
     Analytics.trackCacheHit(`subscription:${normalizedId}`, false);
 
-    // Validate against SQLite database
+    // Validate against database (Supabase or SQLite)
     const dbStartTime = Date.now();
-    const validationResult = await sqliteDb.validateSubscription(normalizedId);
+    const validationResult = await db.validateSubscription(normalizedId);
     Analytics.trackPerformance("database_query", Date.now() - dbStartTime, {
       query: "subscription_validation",
       success: validationResult.isValid,
@@ -138,7 +138,7 @@ export const validateSubscriptionId: RequestHandler = async (req, res) => {
 
 export const listSubscriptionTypes: RequestHandler = async (req, res) => {
   try {
-    const result = await sqliteDb.getSubscriptionTypes();
+    const result = await db.getSubscriptionTypes();
     res.json(result);
   } catch (error) {
     console.error("Error fetching subscription types:", error);
