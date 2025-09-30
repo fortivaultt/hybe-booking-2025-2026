@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 import { Analytics } from "../utils/logger";
-import { sqliteDb, BookingRecord } from "../utils/sqlite-db";
+import { db } from "../utils/db-provider";
+import type { BookingRecord } from "../utils/sqlite-db";
 
 export interface BookingRequest {
   fanPreference?: string;
