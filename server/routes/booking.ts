@@ -109,11 +109,11 @@ export const handleBookingSubmission: RequestHandler = async (req, res) => {
     };
 
     try {
-      await sqliteDb.saveBooking(bookingRecord);
-      console.info(`✅ Booking saved to SQLite: ${bookingId}`);
-    } catch (sqliteError) {
-      console.error("❌ Failed to save booking to SQLite:", sqliteError);
-      // Continue with local processing even if SQLite fails
+      await db.saveBooking(bookingRecord);
+      console.info(`✅ Booking saved to database: ${bookingId}`);
+    } catch (dbError) {
+      console.error("❌ Failed to save booking to database:", dbError);
+      // Continue with local processing even if DB fails
     }
 
     // Track successful booking analytics
